@@ -6,5 +6,5 @@ CXX_FLAGS =  -std=c++11 -isysroot /Applications/Xcode.app/Contents/Developer/Pla
 
 CXX_DEFINES = -DGLEW_STATIC -DGLM_FORCE_RADIANS
 
-CXX_INCLUDES = -I/usr/local/include -I/Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/external -I/Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/common 
+CXX_INCLUDES = -I/usr/local/include -I/Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/external -I/Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/common 
 

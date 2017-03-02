@@ -1,4 +1,4 @@
-# Install script for directory: /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17
+# Install script for directory: /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -29,7 +29,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl/cmake_install.cmake")
+  include("/Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl/cmake_install.cmake")
 
 endif()
 
@@ -41,5 +41,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

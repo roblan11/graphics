@@ -48,10 +48,10 @@ RM = /usr/local/Cellar/cmake/3.4.0/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17
+CMAKE_SOURCE_DIR = /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build
+CMAKE_BINARY_DIR = /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(CMAKE_COMMAND) -E cmake_progress_start /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/CMakeFiles /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl/CMakeFiles/progress.marks
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(MAKE) -f CMakeFiles/Makefile2 lab2_intro_to_glsl/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/CMakeFiles 0
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(CMAKE_COMMAND) -E cmake_progress_start /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/CMakeFiles /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl/CMakeFiles/progress.marks
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(MAKE) -f CMakeFiles/Makefile2 lab2_intro_to_glsl/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(MAKE) -f CMakeFiles/Makefile2 lab2_intro_to_glsl/clean
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(MAKE) -f CMakeFiles/Makefile2 lab2_intro_to_glsl/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(MAKE) -f CMakeFiles/Makefile2 lab2_intro_to_glsl/preinstall
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(MAKE) -f CMakeFiles/Makefile2 lab2_intro_to_glsl/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(MAKE) -f CMakeFiles/Makefile2 lab2_intro_to_glsl/preinstall
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(MAKE) -f CMakeFiles/Makefile2 lab2_intro_to_glsl/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/rule:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(MAKE) -f CMakeFiles/Makefile2 lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/rule
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(MAKE) -f CMakeFiles/Makefile2 lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/rule
 .PHONY : lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/rule
 
 # Convenience name for target.
@@ -122,12 +122,12 @@ copy_shaders_lab2_intro_to_glsl: lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2
 
 # fast build rule for target.
 copy_shaders_lab2_intro_to_glsl/fast:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(MAKE) -f lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/build.make lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/build
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(MAKE) -f lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/build.make lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/build
 .PHONY : copy_shaders_lab2_intro_to_glsl/fast
 
 # Convenience name for target.
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/rule:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(MAKE) -f CMakeFiles/Makefile2 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/rule
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(MAKE) -f CMakeFiles/Makefile2 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/rule
 .PHONY : lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/rule
 
 # Convenience name for target.
@@ -137,7 +137,7 @@ lab2_intro_to_glsl: lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/rule
 
 # fast build rule for target.
 lab2_intro_to_glsl/fast:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(MAKE) -f lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/build.make lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/build
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(MAKE) -f lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/build.make lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/build
 .PHONY : lab2_intro_to_glsl/fast
 
 main.o: main.cpp.o
@@ -146,7 +146,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(MAKE) -f lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/build.make lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(MAKE) -f lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/build.make lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -155,7 +155,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(MAKE) -f lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/build.make lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.i
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(MAKE) -f lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/build.make lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -164,7 +164,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(MAKE) -f lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/build.make lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.s
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(MAKE) -f lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/build.make lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -191,6 +191,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

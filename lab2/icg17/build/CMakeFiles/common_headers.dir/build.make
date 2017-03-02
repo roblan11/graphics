@@ -43,10 +43,10 @@ RM = /usr/local/Cellar/cmake/3.4.0/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17
+CMAKE_SOURCE_DIR = /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build
+CMAKE_BINARY_DIR = /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build
 
 # Utility rule file for common_headers.
 
@@ -67,6 +67,6 @@ CMakeFiles/common_headers.dir/clean:
 .PHONY : CMakeFiles/common_headers.dir/clean
 
 CMakeFiles/common_headers.dir/depend:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17 /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17 /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/CMakeFiles/common_headers.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17 /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17 /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/CMakeFiles/common_headers.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/common_headers.dir/depend
 

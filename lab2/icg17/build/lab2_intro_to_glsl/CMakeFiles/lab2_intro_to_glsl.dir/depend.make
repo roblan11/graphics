@@ -67,6 +67,12 @@ lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../external/glm
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../external/glm/fwd.hpp
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../external/glm/geometric.hpp
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../external/glm/glm.hpp
+lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../external/glm/gtc/constants.hpp
+lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../external/glm/gtc/constants.inl
+lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../external/glm/gtc/quaternion.hpp
+lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../external/glm/gtc/quaternion.inl
+lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../external/glm/gtc/type_ptr.hpp
+lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../external/glm/gtc/type_ptr.inl
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../external/glm/integer.hpp
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../external/glm/mat2x2.hpp
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../external/glm/mat2x3.hpp

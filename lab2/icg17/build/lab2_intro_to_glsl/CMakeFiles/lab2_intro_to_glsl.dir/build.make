@@ -43,10 +43,10 @@ RM = /usr/local/Cellar/cmake/3.4.0/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17
+CMAKE_SOURCE_DIR = /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build
+CMAKE_BINARY_DIR = /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build
 
 # Include any dependencies generated for this target.
 include lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/depend.make
@@ -59,16 +59,16 @@ include lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/flags.make
 
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/flags.make
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o: ../lab2_intro_to_glsl/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o"
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o -c /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o"
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o -c /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl/main.cpp
 
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.i"
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl/main.cpp > CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.i
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl/main.cpp > CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.i
 
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.s"
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl/main.cpp -o CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.s
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl && /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl/main.cpp -o CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.s
 
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o.requires:
 
@@ -93,8 +93,8 @@ lab2_intro_to_glsl/lab2_intro_to_glsl: lab2_intro_to_glsl/CMakeFiles/lab2_intro_
 lab2_intro_to_glsl/lab2_intro_to_glsl: /usr/local/lib/libglfw.dylib
 lab2_intro_to_glsl/lab2_intro_to_glsl: /usr/local/lib/libGLEW.dylib
 lab2_intro_to_glsl/lab2_intro_to_glsl: lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable lab2_intro_to_glsl"
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/lab2_intro_to_glsl.dir/link.txt --verbose=$(VERBOSE)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable lab2_intro_to_glsl"
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/lab2_intro_to_glsl.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/build: lab2_intro_to_glsl/lab2_intro_to_glsl
@@ -106,10 +106,10 @@ lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/requires: lab2_intro_to_gls
 .PHONY : lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/requires
 
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/clean:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl && $(CMAKE_COMMAND) -P CMakeFiles/lab2_intro_to_glsl.dir/cmake_clean.cmake
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl && $(CMAKE_COMMAND) -P CMakeFiles/lab2_intro_to_glsl.dir/cmake_clean.cmake
 .PHONY : lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/clean
 
 lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/depend:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17 /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17 /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/depend
 

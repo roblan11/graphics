@@ -43,10 +43,10 @@ RM = /usr/local/Cellar/cmake/3.4.0/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17
+CMAKE_SOURCE_DIR = /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build
+CMAKE_BINARY_DIR = /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build
 
 # Utility rule file for copy_shaders_lab2_intro_to_glsl.
 
@@ -54,14 +54,14 @@ CMAKE_BINARY_DIR = /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhe
 include lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/progress.make
 
 copy_shaders_lab2_intro_to_glsl: lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/build.make
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Copying /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl/triangle/triangle_vshader.glsl to build folder"
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl && /usr/local/Cellar/cmake/3.4.0/bin/cmake -E copy /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl/triangle/triangle_vshader.glsl /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Copying /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl/triangle/triangle_fshader.glsl to build folder"
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl && /usr/local/Cellar/cmake/3.4.0/bin/cmake -E copy /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl/triangle/triangle_fshader.glsl /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Copying /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl/quad/quad_vshader.glsl to build folder"
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl && /usr/local/Cellar/cmake/3.4.0/bin/cmake -E copy /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl/quad/quad_vshader.glsl /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Copying /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl/quad/quad_fshader.glsl to build folder"
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl && /usr/local/Cellar/cmake/3.4.0/bin/cmake -E copy /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl/quad/quad_fshader.glsl /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Copying /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl/triangle/triangle_vshader.glsl to build folder"
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl && /usr/local/Cellar/cmake/3.4.0/bin/cmake -E copy /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl/triangle/triangle_vshader.glsl /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Copying /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl/triangle/triangle_fshader.glsl to build folder"
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl && /usr/local/Cellar/cmake/3.4.0/bin/cmake -E copy /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl/triangle/triangle_fshader.glsl /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Copying /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl/quad/quad_vshader.glsl to build folder"
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl && /usr/local/Cellar/cmake/3.4.0/bin/cmake -E copy /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl/quad/quad_vshader.glsl /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Copying /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl/quad/quad_fshader.glsl to build folder"
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl && /usr/local/Cellar/cmake/3.4.0/bin/cmake -E copy /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl/quad/quad_fshader.glsl /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl
 .PHONY : copy_shaders_lab2_intro_to_glsl
 
 # Rule to build all files generated by this target.
@@ -70,10 +70,10 @@ lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/build: copy_sh
 .PHONY : lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/build
 
 lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/clean:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl && $(CMAKE_COMMAND) -P CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/cmake_clean.cmake
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl && $(CMAKE_COMMAND) -P CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/cmake_clean.cmake
 .PHONY : lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/clean
 
 lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/depend:
-	cd /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17 /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17 /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir/depend
 

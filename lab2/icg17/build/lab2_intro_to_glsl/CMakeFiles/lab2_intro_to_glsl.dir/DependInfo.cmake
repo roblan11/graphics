@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl/main.cpp" "/Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o"
+  "/Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl/main.cpp" "/Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "Clang")
 

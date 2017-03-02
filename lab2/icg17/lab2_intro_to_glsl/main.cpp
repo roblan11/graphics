@@ -4,6 +4,9 @@
 
 // contains helper functions such as shader compiler
 #include "icg_helper.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#define PI 3.14159265
 
 // vertex position of the triangle
 const GLfloat vpoint[] = {-1.0f, -1.0f, 0.0f,
@@ -20,14 +23,34 @@ void Init() {
     if(!program_id) {
         exit(EXIT_FAILURE);
     }
-
     glUseProgram(program_id);
-    
+
+    // set uniform values
+    glm::mat4 ROTATE = glm::mat4(1);
+    ROTATE[0][0] = cos(PI/4);
+    ROTATE[0][1] = sin(PI/4);
+    ROTATE[1][0] = -sin(PI/4);
+    ROTATE[1][1] = cos(PI/4);
+    GLuint ROTATE_id = glGetUniformLocation(program_id, "ROTATE");
+    glUniformMatrix4fv(ROTATE_id, 1, GL_FALSE, glm::value_ptr(ROTATE));
+
+    glm::mat4 SCALE = glm::mat4(1);
+    SCALE[0][0] = 0.5;
+    SCALE[1][1] = 0.7;
+    GLuint SCALE_id = glGetUniformLocation(program_id, "SCALE");
+    glUniformMatrix4fv(SCALE_id, 1, GL_FALSE, glm::value_ptr(SCALE));
+
+    glm::mat4 TRANSLATE = glm::mat4(1);
+    TRANSLATE[3][0] = 0.2;
+    TRANSLATE[3][1] = 0.5;
+    GLuint TRANSLATE_id = glGetUniformLocation(program_id, "TRANSLATE");
+    glUniformMatrix4fv(TRANSLATE_id, 1, GL_FALSE, glm::value_ptr(TRANSLATE));
+
     // Vertex Array
     GLuint vertex_array_id;
     glGenVertexArrays(1, &vertex_array_id);
     glBindVertexArray(vertex_array_id);
-    
+
     // Vertex Buffer
     GLuint vertex_buffer;
     glGenBuffers(1, &vertex_buffer);

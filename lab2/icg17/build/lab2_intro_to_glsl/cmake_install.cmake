@@ -1,4 +1,4 @@
-# Install script for directory: /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/lab2_intro_to_glsl
+# Install script for directory: /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/lab2_intro_to_glsl
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

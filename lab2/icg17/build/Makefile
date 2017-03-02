@@ -48,10 +48,10 @@ RM = /usr/local/Cellar/cmake/3.4.0/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17
+CMAKE_SOURCE_DIR = /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build
+CMAKE_BINARY_DIR = /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/CMakeFiles /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/CMakeFiles /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/r11/Documents/sem6/intro_graph/hw2-Badoux-Lang-Mulakhel/icg17/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
