@@ -22,9 +22,40 @@ void Init() {
 void Display() {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glm::mat4 model = IDENTITY_MATRIX;
     // compute transformations here
-    triangle.Draw(model);
+    float alpha = 0;
+    float scale = 0.02;
+    float PI = 3.1415926;
+    float t = 3;
+
+    glm::mat4 R = glm::mat4(1);
+    glm::mat4 S = glm::mat4(1);
+    glm::mat4 T = glm::mat4(1);
+    glm::mat4 model;
+
+    for (int i=1; i<60; i++) {
+
+        // rotation
+        R[0][0] =  cos(alpha);
+        R[0][1] =  sin(alpha);
+        R[1][0] = -sin(alpha);
+        R[1][1] =  cos(alpha);
+
+        // scale
+        S[0][0] = scale;
+        S[1][1] = scale;
+
+        // translation
+        T[3][0] = t;
+        T[3][1] = -t;
+
+        model = R * S * T;
+        triangle.Draw(model);
+
+        alpha += PI/10;
+        scale *= 1.03;
+        t *= 1.01;
+   }
 }
 
 void ErrorCallback(int error, const char* description) {
