@@ -7,13 +7,76 @@
 
 #include "quad/quad.h"
 
-// Quad stuff1;
-// ...
+#define ELLIPSE_A 0.8
+#define ELLIPSE_B 0.6
+#define ELLIPSE_C 0.2
+#define MOON_ORBIT_RADIUS 0.2
+
+Quad moon;
+Quad earth;
+Quad sun;  
 
 void Init() {
     // sets background color
     glClearColor(1.0,1.0,1.0 /*white*/, 1.0 /*solid*/);
-    // {stuff}.Init(...);
+    moon.Init("moon.tga");
+    earth.Init("earth.tga");
+    sun.Init("sun.tga");
+}
+
+glm::mat4 getTranlationMatrixOfTheEarth(float time) {
+    glm::mat4 T = glm::mat4(1);
+    float angleRevolution = time / 3;
+    T[3][0] = ELLIPSE_A * cos(angleRevolution);
+    T[3][1] = -ELLIPSE_B * sin(angleRevolution);
+    return T;
+}
+
+glm::mat4 computeMoonModel(float time) {
+    glm::mat4 S = glm::mat4(1);
+    float scale = 0.01;
+    S[0][0] = scale;
+    S[1][1] = scale;
+    glm::mat4 orbitRadius = glm::mat4(1);
+    float theta = time;
+    orbitRadius[3][0] = MOON_ORBIT_RADIUS * cos(time);
+    orbitRadius[3][1] = MOON_ORBIT_RADIUS * sin(time);
+    glm::mat4 moonPosition = glm::mat4(1);
+    moonPosition = orbitRadius * getTranlationMatrixOfTheEarth(time);
+    return moonPosition * S;
+}
+
+glm::mat4 computeEarthModel(float time) {
+    glm::mat4 T = getTranlationMatrixOfTheEarth(time);
+    glm::mat4 S = glm::mat4(1);
+    float scale = 0.04;
+    S[0][0] = scale;
+    S[1][1] = scale;
+    glm::mat4 R = glm::mat4(1);
+    float theta = time * 2 ;
+    R[0][0] = cos(theta);
+    R[0][1] = sin(theta);
+    R[1][0] = -sin(theta);
+    R[1][1] = cos(theta);
+    glm::mat4 model = T * S * R;
+    return model;
+}
+
+glm::mat4 computeSunModel(float time) {
+    glm::mat4 T = glm::mat4(1);
+    T[3][0] = ELLIPSE_C;
+    glm::mat4 S = glm::mat4(1);
+    float scale = 0.14;
+    S[0][0] = scale;
+    S[1][1] = scale;
+    glm::mat4 R = glm::mat4(1);
+    float theta = time / 2 ;
+    R[0][0] = cos(theta);
+    R[0][1] = sin(theta);
+    R[1][0] = -sin(theta);
+    R[1][1] = cos(theta);
+    glm::mat4 model = T * S * R;
+    return model;
 }
 
 void Display() {
@@ -21,7 +84,10 @@ void Display() {
     float time_s = glfwGetTime();
 
     // compute the transformation matrices
-    // {stuff}.Draw({stuff}_modelmatrix);
+   
+    earth.Draw(computeEarthModel(time_s));
+    sun.Draw(computeSunModel(time_s));
+    moon.Draw(computeMoonModel(time_s));
 }
 
 void ErrorCallback(int error, const char* description) {
@@ -85,7 +151,9 @@ int main(int argc, char *argv[]) {
         glfwPollEvents();
     }
 
-    // {stuff}.Cleanup()
+    earth.Cleanup();
+    moon.Cleanup();
+    sun.Cleanup();
 
     // close OpenGL window and terminate GLFW
     glfwDestroyWindow(window);
