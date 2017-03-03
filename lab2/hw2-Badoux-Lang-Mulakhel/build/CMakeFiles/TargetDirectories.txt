@@ -1,7 +1,0 @@
-/Users/r11/Documents/sem6/intro_graph/lab_dev/lab2/hw2-Badoux-Lang-Mulakhel/build/hw2p1_spiral/CMakeFiles/hw2p1_spiral.dir
-/Users/r11/Documents/sem6/intro_graph/lab_dev/lab2/hw2-Badoux-Lang-Mulakhel/build/hw2p3_planets/CMakeFiles/copy_shaders_hw2p3_planets.dir
-/Users/r11/Documents/sem6/intro_graph/lab_dev/lab2/hw2-Badoux-Lang-Mulakhel/build/hw2p2_checkerboard/CMakeFiles/copy_shaders_hw2p2_checkerboard.dir
-/Users/r11/Documents/sem6/intro_graph/lab_dev/lab2/hw2-Badoux-Lang-Mulakhel/build/hw2p1_spiral/CMakeFiles/copy_shaders_hw2p1_spiral.dir
-/Users/r11/Documents/sem6/intro_graph/lab_dev/lab2/hw2-Badoux-Lang-Mulakhel/build/hw2p3_planets/CMakeFiles/hw2p3_planets.dir
-/Users/r11/Documents/sem6/intro_graph/lab_dev/lab2/hw2-Badoux-Lang-Mulakhel/build/hw2p2_checkerboard/CMakeFiles/hw2p2_checkerboard.dir
-/Users/r11/Documents/sem6/intro_graph/lab_dev/lab2/hw2-Badoux-Lang-Mulakhel/build/CMakeFiles/common_headers.dir
