@@ -1,16 +1,14 @@
-1.1 Triangle Spirals
-SCALE * TRANSLATE * ROTATE * ___
-SCALE: by n * 0.001
-TRANSLATE: by n * 0.01
-ROTATE: by n * PI/10
-for(n=1; n<60; n++) {
-	//…
-}
+1.1 Triangle Spirals ================================================================
+Spiral:
+After initializing the matrices and declaring the important entries it was just about finding fitting values for scaling, translation and rotation.
 
-1.2 Checkerboard
+Fermat’s Spiral:
 
 
-1.3 Solar System
+1.2 Checkerboard ====================================================================
 
 
-1.4 Arkanoid
+1.3 Solar System ====================================================================
+
+
+1.4 Arkanoid ========================================================================
