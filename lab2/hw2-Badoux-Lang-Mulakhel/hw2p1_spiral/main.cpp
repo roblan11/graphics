@@ -12,8 +12,8 @@ Triangle triangle;
 // CHANGE MODE HERE ===================================================================
 //     = 1 --> fermat's spiral
 //    != 1 --> spiral
-const size_t MODE = 1;
-
+enum class MODE {SPIRAL, FERMAT};
+MODE mode = MODE::FERMAT; // change here to have Fermat or spiral
 
 void Init() {
     // sets background color
@@ -24,38 +24,62 @@ void Init() {
 
 void Display() {
     glClear(GL_COLOR_BUFFER_BIT);
-    if (MODE == 1) {
-      // fermat
+    if (mode == MODE::FERMAT) {
+        glm::mat4 R = glm::mat4(1);
+        glm::mat4 S = glm::mat4(1);
+        glm::mat4 T = glm::mat4(1);
+        glm::mat4 model;
 
-    } else {
-      // spiral
-      glm::mat4 R = glm::mat4(1);
-      glm::mat4 S = glm::mat4(1);
-      glm::mat4 T = glm::mat4(1);
-      glm::mat4 model;
-
-      float alpha;
-      float scale;
-
-      for (size_t n = 0; n < 60; n++) {
-        // rotation
-        alpha = n * M_PI/10;
-        R[0][0] =  cos(alpha);
-        R[0][1] =  sin(alpha);
-        R[1][0] = -sin(alpha);
-        R[1][1] =  cos(alpha);
-
+        float alpha;
+        float scale;
+        
         // scale
-        scale = n * 0.001;
+        scale = 0.02; 
         S[0][0] = scale;
         S[1][1] = scale;
+        for (size_t n = 0; n < 170; n++) {
+            // rotation
+            alpha = n * (137.508 / 180 * M_PI);
+            R[0][0] =  cos(alpha);
+            R[0][1] =  sin(alpha);
+            R[1][0] = -sin(alpha);
+            R[1][1] =  cos(alpha);
 
-        // translation
-        T[3][0] = n * 0.15;
+            // translation
+            T[3][0] = sqrt(n) * 0.07;
 
-        model = R * S * T;
-        triangle.Draw(model);
-      }
+            model = R * T * S;
+            triangle.Draw(model);
+        }
+    } else {
+        // spiral
+        glm::mat4 R = glm::mat4(1);
+        glm::mat4 S = glm::mat4(1);
+        glm::mat4 T = glm::mat4(1);
+        glm::mat4 model;
+
+        float alpha;
+        float scale;
+
+        for (size_t n = 0; n < 60; n++) {
+            // rotation
+            alpha = n * M_PI/10;
+            R[0][0] =  cos(alpha);
+            R[0][1] =  sin(alpha);
+            R[1][0] = -sin(alpha);
+            R[1][1] =  cos(alpha);
+
+            // scale
+            scale = n * 0.001;
+            S[0][0] = scale;
+            S[1][1] = scale;
+
+            // translation
+            T[3][0] = n * 0.15;
+
+            model = R * S * T;
+            triangle.Draw(model);
+        }
     }
 }
 
