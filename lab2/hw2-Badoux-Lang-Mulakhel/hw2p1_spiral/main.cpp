@@ -9,11 +9,9 @@
 
 Triangle triangle;
 
-// CHANGE MODE HERE ===================================================================
-//     = 1 --> fermat's spiral
-//    != 1 --> spiral
+// CHANGE MODE HERE ============================================================
 enum class MODE {SPIRAL, FERMAT};
-MODE mode = MODE::FERMAT; // change here to have Fermat or spiral
+MODE mode = MODE::FERMAT;
 
 void Init() {
     // sets background color
@@ -32,9 +30,9 @@ void Display() {
 
         float alpha;
         float scale;
-        
+
         // scale
-        scale = 0.02; 
+        scale = 0.02;
         S[0][0] = scale;
         S[1][1] = scale;
         for (size_t n = 0; n < 170; n++) {

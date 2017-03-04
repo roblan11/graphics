@@ -4,7 +4,6 @@
 
 // contains helper functions such as shader compiler
 #include "icg_helper.h"
-
 #include "quad/quad.h"
 
 #define ELLIPSE_A 0.8
@@ -12,9 +11,13 @@
 #define ELLIPSE_C 0.2
 #define MOON_ORBIT_RADIUS 0.2
 
+// DEFINE SPEEDUP HERE =========================================================
+// 1.0 = NORMAL SPEEDUP
+#define SPEEDUP 3.0
+
 Quad moon;
 Quad earth;
-Quad sun;  
+Quad sun;
 
 void Init() {
     // sets background color
@@ -34,22 +37,28 @@ glm::mat4 getTranlationMatrixOfTheEarth(float time) {
 
 glm::mat4 computeMoonModel(float time) {
     glm::mat4 S = glm::mat4(1);
-    float scale = 0.01;
+    float scale = 0.04;
     S[0][0] = scale;
     S[1][1] = scale;
+    glm::mat4 R = glm::mat4(1);
+    float alpha = time ;
+    R[0][0] = cos(alpha);
+    R[0][1] = sin(alpha);
+    R[1][0] = -sin(alpha);
+    R[1][1] = cos(alpha);
     glm::mat4 orbitRadius = glm::mat4(1);
     float theta = time;
     orbitRadius[3][0] = MOON_ORBIT_RADIUS * cos(time);
     orbitRadius[3][1] = MOON_ORBIT_RADIUS * sin(time);
     glm::mat4 moonPosition = glm::mat4(1);
     moonPosition = orbitRadius * getTranlationMatrixOfTheEarth(time);
-    return moonPosition * S;
+    return moonPosition * S * R;
 }
 
 glm::mat4 computeEarthModel(float time) {
     glm::mat4 T = getTranlationMatrixOfTheEarth(time);
     glm::mat4 S = glm::mat4(1);
-    float scale = 0.04;
+    float scale = 0.08;
     S[0][0] = scale;
     S[1][1] = scale;
     glm::mat4 R = glm::mat4(1);
@@ -66,7 +75,7 @@ glm::mat4 computeSunModel(float time) {
     glm::mat4 T = glm::mat4(1);
     T[3][0] = ELLIPSE_C;
     glm::mat4 S = glm::mat4(1);
-    float scale = 0.14;
+    float scale = 0.2;
     S[0][0] = scale;
     S[1][1] = scale;
     glm::mat4 R = glm::mat4(1);
@@ -81,10 +90,10 @@ glm::mat4 computeSunModel(float time) {
 
 void Display() {
     glClear(GL_COLOR_BUFFER_BIT);
-    float time_s = glfwGetTime();
+    float time_s = SPEEDUP * glfwGetTime();
 
     // compute the transformation matrices
-   
+
     earth.Draw(computeEarthModel(time_s));
     sun.Draw(computeSunModel(time_s));
     moon.Draw(computeMoonModel(time_s));
