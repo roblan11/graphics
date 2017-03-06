@@ -9,9 +9,9 @@
 
 Triangle triangle;
 
-// CHANGE MODE HERE ============================================================
 enum class MODE {SPIRAL, FERMAT};
-MODE mode = MODE::FERMAT;
+// CHANGE MODE HERE ============================================================
+MODE mode = MODE::SPIRAL;
 
 void Init() {
     // sets background color
@@ -35,7 +35,7 @@ void Display() {
         scale = 0.02;
         S[0][0] = scale;
         S[1][1] = scale;
-        for (size_t n = 0; n < 170; n++) {
+        for (size_t n = 0; n < 300; n++) {
             // rotation
             alpha = n * (137.508 / 180 * M_PI);
             R[0][0] =  cos(alpha);
@@ -44,7 +44,7 @@ void Display() {
             R[1][1] =  cos(alpha);
 
             // translation
-            T[3][0] = sqrt(n) * 0.07;
+            T[3][0] = sqrt(n) * 0.04;
 
             model = R * T * S;
             triangle.Draw(model);
