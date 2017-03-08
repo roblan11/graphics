@@ -58,7 +58,7 @@ void Display() {
 
         for (size_t n = 0; n < 60; n++) {
             // rotation
-            alpha = n * PI/10;
+            alpha = n * M_PI/10;
             R = glm::rotate(glm::mat4(1), alpha, glm::vec3(0, 0, 1));
 
             // scale
