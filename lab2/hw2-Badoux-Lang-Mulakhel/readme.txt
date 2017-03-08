@@ -35,4 +35,7 @@ Lastly the translations:
 
 1.4 Arkanoid ========================================================================
 
----
+The goal of this part was to use the input from the keyboard. The game is really basic and it can be better coded if:
+- we use use a class Ball instead of a quad
+- we replace the pad quad by a class Pad.
+Doing this way, we can specify a different color for each of the two objects and remove global variables of the code.
