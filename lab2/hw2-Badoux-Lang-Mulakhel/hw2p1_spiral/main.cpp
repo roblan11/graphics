@@ -7,6 +7,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "triangle/triangle.h"
 
+#define FERMAT_SCALE 0.02
+#define SPIRAL_SCALE 0.001
+
 Triangle triangle;
 
 enum class MODE {SPIRAL, FERMAT};
@@ -24,24 +27,17 @@ void Display() {
     glClear(GL_COLOR_BUFFER_BIT);
     if (mode == MODE::FERMAT) {
         glm::mat4 R = glm::mat4(1);
-        glm::mat4 S = glm::mat4(1);
+        glm::mat4 S = glm::scale(glm::mat4(1), glm::vec3(FERMAT_SCALE));
         glm::mat4 T = glm::mat4(1);
         glm::mat4 model;
 
         float alpha;
         float scale;
 
-        // scale
-        scale = 0.02;
-        S[0][0] = scale;
-        S[1][1] = scale;
         for (size_t n = 0; n < 300; n++) {
             // rotation
             alpha = n * (137.508 / 180 * M_PI);
-            R[0][0] =  cos(alpha);
-            R[0][1] =  sin(alpha);
-            R[1][0] = -sin(alpha);
-            R[1][1] =  cos(alpha);
+            R = glm::rotate(glm::mat4(1), alpha, glm::vec3(0, 0, 1));
 
             // translation
             T[3][0] = sqrt(n) * 0.04;
@@ -62,15 +58,10 @@ void Display() {
         for (size_t n = 0; n < 60; n++) {
             // rotation
             alpha = n * M_PI/10;
-            R[0][0] =  cos(alpha);
-            R[0][1] =  sin(alpha);
-            R[1][0] = -sin(alpha);
-            R[1][1] =  cos(alpha);
+            R = glm::rotate(glm::mat4(1), alpha, glm::vec3(0, 0, 1));
 
             // scale
-            scale = n * 0.001;
-            S[0][0] = scale;
-            S[1][1] = scale;
+            S = glm::scale(glm::mat4(1), glm::vec3(n * SPIRAL_SCALE));
 
             // translation
             T[3][0] = n * 0.15;
