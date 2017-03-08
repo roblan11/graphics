@@ -40,8 +40,8 @@ glm::mat4 computeBallModel(float t) { // current time
     float deltaT = t - time0;
     float posX = ballX0 + ballSpeedX * (deltaT);
     float posY = ballY0 + ballSpeedY * (deltaT);
-    bool overH = posX + BALL_RADIUS > 1 && ballSpeedX > 0 || posX - BALL_RADIUS < -1 && ballSpeedX < 0;
-    bool overV = posY + BALL_RADIUS > 1 && ballSpeedY > 0 || posY - BALL_RADIUS - PAD_HEIGHT < -1 && ballSpeedY < 0;
+    bool overH = ((posX + BALL_RADIUS > 1 && ballSpeedX > 0) || (posX - BALL_RADIUS < -1 && ballSpeedX < 0));
+    bool overV = ((posY + BALL_RADIUS > 1 && ballSpeedY > 0) || (posY - BALL_RADIUS - PAD_HEIGHT < -1 && ballSpeedY < 0));
     if (overH || overV) {
         time0 = t;
         ballX0 = posX;
@@ -56,9 +56,9 @@ glm::mat4 computeBallModel(float t) { // current time
             }
         }
     }
-    
+
     glm::mat4 T = glm::translate(glm::mat4(1), glm::vec3(posX, posY, 0));
-    glm::mat4 S = glm::scale(glm::mat4(1), glm::vec3(BALL_RADIUS)); 
+    glm::mat4 S = glm::scale(glm::mat4(1), glm::vec3(BALL_RADIUS));
     return T * S;
 }
 
@@ -70,7 +70,7 @@ void movePad(int direction) {
 
 glm::mat4 computePadModel() {
     glm::mat4 T = glm::translate(glm::mat4(1), glm::vec3(padX, -0.98, 0));
-    glm::mat4 S = glm::scale(glm::mat4(1), glm::vec3(PAD_WIDTH, PAD_HEIGHT, 0)); 
+    glm::mat4 S = glm::scale(glm::mat4(1), glm::vec3(PAD_WIDTH, PAD_HEIGHT, 0));
     return T * S;
 }
 
@@ -90,7 +90,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     } else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
         movePad(-1);
     } else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
-        movePad(1); 
+        movePad(1);
     }
 }
 
@@ -137,7 +137,7 @@ int main(int argc, char *argv[]) {
 
     // initialize our OpenGL program
     Init();
-    
+
 
     // render loop
     while(!glfwWindowShouldClose(window)) {
