@@ -1,3 +1,5 @@
+#include <iostream>
+
 // glew must be before glfw
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -7,12 +9,18 @@
 
 #include "quad/quad.h"
 
-#define SCALE_BALL 0.04
-#define SCALE_SPACESHIP1 0.4
-#define SCALE_SPACESHIP2 0.04
+#define BALL_RADIUS 0.04
+#define PAD_WIDTH 0.1
+#define PAD_HEIGHT 0.02
 
 Quad ball;
 Quad spaceship;
+float time0;
+float ballX0;
+float ballY0;
+float ballSpeedX;
+float ballSpeedY;
+float padX;
 
 void Init() {
     // sets background color
@@ -20,45 +28,56 @@ void Init() {
 
     ball.Init();
     spaceship.Init();
+    time0 = 0;
+    ballX0 = 0;
+    ballY0 = 0;
+    ballSpeedX = 0.3;
+    ballSpeedY = 0.5;
+    padX = 0;
 }
 
-glm::mat4 T = glm::mat4(1);
-
-glm::mat4 computeBallModel(float v1, float v2) {
-    if(T[3][0] < -0.5 || T[3][0] > 0.5){
-        T[3][0] -= v1;
-        T[3][1] -= v2;
-        cout << T[3][0];
+glm::mat4 computeBallModel(float t) { // current time
+    float deltaT = t - time0;
+    float posX = ballX0 + ballSpeedX * (deltaT);
+    float posY = ballY0 + ballSpeedY * (deltaT);
+    bool overH = posX + BALL_RADIUS > 1 && ballSpeedX > 0 || posX - BALL_RADIUS < -1 && ballSpeedX < 0;
+    bool overV = posY + BALL_RADIUS > 1 && ballSpeedY > 0 || posY - BALL_RADIUS - PAD_HEIGHT < -1 && ballSpeedY < 0;
+    if (overH || overV) {
+        time0 = t;
+        ballX0 = posX;
+        ballY0 = posY;
+        if (overH) {
+            ballSpeedX *= -1;
+        }
+        if (overV) {
+            ballSpeedY *= -1;
+            if (posY < 0 && abs(padX - posX) > PAD_WIDTH / 2) {
+                cout << "NOOOOOOOOOOOOOO" << endl;
+            }
+        }
     }
-    else{
-        T[3][0] += v1;
-        T[3][1] += v2;
-        cout << T[3][0];
-    }
-
-    glm::mat4 S = glm::mat4(1);
-    S[0][0] = SCALE_BALL;
-    S[1][1] = SCALE_BALL;
-
+    
+    glm::mat4 T = glm::translate(glm::mat4(1), glm::vec3(posX, posY, 0));
+    glm::mat4 S = glm::scale(glm::mat4(1), glm::vec3(BALL_RADIUS)); 
     return T * S;
 }
 
-glm::mat4 computeSpaceshipModel(float v1) {
-    glm::mat4 T = glm::mat4(1);
-    T[3][0] = -v1;
-    T[3][1] = -0.5;
+void movePad(int direction) {
+    if (abs(padX) < 1) {
+        padX += direction * 0.1;
+    }
+}
 
-    glm::mat4 S = glm::mat4(1);
-    S[0][0] = SCALE_SPACESHIP1;
-    S[1][1] = SCALE_SPACESHIP2;
-
+glm::mat4 computePadModel() {
+    glm::mat4 T = glm::translate(glm::mat4(1), glm::vec3(padX, -0.98, 0));
+    glm::mat4 S = glm::scale(glm::mat4(1), glm::vec3(PAD_WIDTH, PAD_HEIGHT, 0)); 
     return T * S;
 }
 
 void Display() {
     glClear(GL_COLOR_BUFFER_BIT);
-    ball.Draw(computeBallModel(0.01,0.01));
-    spaceship.Draw(computeSpaceshipModel(0));
+    ball.Draw(computeBallModel(glfwGetTime()));
+    spaceship.Draw(computePadModel());
 }
 
 void ErrorCallback(int error, const char* description) {
@@ -68,6 +87,10 @@ void ErrorCallback(int error, const char* description) {
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
+    } else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS) {
+        movePad(-1);
+    } else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS) {
+        movePad(1); 
     }
 }
 
@@ -114,6 +137,7 @@ int main(int argc, char *argv[]) {
 
     // initialize our OpenGL program
     Init();
+    
 
     // render loop
     while(!glfwWindowShouldClose(window)) {
