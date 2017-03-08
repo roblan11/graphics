@@ -9,6 +9,7 @@
 
 #define FERMAT_SCALE 0.02
 #define SPIRAL_SCALE 0.001
+#define PI 3.14159
 
 Triangle triangle;
 
@@ -36,7 +37,7 @@ void Display() {
 
         for (size_t n = 0; n < 300; n++) {
             // rotation
-            alpha = n * (137.508 / 180 * M_PI);
+            alpha = n * (137.508 / 180 * PI);
             R = glm::rotate(glm::mat4(1), alpha, glm::vec3(0, 0, 1));
 
             // translation

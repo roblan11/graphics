@@ -13,5 +13,3 @@ void main() {
     float value = 0.5 * (x * y) + 0.5;
     color = texture(colormap, value).rgb;
 }
-
-
