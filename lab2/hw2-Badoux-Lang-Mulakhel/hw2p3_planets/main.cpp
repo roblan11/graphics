@@ -16,7 +16,7 @@
 #define SCALE_SUN 0.2
 
 // DEFINE SPEEDUP HERE =========================================================
-// 1.0 = NORMAL SPEEDUP
+// 1.0 = normal speed  // > 1.0 = faster // < 1.0 = slower
 #define SPEEDUP 1.0
 
 Quad moon;
@@ -32,67 +32,29 @@ void Init() {
 }
 
 glm::mat4 getTranlationMatrixOfTheEarth(float time) {
-    glm::mat4 T = glm::mat4(1);
-    float angleRevolution = time / 3;
-    T[3][0] = ELLIPSE_A * cos(angleRevolution);
-    T[3][1] = -ELLIPSE_B * sin(angleRevolution);
-    
-    return T;
+    return glm::translate(glm::mat4(1), glm::vec3(ELLIPSE_A * cos(time/3), -ELLIPSE_B * sin(time/3), 0));
 }
 
 glm::mat4 computeMoonModel(float time) {
-    glm::mat4 S = glm::mat4(1);
-    S[0][0] = SCALE_MOON;
-    S[1][1] = SCALE_MOON;
+    glm::mat4 S = glm::scale(glm::mat4(1), glm::vec3(SCALE_MOON));
+    glm::mat4 R = glm::rotate(glm::mat4(1), time, glm::vec3(0, 0, 1));
+    glm::mat4 orbitRadius = glm::translate(glm::mat4(1), glm::vec3(MOON_ORBIT_RADIUS*cos(time), MOON_ORBIT_RADIUS*sin(time), 0));
 
-    glm::mat4 R = glm::mat4(1);
-    float alpha = time ;
-    R[0][0] =  cos(alpha);
-    R[0][1] =  sin(alpha);
-    R[1][0] = -sin(alpha);
-    R[1][1] =  cos(alpha);
-
-    glm::mat4 orbitRadius = glm::mat4(1);
-    float theta = time;
-    orbitRadius[3][0] = MOON_ORBIT_RADIUS * cos(time);
-    orbitRadius[3][1] = MOON_ORBIT_RADIUS * sin(time);
-    glm::mat4 moonPosition = glm::mat4(1);
-    moonPosition = orbitRadius * getTranlationMatrixOfTheEarth(time);
-
-    return moonPosition * S * R;
+    return orbitRadius * getTranlationMatrixOfTheEarth(time) * S * R;
 }
 
 glm::mat4 computeEarthModel(float time) {
     glm::mat4 T = getTranlationMatrixOfTheEarth(time);
-
-    glm::mat4 S = glm::mat4(1);
-    S[0][0] = SCALE_EARTH;
-    S[1][1] = SCALE_EARTH;
-
-    glm::mat4 R = glm::mat4(1);
-    float theta = time * 2 ;
-    R[0][0] =  cos(theta);
-    R[0][1] =  sin(theta);
-    R[1][0] = -sin(theta);
-    R[1][1] =  cos(theta);
+    glm::mat4 S = glm::scale(glm::mat4(1), glm::vec3(SCALE_EARTH));
+    glm::mat4 R = glm::rotate(glm::mat4(1), 2*time, glm::vec3(0, 0, 1));
 
     return T * S * R;
 }
 
 glm::mat4 computeSunModel(float time) {
-    glm::mat4 T = glm::mat4(1);
-    T[3][0] = ELLIPSE_C;
-
-    glm::mat4 S = glm::mat4(1);
-    S[0][0] = SCALE_SUN;
-    S[1][1] = SCALE_SUN;
-
-    glm::mat4 R = glm::mat4(1);
-    float theta = time / 2 ;
-    R[0][0] =  cos(theta);
-    R[0][1] =  sin(theta);
-    R[1][0] = -sin(theta);
-    R[1][1] =  cos(theta);
+    glm::mat4 T = glm::translate(glm::mat4(1), glm::vec3(ELLIPSE_C, 0, 0));
+    glm::mat4 S = glm::scale(glm::mat4(1), glm::vec3(SCALE_SUN));
+    glm::mat4 R = glm::rotate(glm::mat4(1), time/2, glm::vec3(0, 0, 1));
 
     return T * S * R;
 }
@@ -102,7 +64,6 @@ void Display() {
     float time_s = SPEEDUP * glfwGetTime();
 
     // compute the transformation matrices
-
     earth.Draw(computeEarthModel(time_s));
     sun.Draw(computeSunModel(time_s));
     moon.Draw(computeMoonModel(time_s));
