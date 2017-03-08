@@ -4,24 +4,69 @@
 
 // contains helper functions such as shader compiler
 #include "icg_helper.h"
-
 #include "quad/quad.h"
 
-// Quad stuff1;
-// ...
+#define ELLIPSE_A 0.8
+#define ELLIPSE_B 0.6
+#define ELLIPSE_C 0.2
+#define MOON_ORBIT_RADIUS 0.2
+
+#define SCALE_MOON 0.04
+#define SCALE_EARTH 0.08
+#define SCALE_SUN 0.2
+
+// DEFINE SPEEDUP HERE =========================================================
+// 1.0 = normal speed  // > 1.0 = faster // < 1.0 = slower
+#define SPEEDUP 1.0
+
+Quad moon;
+Quad earth;
+Quad sun;
 
 void Init() {
     // sets background color
     glClearColor(1.0,1.0,1.0 /*white*/, 1.0 /*solid*/);
-    // {stuff}.Init(...);
+    moon.Init("moon.tga");
+    earth.Init("earth.tga");
+    sun.Init("sun.tga");
+}
+
+glm::mat4 getTranlationMatrixOfTheEarth(float time) {
+    return glm::translate(glm::mat4(1), glm::vec3(ELLIPSE_A * cos(time/3), -ELLIPSE_B * sin(time/3), 0));
+}
+
+glm::mat4 computeMoonModel(float time) {
+    glm::mat4 S = glm::scale(glm::mat4(1), glm::vec3(SCALE_MOON));
+    glm::mat4 R = glm::rotate(glm::mat4(1), time, glm::vec3(0, 0, 1));
+    glm::mat4 orbitRadius = glm::translate(glm::mat4(1), glm::vec3(MOON_ORBIT_RADIUS*cos(time), MOON_ORBIT_RADIUS*sin(time), 0));
+
+    return orbitRadius * getTranlationMatrixOfTheEarth(time) * S * R;
+}
+
+glm::mat4 computeEarthModel(float time) {
+    glm::mat4 T = getTranlationMatrixOfTheEarth(time);
+    glm::mat4 S = glm::scale(glm::mat4(1), glm::vec3(SCALE_EARTH));
+    glm::mat4 R = glm::rotate(glm::mat4(1), 2*time, glm::vec3(0, 0, 1));
+
+    return T * S * R;
+}
+
+glm::mat4 computeSunModel(float time) {
+    glm::mat4 T = glm::translate(glm::mat4(1), glm::vec3(ELLIPSE_C, 0, 0));
+    glm::mat4 S = glm::scale(glm::mat4(1), glm::vec3(SCALE_SUN));
+    glm::mat4 R = glm::rotate(glm::mat4(1), time/2, glm::vec3(0, 0, 1));
+
+    return T * S * R;
 }
 
 void Display() {
     glClear(GL_COLOR_BUFFER_BIT);
-    float time_s = glfwGetTime();
+    float time_s = SPEEDUP * glfwGetTime();
 
     // compute the transformation matrices
-    // {stuff}.Draw({stuff}_modelmatrix);
+    earth.Draw(computeEarthModel(time_s));
+    sun.Draw(computeSunModel(time_s));
+    moon.Draw(computeMoonModel(time_s));
 }
 
 void ErrorCallback(int error, const char* description) {
@@ -85,7 +130,9 @@ int main(int argc, char *argv[]) {
         glfwPollEvents();
     }
 
-    // {stuff}.Cleanup()
+    earth.Cleanup();
+    moon.Cleanup();
+    sun.Cleanup();
 
     // close OpenGL window and terminate GLFW
     glfwDestroyWindow(window);
