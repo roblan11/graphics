@@ -1,3 +1,0 @@
-/Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl/CMakeFiles/lab2_intro_to_glsl.dir
-/Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/lab2_intro_to_glsl/CMakeFiles/copy_shaders_lab2_intro_to_glsl.dir
-/Users/r11/Documents/sem6/intro_graph/lab/lab2/icg17/build/CMakeFiles/common_headers.dir
