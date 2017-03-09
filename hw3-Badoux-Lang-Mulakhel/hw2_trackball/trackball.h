@@ -33,6 +33,21 @@ public:
       // you might want to scale the rotation magnitude by a scalar factor.
       // p.s. No need for using complicated quaternions as suggested inthe wiki
       // article.
+      vec3 axis = cross(current_pos, anchor_pos_);
+      float angle = acos(dot(current_pos, anchor_pos_));
+      // Rodrigues’ Rotation Formula
+      mat3 mat = mat3(1.0f);
+      mat[0][0] = 0;
+      mat[0][1] = -axis[2];
+      mat[0][2] = axis[1];
+      mat[1][0] = axis[2];
+      mat[1][1] = 0;
+      mat[1][2] = -axis[0];
+      mat[2][0] = -axis[1];
+      mat[2][1] = axis[0];
+      mat[2][2] = 0;
+      mat3 mat2 = cos(angle) * mat3(1.0f) + (1 - cos(angle)) * mat3(axis * axis[0], axis * axis[1], axis * axis[2]) + sin(angle) * mat;
+      rotation = mat4(mat2);
       return rotation;
     }
 
@@ -44,6 +59,11 @@ private:
     // The trackball radius is given by 'radius_'.
     void ProjectOntoSurface(vec3& p) const {
       // TODO 2: Implement this function. Read above link for details.
+      if(pow(p.x,2.0) + pow(p.y, 2.0) > pow(radius_, 2.0)){
+          p.z = pow(radius_, 2.0)/sqrt(pow(p.x,2.0) + pow(p.y, 2.0));
+      } else {
+          p.z = sqrt(pow(radius_, 2.0) - pow(p.x,2.0) + pow(p.y, 2.0));
+      }
     }
 
     float radius_;
