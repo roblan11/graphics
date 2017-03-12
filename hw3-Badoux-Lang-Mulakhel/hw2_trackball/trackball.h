@@ -34,7 +34,7 @@ public:
       // p.s. No need for using complicated quaternions as suggested inthe wiki
       // article.
       vec3 axis = cross(current_pos, anchor_pos_);
-      float angle = 0.001 * acos(dot(current_pos, anchor_pos_) / length(current_pos) / length(anchor_pos_));
+      float angle = 0.001 * acos(dot(current_pos, anchor_pos_) / (length(current_pos) * length(anchor_pos_)));
       // Rodrigues’ Rotation Formula
       mat3 k = mat3(1.0f);
       k[0][0] = 0;
@@ -62,8 +62,8 @@ private:
         float pxSquare = p.x * p.x;
         float pySquare = p.y * p.y;
         float radiusSquare = radius_ * radius_;
-        if (pxSquare + pySquare > radiusSquare) {
-          p.z = radiusSquare / 2 / sqrt(pxSquare + pySquare);
+        if ((pxSquare + pySquare) > radiusSquare) {
+          p.z = radiusSquare / (2 * sqrt(pxSquare + pySquare));
       } else {
           p.z = sqrt(radiusSquare - pxSquare - pySquare);
       }

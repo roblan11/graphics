@@ -55,6 +55,7 @@ mat4 PerspectiveProjection(float fovy, float aspect, float near, float far) {
 
     mat4 projection = IDENTITY_MATRIX;
     projection[0][0] = (2.f * near) / (right - left);
+    
     projection[1][1] = (2.f * near) / (top - bottom);
 
     projection[2][0] = (right + left) / (right - left);
@@ -173,7 +174,7 @@ void MousePos(GLFWwindow* window, double x, double y) {
         // TODO 3: Calculate 'trackball_matrix' given the return value of
         // trackball.Drag(...) and the value stored in 'old_trackball_matrix'.
         // See also the mouse_button(...) function.
-        trackball_matrix = trackball.Drag(x,y);
+        trackball_matrix = trackball.Drag(x, y);
     }
 
     // zoom
@@ -200,9 +201,11 @@ void SetupProjection(GLFWwindow* window, int width, int height) {
     projection_matrix = PerspectiveProjection(45.0f,
                                             (GLfloat)window_width / window_height,
                                             0.1f, 100.0f);
-    /*GLfloat top = 1.0f;
+    /*
+    GLfloat top = 1.0f;
     GLfloat right = (GLfloat)window_width / window_height * top;
-    projection_matrix = OrthographicProjection(-right, right, -top, top, -10.0, 10.0f);*/
+    projection_matrix = OrthographicProjection(-right, right, -top, top, -10.0, 10.0f);
+    */
 }
 
 void ErrorCallback(int error, const char* description) {
