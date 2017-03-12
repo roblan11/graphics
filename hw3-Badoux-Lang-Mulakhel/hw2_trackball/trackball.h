@@ -34,21 +34,21 @@ public:
       // p.s. No need for using complicated quaternions as suggested inthe wiki
       // article.
       vec3 axis = cross(current_pos, anchor_pos_);
-      float angle = acos(dot(current_pos, anchor_pos_));
+      float angle = 0.001 * acos(dot(current_pos, anchor_pos_) / length(current_pos) / length(anchor_pos_));
       // Rodrigues’ Rotation Formula
-      mat3 mat = mat3(1.0f);
-      mat[0][0] = 0;
-      mat[0][1] = -axis[2];
-      mat[0][2] = axis[1];
-      mat[1][0] = axis[2];
-      mat[1][1] = 0;
-      mat[1][2] = -axis[0];
-      mat[2][0] = -axis[1];
-      mat[2][1] = axis[0];
-      mat[2][2] = 0;
-      mat3 mat2 = cos(angle) * mat3(1.0f) + (1 - cos(angle)) * mat3(axis * axis[0], axis * axis[1], axis * axis[2]) + sin(angle) * mat;
-      rotation = mat4(mat2);
-      return rotation;
+      mat3 k = mat3(1.0f);
+      k[0][0] = 0;
+      k[0][1] = axis[2];
+      k[0][2] = -axis[1];
+      k[1][0] = -axis[2];
+      k[1][1] = 0;
+      k[1][2] = axis[0];
+      k[2][0] = axis[1];
+      k[2][1] = -axis[0];
+      k[2][2] = 0;
+      mat3 rotationMatrix = mat3(1.0f) + sin(angle) * k + (1 - cos(angle)) * k * k;
+      mat4 rotationMatrix4 = mat4(rotationMatrix);
+      return rotationMatrix4;
     }
 
 private:
