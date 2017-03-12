@@ -58,11 +58,14 @@ private:
     // https://www.opengl.org/wiki/Object_Mouse_Trackball.
     // The trackball radius is given by 'radius_'.
     void ProjectOntoSurface(vec3& p) const {
-      // TODO 2: Implement this function. Read above link for details.
-      if(pow(p.x,2.0) + pow(p.y, 2.0) > pow(radius_, 2.0)){
-          p.z = pow(radius_, 2.0)/sqrt(pow(p.x,2.0) + pow(p.y, 2.0));
+        // TODO 2: Implement this function. Read above link for details.
+        float pxSquare = p.x * p.x;
+        float pySquare = p.y * p.y;
+        float radiusSquare = radius_ * radius_;
+        if (pxSquare + pySquare > radiusSquare) {
+          p.z = radiusSquare / 2 / sqrt(pxSquare + pySquare);
       } else {
-          p.z = sqrt(pow(radius_, 2.0) - pow(p.x,2.0) + pow(p.y, 2.0));
+          p.z = sqrt(radiusSquare - pxSquare - pySquare);
       }
     }
 
