@@ -22,6 +22,9 @@ Translate the z coordinate by the transformed screen coordinate along the y dire
 
 !! TODO
 
+Wireframe:
+In a first step push all the vertices into the buffer, then, in another loop, go over these vertices and combine them into quads (2 triangles).
+
 4. Water animation ==================================================================
 
 !! TODO (bonus)
