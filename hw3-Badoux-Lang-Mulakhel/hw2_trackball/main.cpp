@@ -184,8 +184,7 @@ void MousePos(GLFWwindow* window, double x, double y) {
         // moving the mouse cursor up and down (along the screen's y axis)
         // should zoom out and it. For that you have to update the current
         // 'view_matrix' with a translation along the z axis.
-        mat4 view_zoom = translate(mat4(1.f), vec3(0.f, 0.f, p[1] / 10));
-        view_matrix = view_matrix * view_zoom;
+        view_matrix = translate(view_matrix, vec3(0.f, 0.f, p[1] / 10));
     }
 }
 
