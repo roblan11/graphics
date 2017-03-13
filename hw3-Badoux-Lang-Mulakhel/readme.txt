@@ -18,10 +18,10 @@ Create rotation function:
 Zoom:
 Translate the z coordinate by the transformed screen coordinate along the y direction, which was calculated prior. To make the zooming less fast and generally more manageable, we divided the transformed coordinates by 10.
 
-3. Zooming ==========================================================================
+3. Triangle Grid and Animation ======================================================
 
 !! TODO
 
-4. Triangle Grid ====================================================================
+4. Water animation ==================================================================
 
-!! TODO
+!! TODO (bonus)
