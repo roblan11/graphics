@@ -168,6 +168,8 @@ void MouseButton(GLFWwindow* window, int button, int action, int mod) {
     }
 }
 
+vec2 p_old = vec2(0.f, 0.f);
+
 void MousePos(GLFWwindow* window, double x, double y) {
     vec2 p = TransformScreenCoords(window, x, y);
 
@@ -177,15 +179,15 @@ void MousePos(GLFWwindow* window, double x, double y) {
         // See also the mouse_button(...) function.
         trackball_matrix = trackball.Drag(p[0], p[1]);
     }
-
     // zoom
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
         // TODO 4: Implement zooming. When the right mouse button is pressed,
         // moving the mouse cursor up and down (along the screen's y axis)
         // should zoom out and it. For that you have to update the current
         // 'view_matrix' with a translation along the z axis.
-        view_matrix = translate(view_matrix, vec3(0.f, 0.f, p[1] / 10));
+        view_matrix = translate(view_matrix, vec3(0.f, 0.f, p[1] - p_old[1]));
     }
+    p_old = p;
 }
 
 // Gets called when the windows/framebuffer is resized.
