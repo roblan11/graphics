@@ -38,25 +38,23 @@ class Grid {
                 int grid_dim = 100;
                 float delta = 2.f / grid_dim;
 
-                // compute vertices
                 for (size_t i = 0; i <= grid_dim; i++) {
                   for (size_t j = 0; j <= grid_dim; j++) {
+                    // compute vertices
                     vertices.push_back((j * delta) - 1.f);
                     vertices.push_back((i * delta) - 1.f);
-                  }
-                }
 
-                // compute indeces
-                for (size_t i = 0; i < grid_dim; i++) {
-                  for (size_t j = 0; j < grid_dim; j++) {
-                    size_t index = i*(grid_dim + 1) + j;
-                    indices.push_back(index);
-                    indices.push_back(index + 1);
-                    indices.push_back(index + grid_dim + 1);
+                    if (i>0 && j>0) {
+                      // compute indeces
+                      size_t index = i*(grid_dim + 1) + j;
+                      indices.push_back(index - grid_dim - 2);
+                      indices.push_back(index - grid_dim - 1);
+                      indices.push_back(index - 1);
 
-                    indices.push_back(index + 1);
-                    indices.push_back(index + grid_dim + 1);
-                    indices.push_back(index + grid_dim + 2);
+                      indices.push_back(index - grid_dim - 1);
+                      indices.push_back(index - 1);
+                      indices.push_back(index);
+                    }
                   }
                 }
 
