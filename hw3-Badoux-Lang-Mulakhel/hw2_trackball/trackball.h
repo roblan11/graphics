@@ -22,6 +22,8 @@ public:
     // is the top right corner.
     // returns the rotation of the trackball in matrix form.
     mat4 Drag(float x, float y) {
+      x = Clamp(x);
+      y = Clamp(y);
       vec3 current_pos = vec3(x, y, 0.0f);
       ProjectOntoSurface(current_pos);
 
@@ -67,6 +69,15 @@ private:
       } else {
           p.z = sqrt(radiusSquare - pxSquare - pySquare);
       }
+    }
+
+    float Clamp(float x) {
+      if(x > 1.f) {
+        return 1.f;
+      } else if(x < -1.f) {
+        return -1.f;
+      }
+      return x;
     }
 
     float radius_;
