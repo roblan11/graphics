@@ -34,23 +34,50 @@ class Grid {
                 std::vector<GLuint> indices;
                 // TODO 5: make a triangle grid with dimension 100x100.
                 // always two subsequent entries in 'vertices' form a 2D vertex position.
-                int grid_dim = 100;
 
+                int grid_dim = 100;
+                float delta = 2.f / grid_dim;
+
+                for (size_t i = 0; i < grid_dim; i++) {
+                  for (size_t j = 0; j < grid_dim; j++) {
+                    // EVERY VERTICE IS PUSHED 2X, SHOULD BE CHANGED
+                    vertices.push_back((j * delta) - 1.f);
+                    vertices.push_back(((i+1) * delta) - 1.f);
+
+                    vertices.push_back(((j+1) * delta) - 1.f);
+                    vertices.push_back(((i+1) * delta) - 1.f);
+
+                    vertices.push_back(((j+1) * delta) - 1.f);
+                    vertices.push_back((i * delta) - 1.f);
+
+                    vertices.push_back((j * delta) - 1.f);
+                    vertices.push_back((i * delta) - 1.f);
+                    // MOVE PUSHING INDICES TO ITS OWN LOOP
+                    indices.push_back(4*grid_dim*i + 4*j);
+                    indices.push_back((4*grid_dim*i + 4*j) + 1);
+                    indices.push_back((4*grid_dim*i + 4*j) + 3);
+                    indices.push_back((4*grid_dim*i + 4*j) + 2);
+                  }
+                }
                 // the given code below are the vertices for a simple quad.
                 // your grid should have the same dimension as that quad, i.e.,
                 // reach from [-1, -1] to [1, 1].
 
                 // vertex position of the triangles.
+                /*
                 vertices.push_back(-1.0f); vertices.push_back( 1.0f);
                 vertices.push_back( 1.0f); vertices.push_back( 1.0f);
                 vertices.push_back( 1.0f); vertices.push_back(-1.0f);
                 vertices.push_back(-1.0f); vertices.push_back(-1.0f);
+                */
 
                 // and indices.
+                /*
                 indices.push_back(0);
                 indices.push_back(1);
                 indices.push_back(3);
                 indices.push_back(2);
+                */
 
                 num_indices_ = indices.size();
 
@@ -147,7 +174,7 @@ class Grid {
             // draw
             // TODO 5: for debugging it can be helpful to draw only the wireframe.
             // You can do that by uncommenting the next line.
-            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             // TODO 5: depending on how you set up your vertex index buffer, you
             // might have to change GL_TRIANGLE_STRIP to GL_TRIANGLES.
             glDrawElements(GL_TRIANGLE_STRIP, num_indices_, GL_UNSIGNED_INT, 0);
