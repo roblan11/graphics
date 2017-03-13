@@ -8,7 +8,15 @@ Finally, to actually use the new projection, we just had to uncomment the given 
 2. Trackball ========================================================================
 
 !! USE DX / DY INSTEAD OF X, Y TO AVOID SNAPPING WHEN PLACING MOUSE DOWN
-!! ADD RESTRICTIONS FOR ANGLES ?
+
+ProjectionOntoSurface:
+
+
+Create rotation function:
+
+
+Zoom:
+Translate the z coordinate by the transformed screen coordinate along the y direction, which was calculated prior. To make the zooming less fast and generally more manageable, we divided the transformed coordinates by 10.
 
 3. Zooming ==========================================================================
 
