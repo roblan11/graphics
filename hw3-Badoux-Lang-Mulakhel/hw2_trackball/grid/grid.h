@@ -35,14 +35,14 @@ class Grid {
                 // TODO 5: make a triangle grid with dimension 100x100.
                 // always two subsequent entries in 'vertices' form a 2D vertex position.
 
-                int grid_dim = 100;
+                int grid_dim = 10;
                 float delta = 2.f / grid_dim;
 
                 for (size_t i = 0; i <= grid_dim; i++) {
                   for (size_t j = 0; j <= grid_dim; j++) {
                     // compute vertices
-                    vertices.push_back((j * delta) - 1.f);
                     vertices.push_back((i * delta) - 1.f);
+                    vertices.push_back((j * delta) - 1.f);
 
                     if (i>0 && j>0) {
                       // compute indeces
