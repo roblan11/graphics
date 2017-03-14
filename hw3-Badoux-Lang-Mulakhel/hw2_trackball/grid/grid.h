@@ -18,11 +18,14 @@ class Grid {
             // compile the shaders.
             program_id_ = icg_helper::LoadShaders("grid_vshader.glsl",
                                                   "grid_fshader.glsl");
+
             if(!program_id_) {
                 exit(EXIT_FAILURE);
             }
 
             glUseProgram(program_id_);
+
+            glUniform1i(glGetUniformLocation(program_id_, "water"), false);
 
             // vertex one vertex array
             glGenVertexArrays(1, &vertex_array_id_);

@@ -6,6 +6,7 @@ out vec2 uv;
 
 uniform mat4 MVP;
 uniform float time;
+uniform bool water;
 
 void main() {
     uv = (position + vec2(1.0, 1.0)) * 0.5;
@@ -19,6 +20,9 @@ void main() {
     float tmpX = uv.x * omega + time * 3;
     float tmpY = uv.y * omega + time;
     float height = amplitude * sin(tmpX) * sin(tmpY);
+    if(water){
+        height *= 2 / time;
+    }
     vec3 pos_3d = vec3(position.x, height, -position.y);
 
     gl_Position = MVP * vec4(pos_3d, 1.0);
