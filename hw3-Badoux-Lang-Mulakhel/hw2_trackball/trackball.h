@@ -22,8 +22,6 @@ public:
     // is the top right corner.
     // returns the rotation of the trackball in matrix form.
     mat4 Drag(float x, float y) {
-      x = Clamp(x);
-      y = Clamp(y);
       vec3 current_pos = vec3(x, y, 0.0f);
       ProjectOntoSurface(current_pos);
 
@@ -36,20 +34,9 @@ public:
       // article.
       vec3 axis = cross(current_pos, anchor_pos_);
       float angle = acos(dot(current_pos, anchor_pos_) / (length(current_pos) * length(anchor_pos_)));
-      // Rodrigues’ Rotation Formula
-      mat3 k = mat3(1.0f);
-      k[0][0] = 0;
-      k[0][1] = axis[2];
-      k[0][2] = -axis[1];
-      k[1][0] = -axis[2];
-      k[1][1] = 0;
-      k[1][2] = axis[0];
-      k[2][0] = axis[1];
-      k[2][1] = -axis[0];
-      k[2][2] = 0;
-      mat3 rotationMatrix = mat3(1.0f) + sin(angle) * k + (1 - cos(angle)) * k * k;
-      mat4 rotationMatrix4 = mat4(rotationMatrix);
-      return rotationMatrix4;
+
+      mat4 rotationMatrix = rotate(mat4(1.f), -0.8f*angle, axis);
+      return rotationMatrix;
     }
 
 private:
@@ -68,15 +55,6 @@ private:
       } else {
           p.z = sqrt(radiusSquare - pxSquare - pySquare);
       }
-    }
-
-    float Clamp(float x) {
-      if(x > 1.f) {
-        return 1.f;
-      } else if(x < -1.f) {
-        return -1.f;
-      }
-      return x;
     }
 
     float radius_;

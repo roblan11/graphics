@@ -48,7 +48,7 @@ mat4 OrthographicProjection(float left, float right, float bottom,
 mat4 PerspectiveProjection(float fovy, float aspect, float near, float far) {
     // TODO 1: Create a perspective projection matrix given the field of view,
     // aspect ratio, and near and far plane distances.
-    GLfloat top    = near * tan(fovy);
+    GLfloat top    = near * tan(fovy/2);
     GLfloat bottom = -top;
     GLfloat right  = top * aspect;
     GLfloat left   = -right;
@@ -168,7 +168,7 @@ void MouseButton(GLFWwindow* window, int button, int action, int mod) {
     }
 }
 
-vec2 p_old = vec2(0.f, 0.f);
+float y_old = 0.f;
 
 void MousePos(GLFWwindow* window, double x, double y) {
     vec2 p = TransformScreenCoords(window, x, y);
@@ -177,7 +177,7 @@ void MousePos(GLFWwindow* window, double x, double y) {
         // TODO 3: Calculate 'trackball_matrix' given the return value of
         // trackball.Drag(...) and the value stored in 'old_trackball_matrix'.
         // See also the mouse_button(...) function.
-        trackball_matrix = trackball.Drag(p[0], p[1]);
+        trackball_matrix = trackball.Drag(p[0], p[1]) * old_trackball_matrix;
     }
     // zoom
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
@@ -185,9 +185,9 @@ void MousePos(GLFWwindow* window, double x, double y) {
         // moving the mouse cursor up and down (along the screen's y axis)
         // should zoom out and it. For that you have to update the current
         // 'view_matrix' with a translation along the z axis.
-        view_matrix = translate(view_matrix, vec3(0.f, 0.f, p[1] - p_old[1]));
+        view_matrix = translate(view_matrix, vec3(0.f, 0.f, 1.5f*(p[1] - y_old)));
     }
-    p_old = p;
+    y_old = p[1];
 }
 
 // Gets called when the windows/framebuffer is resized.
