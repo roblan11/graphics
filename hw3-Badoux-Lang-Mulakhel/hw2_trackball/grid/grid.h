@@ -25,7 +25,7 @@ class Grid {
 
             glUseProgram(program_id_);
 
-            glUniform1i(glGetUniformLocation(program_id_, "water"), false);
+            glUniform1i(glGetUniformLocation(program_id_, "water"), true);
 
             // vertex one vertex array
             glGenVertexArrays(1, &vertex_array_id_);
