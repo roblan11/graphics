@@ -6,7 +6,7 @@ Finally, to actually use the new projection, we just had to uncomment the given 
 2. Trackball ========================================================================
 
 ProjectionOntoSurface:
-
+To project the screen surface onto the sphere we used the given formula. If the cursor is outside the sphere we project it on a hyperbolic sheet.
 
 Create rotation function:
 In main, we simply had to pass the corresponding arguments to the functions in trackball.h, and then multiply the returned result with the matrix from the previously drawn frame.
