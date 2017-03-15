@@ -1,7 +1,7 @@
 1. Perspective Projection ===========================================================
 
 Copying the formulas given in the slides of the last lecture, we initialized the necessary variables and then used them to fill in the 4x4 matrix. For this, in order to get a normal base size, we had to divide the FOV by 2.
-Finally, to actually use the new projection, we just had to uncomment the given line and comment the corresponding ones related to the Orthographic Projection.
+Finally, to actually use the new projection, we just had to uncomment the given line and delete the corresponding ones related to the Orthographic Projection.
 
 2. Trackball ========================================================================
 
@@ -10,23 +10,22 @@ ProjectionOntoSurface:
 
 Create rotation function:
 In main, we simply had to pass the corresponding arguments to the functions in trackball.h, and then multiply the returned result with the matrix from the previously drawn frame.
-In trackball.h, we calculated the axis of rotation and the angle. Once that was done, we just passed those two arguments into a rotation, inverting and slightly scaling the rotation direction for a more natural feel.
+In trackball.h, we calculated the axis of rotation and the angle. Once that was done, we passed those two arguments to make a standard rotation, inverting and slightly scaling the rotation direction for a more natural feel.
 
 Zoom:
-Translate the z coordinate by the transformed screen coordinate along the y direction, which was calculated prior. To make the zooming less fast and generally more manageable, we divided the transformed coordinates by 10. Additionally, we sped up the zoom by a constant factor.
+We translated the z coordinate by delta y (the difference between the y position of the mouse in the current and the previous frame), which was calculated prior. Additionally, we sped up the zoom by a constant factor, making it faster to zoom in and out without having to move the mouse too much.
 
 3. Triangle Grid and Animation ======================================================
 
 Wireframe:
-We had to iterate over the square 2-dimensionally, first adding all the vertices and then, in a second step, once all the necessary vertices for a quad have been added into the list, compute the two necessary triangles and add them into the indices.
+We iterated over the square two dimensionally, first adding all the vertices and then, in a second step, once all the necessary vertices for a quad have been added into the list, computed the two necessary triangles and added their indices.
 We had some trouble, as initially it drew some extra lines (due to using GL_TRIANGLE_STRIP instead of GL_TRIANGLES).
-After fixing that the triangles were drawn completely incorrectly, or, some of them simply weren't drawn at all. This time the issue was that we still added the vertices as if it was a quad, rather than adding two separate triangles per square.
 
 Animation:
-As mentioned in the pdf document, we simply touch the file `grid/grid_vshader.glsl`. We want to have something that looks like waves moving as a function of time. In order to achieve this, we take inspiration from the chessboard of the last week. The main difference is that we are not changing the color but the height.
+In order to achieve this exercise, we took inspiration from the chessboard from last week, while changing the height of each vertice rather than its color. To make the movements two dimensional we multiplied the sines over the x and y direction (both depending on the time), and then scaled the result by a constant to make the resulting waves smaller.
 
 4. Water animation ==================================================================
 
-To make the animation looks like water add to the current waves a big wave with an amplitude 5 times bigger which comes every few seconds and go through the plane along the X axis.
-
-We set a uniform boolean variable "water" to true to start the water animation (line 28 of grid.h).
+To make the animation look more like water we added another, bigger and unidirectional wave to the current ones. we used a modulo function to create a way to only draw certain parts of the sine wave (namely the wave between two points where sin(x) = -1). Then, we added one to this sine wave to only have positive values and scaled the result down once again to make it look more natural.
+The frequency of the sine was multiplied by 2 to avoid graphical glitches while having the waves appear relatively frequently.
+To toggle the water effect, there is a defined boolean value at the beginning of grid.h. Setting this value to false will disable the effect, setting it to true will enable it.

@@ -17,13 +17,17 @@ void main() {
     // 'time' and the position ('uv') within the grid.
     const float amplitude = 0.06;
     const float omega = 2 * 3.14 * 1.2;
+
     float tmpX = uv.x * omega + time * 3;
     float tmpY = uv.y * omega + time;
+
     float height = amplitude * sin(tmpX) * sin(tmpY);
+
     int tmpX2 = int(tmpX * 10) % 157;
     if(water && (tmpX2 > 22) && (tmpX2 < 55)){
-        height += 2 * amplitude * (sin(2*tmpX) + 1);
+        height += 0.1 * (sin(2 * tmpX) + 1);
     }
+
     vec3 pos_3d = vec3(position.x, height, -position.y);
 
     gl_Position = MVP * vec4(pos_3d, 1.0);
