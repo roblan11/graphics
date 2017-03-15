@@ -20,9 +20,9 @@ void main() {
     float tmpX = uv.x * omega + time * 3;
     float tmpY = uv.y * omega + time;
     float height = amplitude * sin(tmpX) * sin(tmpY);
-    int time2 = int(time);
-    if(water && time2 % 5 < 1){
-        height += amplitude * sin(tmpX) * 5;
+    int tmpX2 = int(tmpX* 10) % 157;
+    if(water && tmpX2 > 29 && tmpX2 < 64){
+        height += amplitude * abs(sin(tmpX)) * 5;
     }
     vec3 pos_3d = vec3(position.x, height, -position.y);
 
