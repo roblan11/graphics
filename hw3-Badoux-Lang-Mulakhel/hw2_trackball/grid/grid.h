@@ -25,6 +25,8 @@ class Grid {
 
             glUseProgram(program_id_);
 
+            // enable / disable the water effect here ==========================
+            // to do this, set the boolean value to false
             glUniform1i(glGetUniformLocation(program_id_, "water"), true);
 
             // vertex one vertex array

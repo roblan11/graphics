@@ -23,7 +23,7 @@ We had some trouble, as initially it drew some extra lines (due to using GL_TRIA
 After fixing that the triangles were drawn completely incorrectly, or, some of them simply weren't drawn at all. This time the issue was that we still added the vertices as if it was a quad, rather than adding two separate triangles per square.
 
 Animation:
-As mentionned in the pdf document, we simply touch the file `grid/grid_vshader.glsl`. We want to have something that looks like waves moving as a function of time. In order to achieve this, we take inspiration from the chessboard of the last week. The main difference is that we are not changing the color but the height.
+As mentioned in the pdf document, we simply touch the file `grid/grid_vshader.glsl`. We want to have something that looks like waves moving as a function of time. In order to achieve this, we take inspiration from the chessboard of the last week. The main difference is that we are not changing the color but the height.
 
 4. Water animation ==================================================================
 
