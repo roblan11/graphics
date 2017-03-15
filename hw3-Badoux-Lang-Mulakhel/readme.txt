@@ -27,6 +27,6 @@ As mentionned in the pdf document, we simply touch the file `grid/grid_vshader.g
 
 4. Water animation ==================================================================
 
-To make the animation look like water we colored the waves in blue. We also multiply the height by 2 / time to double the height of the waves and to reduce it over time (because the height of the weight get smaller in a close bucket).
+To make the animation looks like water add to the current waves a big wave with an amplitude 5 times bigger which comes every few seconds and go through the plane along the X axis.
 
 We set a uniform boolean variable "water" to true to start the water animation (line 28 of grid.h).
