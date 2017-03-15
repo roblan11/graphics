@@ -33,7 +33,7 @@ public:
       // p.s. No need for using complicated quaternions as suggested inthe wiki
       // article.
       vec3 axis = cross(current_pos, anchor_pos_);
-      float angle = acos(dot(current_pos, anchor_pos_) / (length(current_pos) * length(anchor_pos_)));
+      float angle = acos( dot(current_pos, anchor_pos_) / (length(current_pos) * length(anchor_pos_)) );
 
       mat4 rotationMatrix = rotate(mat4(1.f), -0.8f*angle, axis);
       return rotationMatrix;
@@ -47,13 +47,13 @@ private:
     // The trackball radius is given by 'radius_'.
     void ProjectOntoSurface(vec3& p) const {
         // TODO 2: Implement this function. Read above link for details.
-        float pxSquare = p.x * p.x;
-        float pySquare = p.y * p.y;
-        float radiusSquare = radius_ * radius_;
-        if ((pxSquare + pySquare) > radiusSquare) {
-          p.z = radiusSquare / (2 * sqrt(pxSquare + pySquare));
+        float px_square = p.x * p.x;
+        float py_square = p.y * p.y;
+        float radius_square = radius_ * radius_;
+        if ((px_square + py_square) > radius_square) {
+          p.z = radius_square / (2 * sqrt(px_square + py_square));
       } else {
-          p.z = sqrt(radiusSquare - pxSquare - pySquare);
+          p.z = sqrt(radius_square - px_square - py_square);
       }
     }
 

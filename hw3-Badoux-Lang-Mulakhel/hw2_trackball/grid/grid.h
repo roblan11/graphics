@@ -2,6 +2,10 @@
 #include "icg_helper.h"
 #include <glm/gtc/type_ptr.hpp>
 
+// enable / disable the water effect here ======================================
+// to do this, set the boolean value to true / false
+#define ENABLE_WATER_EFFECT true
+
 class Grid {
 
     private:
@@ -25,9 +29,7 @@ class Grid {
 
             glUseProgram(program_id_);
 
-            // enable / disable the water effect here ==========================
-            // to do this, set the boolean value to false
-            glUniform1i(glGetUniformLocation(program_id_, "water"), true);
+            glUniform1i(glGetUniformLocation(program_id_, "water"), ENABLE_WATER_EFFECT);
 
             // vertex one vertex array
             glGenVertexArrays(1, &vertex_array_id_);

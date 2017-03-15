@@ -9,7 +9,6 @@
 
 #include "cube/cube.h"
 #include "grid/grid.h"
-
 #include "trackball.h"
 
 Cube cube;
@@ -28,6 +27,8 @@ mat4 cube_scale;
 mat4 quad_model_matrix;
 
 Trackball trackball;
+
+float y_old;
 
 mat4 OrthographicProjection(float left, float right, float bottom,
                             float top, float near, float far) {
@@ -60,10 +61,10 @@ mat4 PerspectiveProjection(float fovy, float aspect, float near, float far) {
 
     projection[2][0] = (right + left) / (right - left);
     projection[2][1] = (top + bottom) / (top - bottom);
-    projection[2][2] = -(far + near) / (far - near);
+    projection[2][2] = (far + near) / (near - far);
     projection[2][3] = -1.f;
 
-    projection[3][2] = -(2.f * far * near) / (far - near);
+    projection[3][2] = (2.f * far * near) / (near - far);
     projection[3][3] = 0.f;
 
     return projection;
@@ -113,9 +114,6 @@ void Init() {
     // looks straight down the -z axis. Otherwise the trackball's rotation gets
     // applied in a rotated coordinate frame.
     // uncomment lower line to achieve this.
-    view_matrix = LookAt(vec3(2.0f, 2.0f, 4.0f),
-                         vec3(0.0f, 0.0f, 0.0f),
-                         vec3(0.0f, 1.0f, 0.0f));
     view_matrix = translate(mat4(1.0f), vec3(0.0f, 0.0f, -4.0f));
 
     trackball_matrix = IDENTITY_MATRIX;
@@ -168,8 +166,6 @@ void MouseButton(GLFWwindow* window, int button, int action, int mod) {
     }
 }
 
-float y_old = 0.f;
-
 void MousePos(GLFWwindow* window, double x, double y) {
     vec2 p = TransformScreenCoords(window, x, y);
 
@@ -185,7 +181,7 @@ void MousePos(GLFWwindow* window, double x, double y) {
         // moving the mouse cursor up and down (along the screen's y axis)
         // should zoom out and it. For that you have to update the current
         // 'view_matrix' with a translation along the z axis.
-        view_matrix = translate(view_matrix, vec3(0.f, 0.f, 1.5f*(p[1] - y_old)));
+        view_matrix = translate(view_matrix, vec3(0.f, 0.f, 1.5f * (p[1] - y_old)));
     }
     y_old = p[1];
 }
@@ -204,11 +200,6 @@ void SetupProjection(GLFWwindow* window, int width, int height) {
     projection_matrix = PerspectiveProjection(45.0f,
                                             (GLfloat)window_width / window_height,
                                             0.1f, 100.0f);
-    /*
-    GLfloat top = 1.0f;
-    GLfloat right = (GLfloat)window_width / window_height * top;
-    projection_matrix = OrthographicProjection(-right, right, -top, top, -10.0, 10.0f);
-    */
 }
 
 void ErrorCallback(int error, const char* description) {
