@@ -2,6 +2,10 @@
 #include "icg_helper.h"
 #include <glm/gtc/type_ptr.hpp>
 
+// enable / disable the water effect here ======================================
+// to do this, set the boolean value to true / false
+#define ENABLE_WATER_EFFECT true
+
 class Grid {
 
     private:
@@ -18,11 +22,14 @@ class Grid {
             // compile the shaders.
             program_id_ = icg_helper::LoadShaders("grid_vshader.glsl",
                                                   "grid_fshader.glsl");
+
             if(!program_id_) {
                 exit(EXIT_FAILURE);
             }
 
             glUseProgram(program_id_);
+
+            glUniform1i(glGetUniformLocation(program_id_, "water"), ENABLE_WATER_EFFECT);
 
             // vertex one vertex array
             glGenVertexArrays(1, &vertex_array_id_);
@@ -34,23 +41,29 @@ class Grid {
                 std::vector<GLuint> indices;
                 // TODO 5: make a triangle grid with dimension 100x100.
                 // always two subsequent entries in 'vertices' form a 2D vertex position.
+
                 int grid_dim = 100;
+                float delta = 2.f / grid_dim;
 
-                // the given code below are the vertices for a simple quad.
-                // your grid should have the same dimension as that quad, i.e.,
-                // reach from [-1, -1] to [1, 1].
+                for (size_t i = 0; i <= grid_dim; i++) {
+                    for (size_t j = 0; j <= grid_dim; j++) {
+                        // compute vertices
+                        vertices.push_back((i * delta) - 1.f);
+                        vertices.push_back((j * delta) - 1.f);
 
-                // vertex position of the triangles.
-                vertices.push_back(-1.0f); vertices.push_back( 1.0f);
-                vertices.push_back( 1.0f); vertices.push_back( 1.0f);
-                vertices.push_back( 1.0f); vertices.push_back(-1.0f);
-                vertices.push_back(-1.0f); vertices.push_back(-1.0f);
+                        if (i>0 && j>0) {
+                            // compute indeces
+                            size_t index = i*(grid_dim + 1) + j;
+                            indices.push_back(index - grid_dim - 2);
+                            indices.push_back(index - grid_dim - 1);
+                            indices.push_back(index - 1);
 
-                // and indices.
-                indices.push_back(0);
-                indices.push_back(1);
-                indices.push_back(3);
-                indices.push_back(2);
+                            indices.push_back(index - grid_dim - 1);
+                            indices.push_back(index - 1);
+                            indices.push_back(index);
+                        }
+                    }
+                }
 
                 num_indices_ = indices.size();
 
@@ -150,7 +163,7 @@ class Grid {
             //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             // TODO 5: depending on how you set up your vertex index buffer, you
             // might have to change GL_TRIANGLE_STRIP to GL_TRIANGLES.
-            glDrawElements(GL_TRIANGLE_STRIP, num_indices_, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, num_indices_, GL_UNSIGNED_INT, 0);
 
             glBindVertexArray(0);
             glUseProgram(0);
