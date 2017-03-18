@@ -1,13 +1,16 @@
 #version 330
 
-in vec3 vpoint;
-in vec3 vnormal;
-
-
 uniform mat4 projection;
 uniform mat4 model;
 uniform mat4 view;
 uniform vec3 light_pos;
+
+in vec3 vpoint;
+in vec3 vnormal;
+
+out vec3 normal_mv;
+out vec3 light_dir;
+out vec3 view_dir;
 
 void main() {
     mat4 MV = view * model;
@@ -20,4 +23,7 @@ void main() {
     // 2) compute the light direction light_dir.
     // 3) compute the view direction view_dir.
     //<<<<<<<<<< TODO <<<<<<<<<<<
+    normal_mv = normalize(mat3(transpose(inverse(MV))) * vnormal);
+    light_dir = light_pos - vpoint_mv.xyz;
+    view_dir = -vpoint_mv.xyz;
 }
