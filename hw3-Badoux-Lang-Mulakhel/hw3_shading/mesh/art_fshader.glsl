@@ -26,9 +26,7 @@ void main() {
     vec3 l = normalize(light_dir);
     vec3 v = normalize(view_dir);
     vec3 r = reflect(-l,n);
-    float value = texture(tex2D, vec2(dot(n,l), pow(max(dot(r,v), 0.0), alpha))).x;
-    if(value > 0.0) {
-        color += Ld*kd*value;
-        color += Ls*ks*value;
-    }
+    vec3 value = texture(tex2D, vec2(dot(n,l), pow(max(dot(r,v), 0.0), alpha))).xyz;
+    color += Ld*kd*value;
+    color += Ls*ks*value;
 }

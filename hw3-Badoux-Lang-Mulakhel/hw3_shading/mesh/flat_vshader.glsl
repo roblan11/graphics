@@ -10,6 +10,7 @@ uniform mat4 model;
 uniform mat4 view;
 uniform vec3 light_pos;
 
+
 void main() {
     mat4 MV = view * model;
     vpoint_mv = MV * vec4(vpoint, 1.0);
@@ -19,4 +20,6 @@ void main() {
     // 1) compute the light direction light_dir.
     // 2) compute the view direction view_dir.
     //<<<<<<<<<< TODO <<<<<<<<<<<
+    light_dir = light_pos - vpoint_mv.xyz;
+    view_dir = -vpoint_mv.xyz;
 }
