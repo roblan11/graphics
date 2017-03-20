@@ -111,6 +111,7 @@ class Mesh : public Material, public Light {
             // TODO
             // TODO 2.1 bind texture_1d_id_ for toon shading
             // 1D texture for toon shader
+
             if(program_id == toon_program_id_) {
                 glBindTexture(GL_TEXTURE_1D, texture_1d_id_);
             }

@@ -29,6 +29,6 @@ void main() {
         color += Ld*kd*lambert;
         vec3 v = normalize(view_dir);
         vec3 r = reflect(-l,n);
-        color += Ls*ks*pow(max(texture(tex1D, dot(r,v)).x, 0.0), alpha);
+        color += Ls*ks*max(texture(tex1D, pow(dot(r,v), alpha)).x, 0.0);
     }
 }
