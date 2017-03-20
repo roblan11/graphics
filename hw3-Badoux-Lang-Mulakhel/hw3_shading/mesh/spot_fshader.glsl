@@ -15,25 +15,44 @@ const float spot_cos_cutoff = 0.985; // cos 10 degrees
 const float spot_exp = 150;
 
 void main() {
-  //>>>>>>>>>> TODO >>>>>>>>>>>
-  // TODO 5: Spot light.
-  // Complete the shader to obtain spot light effect
-  //<<<<<<<<<< TODO <<<<<<<<<<<
+
+    //>>>>>>>>>> TODO >>>>>>>>>>>
+    // TODO 5: Spot light.
+    // Complete the shader to obtain spot light effect
+    //<<<<<<<<<< TODO <<<<<<<<<<<
+
+    // initialize color to 0 (black outside the cone)
     color = vec3(0.f);
+
+    // normal vector
     vec3 n = normalize(normal_mv);
+
+    // light direction
     vec3 l = normalize(light_dir);
+
+    // spot direction
     vec3 s = normalize(spot_dir);
 
-    float lambert = dot(n,l);
+    float lambert = dot(n, l);
     float spot_effect = dot(l, s);
 
+    // only compute color if inside the cone
     if(spot_effect > spot_cos_cutoff){
-      if(lambert > 0.0) {
-          color += La*ka + Ld*kd*lambert;
-          vec3 v = normalize(view_dir);
-          vec3 r = reflect(-l,n);
-          color += Ls*ks*pow(max(dot(r,v), 0.0), alpha);
-      }
-      color *= pow(spot_effect, spot_exp);
+        // ambient
+        color += La * ka;
+
+        if(lambert > 0.f){
+            // diffuse
+            color += Ld * kd * lambert;
+
+            vec3 v = normalize(view_dir);
+            vec3 r = reflect(-l,n);
+
+            // specular
+            color += Ls * ks * pow(max(dot(r, v), 0.0), alpha);
+        }
+
+        // add the contribution of the spot light
+        color *= pow(spot_effect, spot_exp);
     }
 }
