@@ -12,6 +12,8 @@ class ScreenQuad {
         float screenquad_width_;
         float screenquad_height_;
 
+        float *G;
+
     public:
         void Init(float screenquad_width, float screenquad_height,
                   GLuint texture) {
@@ -93,6 +95,7 @@ class ScreenQuad {
             glDeleteProgram(program_id_);
             glDeleteVertexArrays(1, &vertex_array_id_);
             glDeleteTextures(1, &texture_id_);
+            delete [] G;
         }
 
         void UpdateSize(int screenquad_width, int screenquad_height) {
@@ -100,9 +103,21 @@ class ScreenQuad {
             this->screenquad_height_ = screenquad_height;
         }
 
-        void Draw() {
+        void Draw(float std) {
             glUseProgram(program_id_);
             glBindVertexArray(vertex_array_id_);
+
+            glUniform1i(glGetUniformLocation(program_id_, "std"), std);
+
+            int SIZE = 1 + 2 * 3 * int(ceil(std));
+            G = new float[ 2 * SIZE + 1 ];
+            for(int i=0; i<=SIZE; i++){
+                G[i] = pow(2.0,i);
+                G[2*SIZE-i] = pow(2.0,i);
+            }
+            glUniform1fv(glGetUniformLocation(program_id_, "G"), 2 * SIZE + 1, G);
+            glUniform1i(glGetUniformLocation(program_id_, "G_size"), 2 * SIZE + 1);
+
 
             // window size uniforms
             glUniform1f(glGetUniformLocation(program_id_, "tex_width"),
