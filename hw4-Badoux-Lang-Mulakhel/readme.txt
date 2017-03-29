@@ -4,7 +4,9 @@
 
 2 Screen Space Reflections =====================================================
 
-...
+In main we mirrored the camera (the z coordinate of cam_pos is multiplied by -1) and used the new cam_pos to compute the new view projection matrix. We render the cube to a frameshader using this matrix, and the cube and the floor to the screen using the original matrix.
+
+In the floor shader we query the mirrored cube texture from the framebuffer (the coordinates are computed using gl_FragCoord, the window relative coordinate for the fragment, and the width and height of the window) and blend it with the texture of the floor.
 
 3 Motion Blur ==================================================================
 
