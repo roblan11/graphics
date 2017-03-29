@@ -5,9 +5,22 @@ uniform sampler2D velocityTex;
 out vec4 color;
 
 void main() {
+    color = vec4(0.f, 0.f, 0.f, 1.f);
+
     /// TODO: use the velocity vector stored in velocityTex to compute the line integral
+    vec2 vel = texture(velocityTex, uv).xy;
+
+
     /// TODO: use a constant number of samples for integral (what happens if you take too few?)
-    /// HINT: you can scale the velocity vector to make the motion blur effect more prominent
-    /// HINT: to debug integration don't use the velocityTex, simply assume velocity is constant, e.g. vec2(1,0)
-    color = texture(colorTex, uv);
+    const int samples = 10;
+    int sum = 0;
+    for(int i = 0; i <= samples; i++) {
+        vec4 value = texture(colorTex, uv + i * vel / samples);
+        int factor = samples - i;
+        color += value * factor;
+        sum += factor;
+    }
+
+    color /= sum;
+
 }

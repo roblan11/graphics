@@ -10,9 +10,8 @@ layout (location = 1) out vec2 motionVector;
 
 void main() {
     color = texture(tex, uv);
-//#define STRIP_CODE
+
     // TODO: compute the screen space motion vector (in pixels!)
-    // HINT: use straightforward finite differences and assume unit time-step
-    // HINT: how do you compute pixels positions given homogeneous coordinate? (x,y,z,w)
-    motionVector = vec2(0);
+    vec4 diff = currentPosition - previousPosition;
+    motionVector = diff.xy;
 }
