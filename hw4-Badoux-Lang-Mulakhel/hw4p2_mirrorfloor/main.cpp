@@ -52,8 +52,7 @@ void Display() {
     // HINT: this render will be done in the framebuffer texture (remember bind/unbind)
 
     vec3 cam_pos_mirrored(2.0f, 2.0f, -2.0f);
-    vec3 cam_up_mirrored(1.0f, 0.0f, 0.0f);
-    mat4 view_mirrored = lookAt(cam_pos_mirrored, cam_look, cam_up_mirrored);
+    mat4 view_mirrored = lookAt(cam_pos_mirrored, cam_look, cam_up);
     mat4 view_projection_mirrored = projection_matrix * view_mirrored;
 
     // render to framebuffer
