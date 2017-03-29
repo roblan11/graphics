@@ -18,8 +18,6 @@ Quad quad;
 int window_width = 800;
 int window_height = 600;
 
-float STD;
-
 FrameBuffer framebuffer;
 ScreenQuad screenquad;
 
@@ -35,8 +33,6 @@ void Init(GLFWwindow* window) {
 
     cube.Init();
     quad.Init();
-
-    STD = 2;
 
     // setup view and projection matrices
     vec3 cam_pos(2.0f, 2.0f, 2.0f);
@@ -59,20 +55,21 @@ void Init(GLFWwindow* window) {
     screenquad.Init(window_width, window_height, framebuffer_texture_id);
 }
 
-void Display(float std) {
+void Display() {
     // render to framebuffer
     framebuffer.Bind();
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         cube.Draw(cube_model_matrix, view_matrix, projection_matrix);
         quad.Draw(IDENTITY_MATRIX, view_matrix, projection_matrix);
+        screenquad.Draw(true);
     }
     framebuffer.Unbind();
 
     // render to Window
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    screenquad.Draw(std);
+    screenquad.Draw(false);
 }
 
 // gets called when the windows/framebuffer is resized.
@@ -99,12 +96,10 @@ void ErrorCallback(int error, const char* description) {
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
+    } else if (key == GLFW_KEY_W && action == GLFW_PRESS){
+        screenquad.IncreaseSigma();
     } else if (key == GLFW_KEY_Q && action == GLFW_PRESS){
-        STD += 0.25;
-        Display(STD);
-    } else if (key == GLFW_KEY_Q && action == GLFW_PRESS){
-        STD -= 0.25;
-        Display(STD);
+        screenquad.DecreaseSigma();
     }
 }
 
@@ -158,7 +153,7 @@ int main(int argc, char *argv[]) {
 
     // render loop
     while(!glfwWindowShouldClose(window)){
-        Display(STD);
+        Display();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

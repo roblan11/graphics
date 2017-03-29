@@ -1,6 +1,8 @@
 1. Fast Gaussian Blur ===========================================================
 
-...
+In order to change the blur level, use the key q or w. There is a fixed range where the value of standart deviation is allowed to be. Now the computation of the matrix is done in the cpu (screenquad.h), then it is send to the gpu.
+
+We do the computation in two passes. Firstly, we work only on the x axis. Secondly, we work on the y axis. (When we try to do it at the same time, we have a white image)
 
 2. Screen Space Reflections =====================================================
 
