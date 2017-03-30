@@ -12,7 +12,22 @@ class ScreenQuad {
         float screenquad_width_;
         float screenquad_height_;
 
+        float* kernel;
+        size_t kLength;
+        float stdeviation;
+
     public:
+        void setStandardDeviation(float stdeviationInput) {
+            this->stdeviation = stdeviationInput;
+            this->kLength = 1 + 2 * 3 * int(ceil(this->stdeviation));
+            int mid = this->kLength >> 1;
+            for (int i = 0; i <= mid; ++i) {
+                double tmp = exp(- (i * i) / ( 2.0 * this->stdeviation * this->stdeviation));
+                kernel[mid + i] = tmp;
+                kernel[mid - i] = tmp;
+            }
+        }
+
         void Init(float screenquad_width, float screenquad_height,
                   GLuint texture) {
 
@@ -32,6 +47,11 @@ class ScreenQuad {
             // vertex one vertex Array
             glGenVertexArrays(1, &vertex_array_id_);
             glBindVertexArray(vertex_array_id_);
+
+            //////// Start
+            this->kernel = new float[512]; // otherwise: error: unsized array index must be constant
+            setStandardDeviation(2.0);
+            //////// End
 
             // vertex coordinates
             {
@@ -93,6 +113,7 @@ class ScreenQuad {
             glDeleteProgram(program_id_);
             glDeleteVertexArrays(1, &vertex_array_id_);
             glDeleteTextures(1, &texture_id_);
+            delete [] kernel;
         }
 
         void UpdateSize(int screenquad_width, int screenquad_height) {
@@ -100,9 +121,37 @@ class ScreenQuad {
             this->screenquad_height_ = screenquad_height;
         }
 
-        void Draw() {
+        void IncreaseSigma() {
+            double variance = 0.25;
+            double sigma = sqrt(0.25);
+            double newStdDev = this->stdeviation + sigma;
+            if (newStdDev < 4.1) {
+                setStandardDeviation(newStdDev);
+            }
+        }
+
+        void DecreaseSigma() {
+            double variance = 0.25;
+            double sigma = sqrt(0.25);
+            double newStdDev = this->stdeviation - sigma;
+            if (newStdDev > 0.0) {
+                setStandardDeviation(newStdDev);
+            }
+        }
+
+        void Draw(bool onXaxis) {
             glUseProgram(program_id_);
             glBindVertexArray(vertex_array_id_);
+
+            /////// Start
+
+            glUniform1i(glGetUniformLocation(program_id_, "stdeviation"), stdeviation);
+            glUniform1fv(glGetUniformLocation(program_id_, "kernel"), kLength, kernel);
+            glUniform1i(glGetUniformLocation(program_id_, "kLength"), kLength);
+            glUniform1i(glGetUniformLocation(program_id_, "onXaxis"), onXaxis);
+
+            /////// End
+
 
             // window size uniforms
             glUniform1f(glGetUniformLocation(program_id_, "tex_width"),

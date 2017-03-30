@@ -62,13 +62,14 @@ void Display() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         cube.Draw(cube_model_matrix, view_matrix, projection_matrix);
         quad.Draw(IDENTITY_MATRIX, view_matrix, projection_matrix);
+        screenquad.Draw(true);
     }
     framebuffer.Unbind();
 
     // render to Window
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    screenquad.Draw();
+    screenquad.Draw(false);
 }
 
 // gets called when the windows/framebuffer is resized.
@@ -95,6 +96,10 @@ void ErrorCallback(int error, const char* description) {
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
+    } else if (key == GLFW_KEY_W && action == GLFW_PRESS){
+        screenquad.IncreaseSigma();
+    } else if (key == GLFW_KEY_Q && action == GLFW_PRESS){
+        screenquad.DecreaseSigma();
     }
 }
 
