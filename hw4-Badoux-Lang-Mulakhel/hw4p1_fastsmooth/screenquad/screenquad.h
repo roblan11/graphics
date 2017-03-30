@@ -49,7 +49,7 @@ class ScreenQuad {
             glBindVertexArray(vertex_array_id_);
 
             //////// Start
-            this->kernel = new float[1024]; // otherwise: error: unsized array index must be constant
+            this->kernel = new float[512]; // otherwise: error: unsized array index must be constant
             setStandardDeviation(2.0);
             //////// End
 

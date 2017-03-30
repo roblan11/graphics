@@ -1,8 +1,12 @@
 1. Fast Gaussian Blur ===========================================================
 
-In order to change the blur level, use the key q or w. There is a fixed range where the value of standart deviation is allowed to be. Now the computation of the matrix is done in the cpu (screenquad.h), then it is send to the gpu.
+There is a fixed range where the value of standard deviation is allowed to be. In addition the array is new computed in the CPU (screenquad.h), then it is sent to the GPU.
+We had to limit the array to a length of 512, due to a "implementation limit exceeded" error.
 
-We do the computation in two passes. Firstly, we work only on the x axis. Secondly, we work on the y axis. (When we try to do it at the same time, we have a white image)
+We do the computation in two passes. First, we work only on the x axis, and then on the y axis.
+Trying to do both at the same time resulted in a white image.
+
+In the fragment shader we used the precomputed array to calculate the color of the pixel, when the blurring effect is applied over either axis (which axis is currently being computed in chosen through a boolean uniform).
 
 2. Screen Space Reflections =====================================================
 
