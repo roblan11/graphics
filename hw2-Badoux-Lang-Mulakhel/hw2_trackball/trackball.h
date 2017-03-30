@@ -32,7 +32,7 @@ public:
       // you might want to scale the rotation magnitude by a scalar factor.
       // p.s. No need for using complicated quaternions as suggested inthe wiki
       // article.
-      vec3 axis = cross(current_pos, anchor_pos_);
+      vec3 axis = normalize(cross(current_pos, anchor_pos_));
       float angle = acos( dot(current_pos, anchor_pos_) / (length(current_pos) * length(anchor_pos_)) );
 
       mat4 rotationMatrix = rotate(mat4(1.f), -0.8f*angle, axis);
@@ -50,7 +50,7 @@ private:
         float px_square = p.x * p.x;
         float py_square = p.y * p.y;
         float radius_square = radius_ * radius_;
-        if ((px_square + py_square) > radius_square) {
+        if ((px_square + py_square) > radius_square / 2) {
           p.z = radius_square / (2 * sqrt(px_square + py_square));
       } else {
           p.z = sqrt(radius_square - px_square - py_square);
