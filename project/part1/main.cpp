@@ -8,12 +8,10 @@
 
 #include "framebuffer.h"
 
-//#include "cube/cube.h"
-//#include "quad/quad.h"
+#include "terrain/terrain.h"
 #include "screenquad/screenquad.h"
 
-//Cube cube;
-//Quad quad;
+Terrain terrain;
 
 int window_width = 800;
 int window_height = 600;
@@ -25,14 +23,13 @@ using namespace glm;
 
 mat4 projection_matrix;
 mat4 view_matrix;
-mat4 cube_model_matrix;
+mat4 terrain_model_matrix;
 
 void Init(GLFWwindow* window) {
     glClearColor(1.0, 1.0, 1.0 /*white*/, 1.0 /*solid*/);
     glEnable(GL_DEPTH_TEST);
 
-    //cube.Init();
-    //quad.Init();
+    terrain.Init();
 
     // setup view and projection matrices
     vec3 cam_pos(2.0f, 2.0f, 2.0f);
@@ -44,8 +41,8 @@ void Init(GLFWwindow* window) {
 
     // create the model matrix (remember OpenGL is right handed)
     // accumulated transformation
-    cube_model_matrix = scale(IDENTITY_MATRIX, vec3(0.5));
-    cube_model_matrix = translate(cube_model_matrix, vec3(0.0, 0.0, 0.6));
+
+    //terrain_model_matrix = translate(mat4(1.0f), vec3(0.0f, -0.25f, 0.0f));
 
     // on retina/hidpi displays, pixels != screen coordinates
     // this unsures that the framebuffer has the same size as the window
@@ -60,8 +57,7 @@ void Display() {
     framebuffer.Bind();
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //cube.Draw(cube_model_matrix, view_matrix, projection_matrix);
-        //quad.Draw(IDENTITY_MATRIX, view_matrix, projection_matrix);
+        terrain.Draw(IDENTITY_MATRIX, view_matrix, projection_matrix);
     }
     framebuffer.Unbind();
 
@@ -156,6 +152,7 @@ int main(int argc, char *argv[]) {
     // cleanup
     //quad.Cleanup();
     //cube.Cleanup();
+    terrain.Cleanup();
     framebuffer.Cleanup();
     screenquad.Cleanup();
 
