@@ -9,11 +9,11 @@
 #include "framebuffer.h"
 
 //#include "cube/cube.h"
-//#include "quad/quad.h"
+#include "terrain/terrain.h"
 #include "screenquad/screenquad.h"
 
 //Cube cube;
-//Quad quad;
+Terrain terrain;
 
 int window_width = 800;
 int window_height = 600;
@@ -32,7 +32,7 @@ void Init(GLFWwindow* window) {
     glEnable(GL_DEPTH_TEST);
 
     //cube.Init();
-    //quad.Init();
+    terrain.Init();
 
     // setup view and projection matrices
     vec3 cam_pos(2.0f, 2.0f, 2.0f);
@@ -61,7 +61,7 @@ void Display() {
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //cube.Draw(cube_model_matrix, view_matrix, projection_matrix);
-        //quad.Draw(IDENTITY_MATRIX, view_matrix, projection_matrix);
+        terrain.Draw(IDENTITY_MATRIX, view_matrix, projection_matrix);
     }
     framebuffer.Unbind();
 
@@ -154,7 +154,7 @@ int main(int argc, char *argv[]) {
     }
 
     // cleanup
-    //quad.Cleanup();
+    terrain.Cleanup();
     //cube.Cleanup();
     framebuffer.Cleanup();
     screenquad.Cleanup();
