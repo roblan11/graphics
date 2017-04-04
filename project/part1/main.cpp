@@ -47,7 +47,7 @@ void Init(GLFWwindow* window) {
     // accumulated transformation
     //cube_model_matrix = scale(IDENTITY_MATRIX, vec3(0.5));
     //cube_model_matrix = translate(cube_model_matrix, vec3(0.0, 0.0, 0.6));
-    terrain_model_matrix = rotate(mat4(1.0f), 3.14f / 2.0f, vec3(1.0f, 0.0f, 0.0f));
+    terrain_model_matrix = IDENTITY_MATRIX;
 
     // on retina/hidpi displays, pixels != screen coordinates
     // this unsures that the framebuffer has the same size as the window
