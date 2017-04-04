@@ -1,13 +1,18 @@
 #version 330
 
-in vec3 vpoint;
-in vec2 vtexcoord;
+in vec2 position;
 
 out vec2 uv;
 
 uniform mat4 MVP;
+uniform float time;
+uniform bool water;
 
 void main() {
-    gl_Position = MVP * vec4(vpoint, 1.0);
-    uv = vtexcoord;
+    uv = (position + vec2(1.0, 1.0)) * 0.5;
+
+    float height = 0.0;
+    vec3 pos_3d = vec3(position.x, height, -position.y);
+
+    gl_Position = MVP * vec4(pos_3d, 1.0);
 }
