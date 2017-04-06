@@ -7,6 +7,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "framebuffer.h"
+#include "render/render.h"
 
 //#include "cube/cube.h"
 #include "terrain/terrain.h"
@@ -20,6 +21,7 @@ int window_height = 600;
 
 FrameBuffer framebuffer;
 ScreenQuad screenquad;
+Render render;
 
 using namespace glm;
 
@@ -55,6 +57,7 @@ void Init(GLFWwindow* window) {
     glfwGetFramebufferSize(window, &window_width, &window_height);
     GLuint framebuffer_texture_id = framebuffer.Init(window_width, window_height);
     screenquad.Init(window_width, window_height, framebuffer_texture_id);
+    render.Init();
 }
 
 void Display() {
@@ -63,6 +66,7 @@ void Display() {
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //cube.Draw(cube_model_matrix, view_matrix, projection_matrix);
+        render.Draw();
         terrain.Draw(terrain_model_matrix, view_matrix, projection_matrix);
     }
     framebuffer.Unbind();
