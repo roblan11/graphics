@@ -7,11 +7,9 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "framebuffer.h"
-#include "render/render.h"
+#include "heightmap/heightmap.h"
 
-//#include "cube/cube.h"
 #include "terrain/terrain.h"
-#include "screenquad/screenquad.h"
 
 //Cube cube;
 Terrain terrain;
@@ -20,8 +18,7 @@ int window_width = 800;
 int window_height = 600;
 
 FrameBuffer framebuffer;
-ScreenQuad screenquad;
-Render render;
+HeightMap heightmap;
 
 using namespace glm;
 
@@ -33,9 +30,6 @@ mat4 terrain_model_matrix;
 void Init(GLFWwindow* window) {
     glClearColor(1.0, 1.0, 1.0 /*white*/, 1.0 /*solid*/);
     glEnable(GL_DEPTH_TEST);
-
-    //cube.Init();
-    terrain.Init();
 
     // setup view and projection matrices
     vec3 cam_pos(2.0f, 2.0f, 2.0f);
@@ -56,8 +50,8 @@ void Init(GLFWwindow* window) {
     // (see http://www.glfw.org/docs/latest/window.html#window_fbsize)
     glfwGetFramebufferSize(window, &window_width, &window_height);
     GLuint framebuffer_texture_id = framebuffer.Init(window_width, window_height);
-    screenquad.Init(window_width, window_height, framebuffer_texture_id);
-    render.Init();
+    heightmap.Init(window_width, window_height, framebuffer_texture_id);
+    terrain.Init(framebuffer_texture_id);
 }
 
 void Display() {
@@ -65,16 +59,15 @@ void Display() {
     framebuffer.Bind();
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //cube.Draw(cube_model_matrix, view_matrix, projection_matrix);
-        render.Draw();
-        terrain.Draw(terrain_model_matrix, view_matrix, projection_matrix);
+        heightmap.Draw();
     }
     framebuffer.Unbind();
 
     // render to Window
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    screenquad.Draw();
+    terrain.Draw(terrain_model_matrix, view_matrix, projection_matrix);
+    //heightmap.Draw();
 }
 
 // gets called when the windows/framebuffer is resized.
@@ -91,7 +84,6 @@ void ResizeCallback(GLFWwindow* window, int width, int height) {
     // should also be resized
     framebuffer.Cleanup();
     framebuffer.Init(window_width, window_height);
-    screenquad.UpdateSize(window_width, window_height);
 }
 
 void ErrorCallback(int error, const char* description) {
@@ -161,9 +153,8 @@ int main(int argc, char *argv[]) {
 
     // cleanup
     terrain.Cleanup();
-    //cube.Cleanup();
     framebuffer.Cleanup();
-    screenquad.Cleanup();
+    heightmap.Cleanup();
 
     // close OpenGL window and terminate GLFW
     glfwDestroyWindow(window);

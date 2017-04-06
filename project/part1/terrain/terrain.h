@@ -14,7 +14,7 @@ class Terrain {
         GLuint MVP_id_;                         // model, view, proj matrix ID
 
     public:
-        void Init() {
+        void Init(GLuint texture) {
             // compile the shaders.
             program_id_ = icg_helper::LoadShaders("terrain_vshader.glsl",
                                                   "terrain_fshader.glsl");
@@ -36,7 +36,7 @@ class Terrain {
                 // TODO 5: make a triangle grid with dimension 100x100.
                 // always two subsequent entries in 'vertices' form a 2D vertex position.
 
-                int grid_dim = 100;
+                int grid_dim = 512;
                 float delta = 2.f / grid_dim;
 
                 for (size_t i = 0; i <= grid_dim; i++) {
@@ -80,6 +80,20 @@ class Terrain {
                                       ZERO_STRIDE, ZERO_BUFFER_OFFSET);
             }
 
+            //assign texture
+            {
+            this->texture_id_ = texture;
+            glBindTexture(GL_TEXTURE_2D, texture_id_);
+            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            GLuint tex_id = glGetUniformLocation(program_id_, "tex");
+            glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
+            glBindTexture(GL_TEXTURE_2D, 0);
+
+            // to avoid the current object being polluted
+            glBindVertexArray(0);
+            glUseProgram(0);
+            }
+
             // load texture
             {
 //                int width;
@@ -94,11 +108,6 @@ class Terrain {
                 //if(image == nullptr) {
                     //throw(string("Failed to load texture"));
                 //}
-
-//                glGenTextures(1, &texture_id_);
-//                glBindTexture(GL_TEXTURE_2D, texture_id_);
-//                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 //                if(nb_component == 3) {
 //                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,
