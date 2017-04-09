@@ -47,7 +47,7 @@ float noise(float x, float y, float z) {
                                      grad(p[BB+1], x-1, y-1, z-1 ))));
 }
 
-float fBm() {
+float fBm(vec2 xy) {
   // source: https://thebookofshaders.com/13/
 
   // Properties
@@ -56,19 +56,17 @@ float fBm() {
   float gain = 0.5;
   //
   // Initial values
-  float amplitude = 0.8;
-  float frequency = 1.f;
+  float amplitude = 0.7;
 
-  float x = uv.x;
-  float y = uv.y;
   float z = 0.f;
   //
   // Loop of octaves
   for (int i = 0; i < octaves; i++) {
-    z += amplitude * noise(frequency*x, frequency*y, 0.f);
+    float n = noise(xy.x, xy.y, 0.f);
+    z += amplitude * n;
+
     //frequency *= lacunarity;
-    x *= lacunarity;
-    y *= lacunarity;
+    xy *= lacunarity;
     amplitude *= gain;
   }
   return z;
@@ -76,6 +74,9 @@ float fBm() {
 
 void main() {
 
-    color =  vec3(fBm(), 0.0, 0.0);
+    vec2 xy = uv.xy;
+    xy.x *= tex_width/tex_height;
+
+    color =  vec3(fBm(1.5*xy), 0.0, 0.0);
 
 }
