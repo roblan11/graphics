@@ -12,6 +12,7 @@ class Terrain {
         GLuint texture_id_;                     // texture ID
         GLuint num_indices_;                    // number of vertices to render
         GLuint MVP_id_;                         // model, view, proj matrix ID
+        GLuint MV_id_;                         // model, view matrix ID
 
     public:
         void Init(GLuint texture) {
@@ -127,6 +128,7 @@ class Terrain {
 
             // other uniforms
             MVP_id_ = glGetUniformLocation(program_id_, "MVP");
+            MV_id_ = glGetUniformLocation(program_id_, "MV");
 
             // to avoid the current object being polluted
             glBindVertexArray(0);
@@ -156,6 +158,10 @@ class Terrain {
             // setup MVP
             glm::mat4 MVP = projection*view*model;
             glUniformMatrix4fv(MVP_id_, ONE, DONT_TRANSPOSE, glm::value_ptr(MVP));
+
+            // setup MV
+            glm::mat4 MV = view*model;
+            glUniformMatrix4fv(MV_id_, ONE, DONT_TRANSPOSE, glm::value_ptr(MV));
 
             // draw
             // TODO 5: for debugging it can be helpful to draw only the wireframe.

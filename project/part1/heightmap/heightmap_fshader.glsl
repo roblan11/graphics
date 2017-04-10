@@ -78,5 +78,5 @@ void main() {
     xy.x *= tex_width/tex_height;
 
     color =  vec3(fBm(1.5*xy), 0.0, 0.0);
-
+    //color = vec3(noise(uv.x*7, uv.y*7, 0.0), 0.0, 0.0);
 }
