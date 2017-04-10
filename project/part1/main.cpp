@@ -10,19 +10,24 @@
 #include "heightmap/heightmap.h"
 
 #include "terrain/terrain.h"
+#include "trackball.h"
 
 //Cube cube;
 Terrain terrain;
 
 int window_width = 800;
 int window_height = 600;
+float y_old;
 
 FrameBuffer framebuffer;
 HeightMap heightmap;
+Trackball trackball;
 
 using namespace glm;
 
 mat4 projection_matrix;
+mat4 trackball_matrix;
+mat4 old_trackball_matrix;
 mat4 view_matrix;
 mat4 cube_model_matrix;
 mat4 terrain_model_matrix;
@@ -38,6 +43,8 @@ void Init(GLFWwindow* window) {
     view_matrix = lookAt(cam_pos, cam_look, cam_up);
     float ratio = window_width / (float) window_height;
     projection_matrix = perspective(45.0f, ratio, 0.1f, 10.0f);
+    trackball_matrix = IDENTITY_MATRIX;
+    old_trackball_matrix = IDENTITY_MATRIX;
 
     // create the model matrix (remember OpenGL is right handed)
     // accumulated transformation
@@ -54,6 +61,39 @@ void Init(GLFWwindow* window) {
     terrain.Init(framebuffer_texture_id);
 }
 
+// transforms glfw screen coordinates into normalized OpenGL coordinates.
+vec2 TransformScreenCoords(GLFWwindow* window, int x, int y) {
+    // the framebuffer and the window doesn't necessarily have the same size
+    // i.e. hidpi screens. so we need to get the correct one
+    int width;
+    int height;
+    glfwGetWindowSize(window, &width, &height);
+    return vec2(2.0f * (float)x / width - 1.0f,
+                1.0f - 2.0f * (float)y / height);
+}
+
+void MouseButton(GLFWwindow* window, int button, int action, int mod) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        double screenX, screenY;
+        glfwGetCursorPos(window, &screenX, &screenY);
+        vec2 p = TransformScreenCoords(window, x_i, z_i);
+        trackball.BeingDrag(p.x, p.y);
+        old_trackball_matrix = trackball_matrix;
+    }
+}
+
+void MousePos(GLFWwindow* window, double x, double y) {
+    vec2 p = TransformScreenCoords(window, x, y);
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+        trackball_matrix = trackball.Drag(p[0], p[1]) * old_trackball_matrix;
+    }
+    // zoom
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+        view_matrix = translate(view_matrix, vec3(0.f, 0.f, 1.5f * (p[1] - y_old)));
+    }
+    y_old = p[1];
+}
+
 void Display() {
     // render to framebuffer
     framebuffer.Bind();
@@ -66,7 +106,7 @@ void Display() {
     // render to Window
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    terrain.Draw(terrain_model_matrix, view_matrix, projection_matrix);
+    terrain.Draw(trackball_matrix * terrain_model_matrix, view_matrix, projection_matrix);
     //heightmap.Draw();
 }
 
@@ -84,6 +124,7 @@ void ResizeCallback(GLFWwindow* window, int width, int height) {
     // should also be resized
     framebuffer.Cleanup();
     framebuffer.Init(window_width, window_height);
+    // TODO: tracking ball should be touched
 }
 
 void ErrorCallback(int error, const char* description) {
@@ -130,6 +171,10 @@ int main(int argc, char *argv[]) {
 
     // set the framebuffer resize callback
     glfwSetFramebufferSizeCallback(window, ResizeCallback);
+
+    // set the mouse press and position callback
+    glfwSetMouseButtonCallback(window, MouseButton);
+    glfwSetCursorPosCallback(window, MousePos);
 
     // GLEW Initialization (must have a context)
     // https://www.opengl.org/wiki/OpenGL_Loading_Library

@@ -11,9 +11,9 @@ public:
     // this function is called when the user presses the left mouse button down.
     // x, and y are in [-1, 1]. (-1, -1) is the bottom left corner while (1, 1)
     // is the top right corner.
-    void BeingDrag(float x, float y) {
-      anchor_pos_ = vec3(x, y, 0.0f);
-      ProjectOntoSurface(anchor_pos_);<
+    void BeingDrag(float x, float z) {
+      anchor_pos_ = vec3(x, 0.0f, z);
+      ProjectOntoSurface(anchor_pos_);
     }
 
     // this function is called while the user moves the curser around while the
@@ -21,8 +21,8 @@ public:
     // x, and y are in [-1, 1]. (-1, -1) is the bottom left corner while (1, 1)
     // is the top right corner.
     // returns the rotation of the trackball in matrix form.
-    mat4 Drag(float x, float y) {
-      vec3 current_pos = vec3(x, y, 0.0f);
+    mat4 Drag(float x, float z) {
+      vec3 current_pos = vec3(x, 0.0f, z);
       ProjectOntoSurface(current_pos);
 
       // TODO 3: Calculate the rotation given the projections of the anocher
@@ -48,12 +48,12 @@ private:
     void ProjectOntoSurface(vec3& p) const {
         // TODO 2: Implement this function. Read above link for details.
         float px_square = p.x * p.x;
-        float py_square = p.y * p.y;
+        float pz_square = p.z * p.z;
         float radius_square = radius_ * radius_;
-        if ((px_square + py_square) > radius_square) {
-          p.z = radius_square / (2 * sqrt(px_square + py_square));
+        if ((px_square + pz_square) > radius_square) {
+          p.y = radius_square / (2 * sqrt(px_square + pz_square));
       } else {
-          p.z = sqrt(radius_square - px_square - py_square);
+          p.y = sqrt(radius_square - px_square - pz_square);
       }
     }
 
