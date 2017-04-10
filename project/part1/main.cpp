@@ -76,7 +76,7 @@ void MouseButton(GLFWwindow* window, int button, int action, int mod) {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         double screenX, screenY;
         glfwGetCursorPos(window, &screenX, &screenY);
-        vec2 p = TransformScreenCoords(window, x_i, z_i);
+        vec2 p = TransformScreenCoords(window, screenX, screenY);
         trackball.BeingDrag(p.x, p.y);
         old_trackball_matrix = trackball_matrix;
     }
@@ -134,6 +134,12 @@ void ErrorCallback(int error, const char* description) {
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
+    } else if (action == GLFW_PRESS) {
+        if (key == GLFW_KEY_LEFT) {
+            view_matrix[3] += vec4(0.05f, 0.0f, 0.0f, 0.0f);
+        } else if (key == GLFW_KEY_RIGHT) {
+            view_matrix[3] += vec4(-0.05f, 0.0f, 0.0f, 0.0f);
+        }
     }
 }
 
