@@ -2,7 +2,53 @@
 #include "icg_helper.h"
 #include <glm/gtc/type_ptr.hpp>
 
-class Terrain {
+struct Light {
+        glm::vec3 La = glm::vec3(1.0f, 1.0f, 1.0f);
+        glm::vec3 Ld = glm::vec3(1.0f, 1.0f, 1.0f);
+        glm::vec3 Ls = glm::vec3(1.0f, 1.0f, 1.0f);
+
+        glm::vec3 light_pos = glm::vec3(0.0f, 0.0f, 2.0f);
+
+        // pass light properties to the shader
+        void Setup(GLuint program_id) {
+            glUseProgram(program_id);
+
+            // given in camera space
+            GLuint light_pos_id = glGetUniformLocation(program_id, "light_pos");
+
+            GLuint La_id = glGetUniformLocation(program_id, "La");
+            GLuint Ld_id = glGetUniformLocation(program_id, "Ld");
+            GLuint Ls_id = glGetUniformLocation(program_id, "Ls");
+
+            glUniform3fv(light_pos_id, ONE, glm::value_ptr(light_pos));
+            glUniform3fv(La_id, ONE, glm::value_ptr(La));
+            glUniform3fv(Ld_id, ONE, glm::value_ptr(Ld));
+            glUniform3fv(Ls_id, ONE, glm::value_ptr(Ls));
+        }
+};
+
+struct Material {
+        glm::vec3 ka = glm::vec3(0.1f, 0.1f, 0.1f);
+        glm::vec3 kd = glm::vec3(0.9f, 0.9f, 0.9f);
+        glm::vec3 ks = glm::vec3(0.4f, 0.4f, 0.4f);
+        float alpha = 60.0f;
+
+        // pass material properties to the shaders
+        void Setup(GLuint program_id) {
+            glUseProgram(program_id);
+
+            GLuint ka_id = glGetUniformLocation(program_id, "ka");
+            GLuint kd_id = glGetUniformLocation(program_id, "kd");
+            GLuint ks_id = glGetUniformLocation(program_id, "ks");
+            GLuint alpha_id = glGetUniformLocation(program_id, "alpha");
+
+            glUniform3fv(ka_id, ONE, glm::value_ptr(ka));
+            glUniform3fv(kd_id, ONE, glm::value_ptr(kd));
+            glUniform3fv(ks_id, ONE, glm::value_ptr(ks));
+            glUniform1f(alpha_id, alpha);
+        }
+};
+class Terrain : public Material, public Light {
 
     private:
         GLuint vertex_array_id_;                // vertex array object
@@ -37,7 +83,7 @@ class Terrain {
                 // TODO 5: make a triangle grid with dimension 100x100.
                 // always two subsequent entries in 'vertices' form a 2D vertex position.
 
-                int grid_dim = 512;
+                int grid_dim = 2048;
                 float delta = 2.f / grid_dim;
 
                 for (size_t i = 0; i <= grid_dim; i++) {
@@ -163,12 +209,9 @@ class Terrain {
             glm::mat4 MV = view*model;
             glUniformMatrix4fv(MV_id_, ONE, DONT_TRANSPOSE, glm::value_ptr(MV));
 
-            // draw
-            // TODO 5: for debugging it can be helpful to draw only the wireframe.
-            // You can do that by uncommenting the next line.
-            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            // TODO 5: depending on how you set up your vertex index buffer, you
-            // might have to change GL_TRIANGLE_STRIP to GL_TRIANGLES.
+            Material::Setup(program_id_);
+            Light::Setup(program_id_);
+
             glDrawElements(GL_TRIANGLES, num_indices_, GL_UNSIGNED_INT, 0);
 
             glBindVertexArray(0);
