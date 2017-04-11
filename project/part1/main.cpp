@@ -10,24 +10,29 @@
 #include "heightmap/heightmap.h"
 
 #include "terrain/terrain.h"
-#include "trackball.h"
+
+#define MOVE_VERTICALLY_FACTOR 0.05
+#define MOVE_LATERAL_FACTOR 0.1f
+#define MOVE_STRAIGHT_FACTOR 0.2f
 
 //Cube cube;
 Terrain terrain;
 
 int window_width = 800;
 int window_height = 600;
-float y_old;
+float cameraTheta = 90;
+float cameraPhi = 0;
 
 FrameBuffer framebuffer;
 HeightMap heightmap;
-Trackball trackball;
 
 using namespace glm;
 
 mat4 projection_matrix;
-mat4 trackball_matrix;
 mat4 old_trackball_matrix;
+vec3 cameraPosition;
+vec3 cameraLookingAt;
+vec3 cameraUp;
 mat4 view_matrix;
 mat4 cube_model_matrix;
 mat4 terrain_model_matrix;
@@ -37,14 +42,12 @@ void Init(GLFWwindow* window) {
     glEnable(GL_DEPTH_TEST);
 
     // setup view and projection matrices
-    vec3 cam_pos(2.0f, 2.0f, 2.0f);
-    vec3 cam_look(0.0f, 0.0f, 0.0f);
-    vec3 cam_up(0.0f, 0.0f, 1.0f);
-    view_matrix = lookAt(cam_pos, cam_look, cam_up);
+    cameraPosition = vec3(2.0f, 2.0f, 2.0f);
+    cameraLookingAt = vec3(0.0f, 0.0f, 0.0f);
+    cameraUp = vec3(0.0f, 0.0f, 1.0f);
+    view_matrix = lookAt(cameraPosition, cameraLookingAt, cameraUp);
     float ratio = window_width / (float) window_height;
     projection_matrix = perspective(45.0f, ratio, 0.1f, 10.0f);
-    trackball_matrix = IDENTITY_MATRIX;
-    old_trackball_matrix = IDENTITY_MATRIX;
 
     // create the model matrix (remember OpenGL is right handed)
     // accumulated transformation
@@ -72,29 +75,8 @@ vec2 TransformScreenCoords(GLFWwindow* window, int x, int y) {
                 1.0f - 2.0f * (float)y / height);
 }
 
-void MouseButton(GLFWwindow* window, int button, int action, int mod) {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        double screenX, screenY;
-        glfwGetCursorPos(window, &screenX, &screenY);
-        vec2 p = TransformScreenCoords(window, screenX, screenY);
-        trackball.BeingDrag(p.x, p.y);
-        old_trackball_matrix = trackball_matrix;
-    }
-}
-
-void MousePos(GLFWwindow* window, double x, double y) {
-    vec2 p = TransformScreenCoords(window, x, y);
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        trackball_matrix = trackball.Drag(p[0], p[1]) * old_trackball_matrix;
-    }
-    // zoom
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-        view_matrix = translate(view_matrix, vec3(0.f, 0.f, 1.5f * (p[1] - y_old)));
-    }
-    y_old = p[1];
-}
-
 void Display() {
+    view_matrix = lookAt(cameraPosition, cameraLookingAt, cameraUp);
     // render to framebuffer
     framebuffer.Bind();
     {
@@ -106,7 +88,7 @@ void Display() {
     // render to Window
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    terrain.Draw(trackball_matrix * terrain_model_matrix, view_matrix, projection_matrix);
+    terrain.Draw(terrain_model_matrix, view_matrix, projection_matrix);
     //heightmap.Draw();
 }
 
@@ -124,7 +106,6 @@ void ResizeCallback(GLFWwindow* window, int width, int height) {
     // should also be resized
     framebuffer.Cleanup();
     framebuffer.Init(window_width, window_height);
-    // TODO: tracking ball should be touched
 }
 
 void ErrorCallback(int error, const char* description) {
@@ -135,10 +116,48 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
     } else if (action == GLFW_PRESS) {
-        if (key == GLFW_KEY_LEFT) {
-            view_matrix[3] += vec4(0.05f, 0.0f, 0.0f, 0.0f);
+        if (key == GLFW_KEY_Q) {
+            vec3 cameraPositionToLookingAt = cameraLookingAt - cameraPosition;
+            vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
+            cameraPosition += MOVE_LATERAL_FACTOR * horizontalAxis;
+            cameraLookingAt += MOVE_LATERAL_FACTOR * horizontalAxis;
+        } else if (key == GLFW_KEY_E) {
+            vec3 cameraPositionToLookingAt = cameraLookingAt - cameraPosition;
+            vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
+            cameraPosition -= MOVE_LATERAL_FACTOR * horizontalAxis;
+            cameraLookingAt -= MOVE_LATERAL_FACTOR * horizontalAxis;
+        } else if (key == GLFW_KEY_W) {
+            vec3 dmove = normalize(cameraLookingAt - cameraPosition);
+            cameraPosition += MOVE_STRAIGHT_FACTOR * dmove;
+        } else if (key == GLFW_KEY_S) {
+            vec3 dmove = normalize(cameraLookingAt - cameraPosition);
+            cameraPosition -= MOVE_STRAIGHT_FACTOR * dmove;
+        } else if (key == GLFW_KEY_LEFT) {
+            const float rotationAngle = -0.05;
+            vec4 lookAtToCamera = vec4(cameraPosition - cameraLookingAt, 1.0f);
+            mat4 rotationMatrix = rotate(mat4(1.0f), rotationAngle, vec3(0.0f, 0.0f, 1.0f));
+            cameraPosition = cameraLookingAt + vec3(rotationMatrix * lookAtToCamera);
         } else if (key == GLFW_KEY_RIGHT) {
-            view_matrix[3] += vec4(-0.05f, 0.0f, 0.0f, 0.0f);
+            const float rotationAngle = 0.05;
+            vec4 lookAtToCamera = vec4(cameraPosition - cameraLookingAt, 1.0f);
+            mat4 rotationMatrix = rotate(mat4(1.0f), rotationAngle, vec3(0.0f, 0.0f, 1.0f));
+            cameraPosition = cameraLookingAt + vec3(rotationMatrix * lookAtToCamera);
+        } else if (key == GLFW_KEY_UP) {
+            cameraLookingAt += mat3(MOVE_VERTICALLY_FACTOR) * vec3(0.0f, 0.0f, 1.0f);
+        } else if (key == GLFW_KEY_DOWN) {
+            cameraLookingAt -= mat3(MOVE_VERTICALLY_FACTOR) * vec3(0.0f, 0.0f, 1.0f); 
+        } else if (key == GLFW_KEY_A) {
+            vec3 cameraPositionToLookingAt = cameraLookingAt - cameraPosition;
+            float distXYsquare = cameraPositionToLookingAt.x * cameraPositionToLookingAt.x +
+                cameraPositionToLookingAt.y * cameraPositionToLookingAt.y;
+            vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
+            cameraLookingAt += mat3(0.05) * horizontalAxis;
+        } else if (key == GLFW_KEY_D) {
+            vec3 cameraPositionToLookingAt = cameraLookingAt - cameraPosition;
+            float distXYsquare = cameraPositionToLookingAt.x * cameraPositionToLookingAt.x +
+                cameraPositionToLookingAt.y * cameraPositionToLookingAt.y;
+            vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
+            cameraLookingAt -= mat3(0.05) * horizontalAxis;
         }
     }
 }
@@ -177,10 +196,6 @@ int main(int argc, char *argv[]) {
 
     // set the framebuffer resize callback
     glfwSetFramebufferSizeCallback(window, ResizeCallback);
-
-    // set the mouse press and position callback
-    glfwSetMouseButtonCallback(window, MouseButton);
-    glfwSetCursorPosCallback(window, MousePos);
 
     // GLEW Initialization (must have a context)
     // https://www.opengl.org/wiki/OpenGL_Loading_Library
