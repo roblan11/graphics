@@ -59,7 +59,7 @@ void Init(GLFWwindow* window) {
     // this unsures that the framebuffer has the same size as the window
     // (see http://www.glfw.org/docs/latest/window.html#window_fbsize)
     glfwGetFramebufferSize(window, &window_width, &window_height);
-    GLuint framebuffer_texture_id = framebuffer.Init(window_width, window_height);
+    GLuint framebuffer_texture_id = framebuffer.Init(window_width, window_height, true);
     heightmap.Init(window_width, window_height, framebuffer_texture_id);
     terrain.Init(framebuffer_texture_id);
 }
@@ -145,7 +145,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         } else if (key == GLFW_KEY_UP) {
             cameraLookingAt += mat3(MOVE_VERTICALLY_FACTOR) * vec3(0.0f, 0.0f, 1.0f);
         } else if (key == GLFW_KEY_DOWN) {
-            cameraLookingAt -= mat3(MOVE_VERTICALLY_FACTOR) * vec3(0.0f, 0.0f, 1.0f); 
+            cameraLookingAt -= mat3(MOVE_VERTICALLY_FACTOR) * vec3(0.0f, 0.0f, 1.0f);
         } else if (key == GLFW_KEY_A) {
             vec3 cameraPositionToLookingAt = cameraLookingAt - cameraPosition;
             float distXYsquare = cameraPositionToLookingAt.x * cameraPositionToLookingAt.x +

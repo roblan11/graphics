@@ -28,8 +28,8 @@ struct Light {
 };
 
 struct Material {
-        glm::vec3 ka = glm::vec3(0.1f, 0.1f, 0.1f);
-        glm::vec3 kd = glm::vec3(0.9f, 0.9f, 0.9f);
+        glm::vec3 ka = glm::vec3(0.5f, 0.5f, 0.5f);
+        glm::vec3 kd = glm::vec3(0.6f, 0.6f, 0.6f);
         glm::vec3 ks = glm::vec3(0.4f, 0.4f, 0.4f);
         float alpha = 100.0f;
 

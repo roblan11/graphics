@@ -28,11 +28,11 @@ void main() {
         color = vec3(0.7, 0.7, 0.7);
     }
 
-    float delta = 0.03;
+    /*float delta = 0.03;
     float dx = (texture(tex, vec2(uv.x+delta, uv.y)).x - texture(tex, vec2(uv.x-delta, uv.y)).x);
     float dy = (texture(tex, vec2(uv.x, uv.y + delta)).x - texture(tex, vec2(uv.x, uv.y - delta)).x);
     vec3 direction = vec3(5*(-dx), 5*(-dy), 1.f);
-    //vec3 n = normalize(direction);
+    vec3 n = normalize(direction);*/
 
     vec3 x = dFdx(vpoint_mv.xyz);
     vec3 y = dFdy(vpoint_mv.xyz);
@@ -53,7 +53,9 @@ void main() {
         vec3 r = reflect(-l, n);
 
         /// 3) compute specular term.
-        gray += Ls * ks * pow(max(dot(r, v), 0.0), alpha);
+        if(height < 0.001){
+          gray += Ls * ks * pow(max(dot(r, v), 0.0), alpha);
+        }
     }
     color = color * gray;
     //color = n;
