@@ -12,8 +12,6 @@ PART 1: TERRAIN GENERATION
 
     Create a Perlin noise function in the fragment shader. (Chris)
 
-    !!!!! Render height map before the main render loop !!!! ce n'est pas fait mais n'a pas besoin d'être fait si c'est une carte infinie.
-
     Implement fractal Brownian motion (fBm). (Robin)
 
   2. Displaying the Terrain
