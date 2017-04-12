@@ -27,6 +27,16 @@ PART 1: TERRAIN GENERATION
   3. Advanced
 
     The keys: qweasd + arrows let the possibility to move in the virutal world. (Rehan)
+    - w: move forward
+    - s: move backward
+    - a: the user is fixed, the point observed is moving to the left
+    - d: the user is fixed, the point observed is moving to the right
+    - q: the user and the point observed move to the left
+    - e: the user and the point observed move to the right
+    - left arrow: move like if there were a trackball
+    - right arrow: move like if there were a trackball
+    - up arrow: look up
+    - down arrow: look down
 
   WORK TIMES [%]
     rehan :
