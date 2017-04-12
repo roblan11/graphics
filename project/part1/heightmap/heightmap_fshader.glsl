@@ -53,7 +53,7 @@ float fBm(vec2 xy) {
   // Properties
   const int octaves = 5;
   float lacunarity = 2.f;
-  float gain = 0.5;
+  float gain = 0.35;
   //
   // Initial values
   float amplitude = 0.7;
@@ -63,7 +63,9 @@ float fBm(vec2 xy) {
   // Loop of octaves
   for (int i = 0; i < octaves; i++) {
     float n = noise(xy.x, xy.y, 0.f);
-    z += amplitude * n;
+    n = 1 - abs(n);     // create creases
+    n = pow(n, 0.8);      // sharpen creases
+    z += amplitude * (n*1.3 - 0.9);
 
     xy *= lacunarity;
     amplitude *= gain;
@@ -76,10 +78,12 @@ void main() {
     vec2 xy = uv.xy;
     xy.x *= tex_width/tex_height;
 
-    if(fBm(1.5*xy) < 0){
+    float red = fBm(2*xy + vec2(17.f, 6.f));
+
+    if(red < 0){
         color =  vec3(0.0, 0.0, 0.0);
     } else {
-        color =  vec3(fBm(1.5*xy), 0.0, 0.0);
+        color =  vec3(red, 0.0, 0.0);
     }
     //color = vec3(noise(uv.x*7, uv.y*7, 0.0), 0.0, 0.0);
 }
