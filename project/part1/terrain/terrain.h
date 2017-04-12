@@ -137,9 +137,6 @@ class Terrain : public Material, public Light {
             glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
             glBindTexture(GL_TEXTURE_2D, 0);
 
-            // to avoid the current object being polluted
-            glBindVertexArray(0);
-            glUseProgram(0);
             }
 
             // load texture

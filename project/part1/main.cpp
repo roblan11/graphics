@@ -42,7 +42,7 @@ void Init(GLFWwindow* window) {
     glEnable(GL_DEPTH_TEST);
 
     // setup view and projection matrices
-    cameraPosition = vec3(2.0f, 2.0f, 2.0f);
+    cameraPosition = vec3(2.0f, 0.0f, 2.0f);
     cameraLookingAt = vec3(0.0f, 0.0f, 0.0f);
     cameraUp = vec3(0.0f, 0.0f, 1.0f);
     view_matrix = lookAt(cameraPosition, cameraLookingAt, cameraUp);
@@ -81,7 +81,7 @@ void Display() {
     framebuffer.Bind();
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        heightmap.Draw();
+        heightmap.Draw(cameraLookingAt.x, cameraLookingAt.y);
     }
     framebuffer.Unbind();
 
@@ -116,36 +116,16 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
     } else if (action == GLFW_PRESS) {
-        if (key == GLFW_KEY_Q) {
-            vec3 cameraPositionToLookingAt = cameraLookingAt - cameraPosition;
-            vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
-            cameraPosition += MOVE_LATERAL_FACTOR * horizontalAxis;
-            cameraLookingAt += MOVE_LATERAL_FACTOR * horizontalAxis;
-        } else if (key == GLFW_KEY_E) {
-            vec3 cameraPositionToLookingAt = cameraLookingAt - cameraPosition;
-            vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
-            cameraPosition -= MOVE_LATERAL_FACTOR * horizontalAxis;
-            cameraLookingAt -= MOVE_LATERAL_FACTOR * horizontalAxis;
-        } else if (key == GLFW_KEY_W) {
+        if (key == GLFW_KEY_W) {
             vec3 dmove = normalize(cameraLookingAt - cameraPosition);
+            dmove.z = 0.0f;
             cameraPosition += MOVE_STRAIGHT_FACTOR * dmove;
+            cameraLookingAt += MOVE_STRAIGHT_FACTOR * dmove;
         } else if (key == GLFW_KEY_S) {
             vec3 dmove = normalize(cameraLookingAt - cameraPosition);
+            dmove.z = 0.0f;
             cameraPosition -= MOVE_STRAIGHT_FACTOR * dmove;
-        } else if (key == GLFW_KEY_LEFT) {
-            const float rotationAngle = -0.05;
-            vec4 lookAtToCamera = vec4(cameraPosition - cameraLookingAt, 1.0f);
-            mat4 rotationMatrix = rotate(mat4(1.0f), rotationAngle, vec3(0.0f, 0.0f, 1.0f));
-            cameraPosition = cameraLookingAt + vec3(rotationMatrix * lookAtToCamera);
-        } else if (key == GLFW_KEY_RIGHT) {
-            const float rotationAngle = 0.05;
-            vec4 lookAtToCamera = vec4(cameraPosition - cameraLookingAt, 1.0f);
-            mat4 rotationMatrix = rotate(mat4(1.0f), rotationAngle, vec3(0.0f, 0.0f, 1.0f));
-            cameraPosition = cameraLookingAt + vec3(rotationMatrix * lookAtToCamera);
-        } else if (key == GLFW_KEY_UP) {
-            cameraLookingAt += mat3(MOVE_VERTICALLY_FACTOR) * vec3(0.0f, 0.0f, 1.0f);
-        } else if (key == GLFW_KEY_DOWN) {
-            cameraLookingAt -= mat3(MOVE_VERTICALLY_FACTOR) * vec3(0.0f, 0.0f, 1.0f);
+            cameraLookingAt -= MOVE_STRAIGHT_FACTOR * dmove;
         } else if (key == GLFW_KEY_A) {
             vec3 cameraPositionToLookingAt = cameraLookingAt - cameraPosition;
             float distXYsquare = cameraPositionToLookingAt.x * cameraPositionToLookingAt.x +
@@ -159,6 +139,11 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
             cameraLookingAt -= mat3(0.05) * horizontalAxis;
         }
+
+        // move terrain_model_matrix
+        terrain_model_matrix = IDENTITY_MATRIX;
+        terrain_model_matrix[3][0] = cameraLookingAt.x;
+        terrain_model_matrix[3][1] = cameraLookingAt.y;
     }
 }
 

@@ -106,7 +106,7 @@ class HeightMap {
             this->screenquad_height_ = screenquad_height;
         }
 
-        void Draw() {
+        void Draw(float lookAtX, float lookAtY) {
             glUseProgram(program_id_);
             glBindVertexArray(vertex_array_id_);
 
@@ -115,6 +115,10 @@ class HeightMap {
                         this->screenquad_width_);
             glUniform1f(glGetUniformLocation(program_id_, "tex_height"),
                         this->screenquad_height_);
+
+            // where do you look at?
+            glUniform1f(glGetUniformLocation(program_id_, "position_looking_at_x"), lookAtX);
+            glUniform1f(glGetUniformLocation(program_id_, "position_looking_at_y"), lookAtY);
 
             // bind texture
             glActiveTexture(GL_TEXTURE0);

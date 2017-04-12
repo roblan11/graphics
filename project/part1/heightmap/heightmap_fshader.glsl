@@ -7,6 +7,8 @@ out vec3 color;
 uniform sampler2D tex;
 uniform float tex_width;
 uniform float tex_height;
+uniform float position_looking_at_x;
+uniform float position_looking_at_y;
 uniform int[256] p;
 
 float fade(float t) {
@@ -74,7 +76,8 @@ float fBm(vec2 xy) {
 void main() {
 
     vec2 xy = uv.xy;
-    xy.x *= tex_width/tex_height;
+    xy.x += position_looking_at_x;
+    xy.y += position_looking_at_y;
 
     if(fBm(1.5*xy) < 0){
         color =  vec3(0.0, 0.0, 0.0);
