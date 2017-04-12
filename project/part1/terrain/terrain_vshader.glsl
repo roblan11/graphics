@@ -5,6 +5,7 @@ in vec2 position;
 out vec4 vpoint_mv;
 out vec3 light_dir, view_dir;
 out vec2 uv;
+out float height;
 
 uniform mat4 MVP;
 uniform float time;
@@ -17,7 +18,7 @@ uniform sampler2D tex;
 void main() {
     uv = (position + vec2(1.0, 1.0)) * 0.5;
 
-    float height = texture(tex,uv).x;
+    height = texture(tex,uv).x;
     vec3 pos_3d = vec3(position.x, position.y, height);
 
     vpoint_mv = MV * vec4(pos_3d, 1.0);

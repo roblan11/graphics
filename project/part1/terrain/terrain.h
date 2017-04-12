@@ -3,9 +3,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 struct Light {
-        glm::vec3 La = glm::vec3(1.0f, 1.0f, 1.0f);
-        glm::vec3 Ld = glm::vec3(1.0f, 1.0f, 1.0f);
-        glm::vec3 Ls = glm::vec3(1.0f, 1.0f, 1.0f);
+        glm::vec3 La = glm::vec3(1.0f, 1.0f, 1.f);
+        glm::vec3 Ld = glm::vec3(1.0f, 1.0f, 1.f);
+        glm::vec3 Ls = glm::vec3(1.0f, 1.0f, 1.f);
 
         glm::vec3 light_pos = glm::vec3(0.0f, 0.0f, 2.0f);
 
@@ -31,7 +31,7 @@ struct Material {
         glm::vec3 ka = glm::vec3(0.1f, 0.1f, 0.1f);
         glm::vec3 kd = glm::vec3(0.9f, 0.9f, 0.9f);
         glm::vec3 ks = glm::vec3(0.4f, 0.4f, 0.4f);
-        float alpha = 60.0f;
+        float alpha = 100.0f;
 
         // pass material properties to the shaders
         void Setup(GLuint program_id) {
@@ -48,6 +48,7 @@ struct Material {
             glUniform1f(alpha_id, alpha);
         }
 };
+
 class Terrain : public Material, public Light {
 
     private:

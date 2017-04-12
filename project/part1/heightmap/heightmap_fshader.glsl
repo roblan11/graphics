@@ -52,7 +52,7 @@ float fBm(vec2 xy) {
 
   // Properties
   const int octaves = 5;
-  float lacunarity = 2.0;
+  float lacunarity = 2.f;
   float gain = 0.5;
   //
   // Initial values
@@ -65,7 +65,6 @@ float fBm(vec2 xy) {
     float n = noise(xy.x, xy.y, 0.f);
     z += amplitude * n;
 
-    //frequency *= lacunarity;
     xy *= lacunarity;
     amplitude *= gain;
   }
