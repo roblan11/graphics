@@ -76,6 +76,10 @@ void main() {
     vec2 xy = uv.xy;
     xy.x *= tex_width/tex_height;
 
-    color =  vec3(fBm(1.5*xy), 0.0, 0.0);
+    if(fBm(1.5*xy) < 0){
+        color =  vec3(0.0, 0.0, 0.0);
+    } else {
+        color =  vec3(fBm(1.5*xy), 0.0, 0.0);
+    }
     //color = vec3(noise(uv.x*7, uv.y*7, 0.0), 0.0, 0.0);
 }
