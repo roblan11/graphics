@@ -12,22 +12,7 @@ class HeightMap {
         float screenquad_width_;
         float screenquad_height_;
 
-        float* kernel;
-        size_t kLength;
-        float stdeviation;
-
     public:
-        void setStandardDeviation(float stdeviationInput) {
-            this->stdeviation = stdeviationInput;
-            this->kLength = 1 + 2 * 3 * int(ceil(this->stdeviation));
-            int mid = this->kLength >> 1;
-            for (int i = 0; i <= mid; ++i) {
-                double tmp = exp(- (i * i) / ( 2.0 * this->stdeviation * this->stdeviation));
-                kernel[mid + i] = tmp;
-                kernel[mid - i] = tmp;
-            }
-        }
-
         void Init(float screenquad_width, float screenquad_height,
                   GLuint texture) {
 
@@ -48,10 +33,6 @@ class HeightMap {
             glGenVertexArrays(1, &vertex_array_id_);
             glBindVertexArray(vertex_array_id_);
 
-            //////// Start
-            this->kernel = new float[1024]; // otherwise: error: unsized array index must be constant
-            setStandardDeviation(2.0);
-            //////// End
 
             // vertex coordinates
             {
@@ -118,30 +99,11 @@ class HeightMap {
             glDeleteProgram(program_id_);
             glDeleteVertexArrays(1, &vertex_array_id_);
             glDeleteTextures(1, &texture_id_);
-            delete [] kernel;
         }
 
         void UpdateSize(int screenquad_width, int screenquad_height) {
             this->screenquad_width_ = screenquad_width;
             this->screenquad_height_ = screenquad_height;
-        }
-
-        void IncreaseSigma() {
-            double variance = 0.25;
-            double sigma = sqrt(0.25);
-            double newStdDev = this->stdeviation + sigma;
-            if (newStdDev < 4.1) {
-                setStandardDeviation(newStdDev);
-            }
-        }
-
-        void DecreaseSigma() {
-            double variance = 0.25;
-            double sigma = sqrt(0.25);
-            double newStdDev = this->stdeviation - sigma;
-            if (newStdDev > 0.0) {
-                setStandardDeviation(newStdDev);
-            }
         }
 
         void Draw() {

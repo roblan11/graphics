@@ -84,7 +84,7 @@ class Terrain : public Material, public Light {
                 // TODO 5: make a triangle grid with dimension 100x100.
                 // always two subsequent entries in 'vertices' form a 2D vertex position.
 
-                int grid_dim = 2048;
+                int grid_dim = 512;
                 float delta = 2.f / grid_dim;
 
                 for (size_t i = 0; i <= grid_dim; i++) {
