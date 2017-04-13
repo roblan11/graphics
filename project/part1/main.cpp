@@ -11,6 +11,9 @@
 
 #include "terrain/terrain.h"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw_gl3.h"
+
 #define MOVE_VERTICALLY_FACTOR 0.05
 #define MOVE_LATERAL_FACTOR 0.1f
 #define MOVE_STRAIGHT_FACTOR 0.2f
@@ -206,6 +209,44 @@ int main(int argc, char *argv[]) {
     terrain.Cleanup();
     framebuffer.Cleanup();
     heightmap.Cleanup();
+
+    // Setup ImGui binding
+    ImGui_ImplGlfwGL3_Init(window, true);
+
+    bool show_test_window = true;
+    bool show_another_window = false;
+    ImVec4 clear_color = ImColor(114, 144, 154);
+
+    // Main loop
+    while (!glfwWindowShouldClose(window))
+    {
+        glfwPollEvents();
+        ImGui_ImplGlfwGL3_NewFrame();
+
+        {
+            ImGui::Begin("Another Window", &show_another_window);
+            static float f = 0.0f;
+            ImGui::Text("Hello, world!");
+            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+            ImGui::ColorEdit3("clear color", (float*)&clear_color);
+            if (ImGui::Button("Test Window")) show_test_window ^= 1;
+            if (ImGui::Button("Another Window")) show_another_window ^= 1;
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::End();
+        }
+
+        // Rendering
+        int display_w, display_h;
+        glfwGetFramebufferSize(window, &display_w, &display_h);
+        glViewport(0, 0, display_w, display_h);
+        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+        glClear(GL_COLOR_BUFFER_BIT);
+        ImGui::Render();
+        glfwSwapBuffers(window);
+    }
+
+    // Cleanup
+    ImGui_ImplGlfwGL3_Shutdown();
 
     // close OpenGL window and terminate GLFW
     glfwDestroyWindow(window);
