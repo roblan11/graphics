@@ -11,6 +11,16 @@ uniform float position_looking_at_x;
 uniform float position_looking_at_y;
 uniform int[256] p;
 
+// Properties
+uniform int octaves;
+uniform float lacunarity;
+uniform float gain;
+uniform float amplitude;
+uniform float exponent;
+uniform float heightscale;
+uniform float offset;
+uniform float scale;
+
 float fade(float t) {
     return t * t * t * (t * (t * 6 - 15) + 10);
 }
@@ -52,25 +62,18 @@ float noise(float x, float y, float z) {
 float fBm(vec2 xy) {
   // source: https://thebookofshaders.com/13/
 
-  // Properties
-  const int octaves = 5;
-  float lacunarity = 2.f;
-  float gain = 0.35;
-  //
-  // Initial values
-  float amplitude = 0.7;
-
+  float amp = amplitude;
   float z = 0.f;
   //
   // Loop of octaves
   for (int i = 0; i < octaves; i++) {
     float n = noise(xy.x, xy.y, 0.f);
     n = 1 - abs(n);     // create creases
-    n = pow(n, 0.8);      // sharpen creases
-    z += amplitude * (n*1.3 - 0.9);
+    n = pow(n, exponent);      // sharpen creases
+    z += amp * (n*heightscale - offset);
 
     xy *= lacunarity;
-    amplitude *= gain;
+    amp *= gain;
   }
   return z;
 }
@@ -81,7 +84,7 @@ void main() {
     xy.x += position_looking_at_x;
     xy.y += position_looking_at_y;
 
-    float red = fBm(2*xy + vec2(17.f, 6.f));
+    float red = fBm(scale*xy);
 
     if(red < 0){
         color =  vec3(0.0, 0.0, 0.0);

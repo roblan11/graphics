@@ -150,6 +150,36 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     }
 }
 
+void GUI(GLFWwindow* window) {
+    static int octaves = 5;
+    static float lacunarity = 2.0f;
+    static float gain = 0.35;
+    static float amplitude = 0.7;
+    static float exponent = 0.8;
+    static float heightscale = 1.3;
+    static float offset = 0.9;
+    static float scale = 2.f;
+
+    glfwPollEvents();
+    ImGui_ImplGlfwGL3_NewFrame();
+
+    {
+        ImGui::Text("heightmap options");
+
+        ImGui::SliderInt("octaves", &octaves, 1, 10);
+        ImGui::SliderFloat("lacunarity", &lacunarity, 0.1f, 5.0f);
+        ImGui::SliderFloat("gain", &gain, 0.01f, 1.0f);
+        ImGui::SliderFloat("amplitude", &amplitude, 0.01f, 1.0f);
+        ImGui::SliderFloat("exponent", &exponent, 0.01f, 3.0f);
+        ImGui::SliderFloat("heightscale", &heightscale, 0.1f, 3.0f);
+        ImGui::SliderFloat("offset", &offset, 0.f, 2.f);
+        ImGui::SliderFloat("scale", &scale, 0.1f, 3.0f);
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+        heightmap.Parameters(octaves, lacunarity, gain, amplitude, exponent, heightscale, offset, scale);
+    }
+}
+
 int main(int argc, char *argv[]) {
     // GLFW Initialization
     if(!glfwInit()) {
@@ -197,10 +227,15 @@ int main(int argc, char *argv[]) {
 
     // initialize our OpenGL program
     Init(window);
+    ImGui_ImplGlfwGL3_Init(window, true);
 
     // render loop
     while(!glfwWindowShouldClose(window)){
+
+        GUI(window);
+
         Display();
+        ImGui::Render();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -209,43 +244,6 @@ int main(int argc, char *argv[]) {
     terrain.Cleanup();
     framebuffer.Cleanup();
     heightmap.Cleanup();
-
-    // Setup ImGui binding
-    ImGui_ImplGlfwGL3_Init(window, true);
-
-    bool show_test_window = true;
-    bool show_another_window = false;
-    ImVec4 clear_color = ImColor(114, 144, 154);
-
-    // Main loop
-    while (!glfwWindowShouldClose(window))
-    {
-        glfwPollEvents();
-        ImGui_ImplGlfwGL3_NewFrame();
-
-        {
-            ImGui::Begin("Another Window", &show_another_window);
-            static float f = 0.0f;
-            ImGui::Text("Hello, world!");
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-            ImGui::ColorEdit3("clear color", (float*)&clear_color);
-            if (ImGui::Button("Test Window")) show_test_window ^= 1;
-            if (ImGui::Button("Another Window")) show_another_window ^= 1;
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
-
-        // Rendering
-        int display_w, display_h;
-        glfwGetFramebufferSize(window, &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
-        ImGui::Render();
-        glfwSwapBuffers(window);
-    }
-
-    // Cleanup
     ImGui_ImplGlfwGL3_Shutdown();
 
     // close OpenGL window and terminate GLFW

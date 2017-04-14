@@ -33,6 +33,8 @@ class HeightMap {
             glGenVertexArrays(1, &vertex_array_id_);
             glBindVertexArray(vertex_array_id_);
 
+            Parameters(5, 2.f, 0.35, 0.7, 0.8, 1.3, 0.9, 2.f);
+
 
             // vertex coordinates
             {
@@ -90,6 +92,17 @@ class HeightMap {
             // to avoid the current object being polluted
             glBindVertexArray(0);
             glUseProgram(0);
+        }
+
+        void Parameters(int octaves, float lacunarity, float gain, float amplitude, float exponent, float heightscale, float offset, float scale) {
+            glUniform1i(glGetUniformLocation(program_id_, "octaves"), octaves);
+            glUniform1f(glGetUniformLocation(program_id_, "lacunarity"), lacunarity);
+            glUniform1f(glGetUniformLocation(program_id_, "gain"), gain);
+            glUniform1f(glGetUniformLocation(program_id_, "amplitude"), amplitude);
+            glUniform1f(glGetUniformLocation(program_id_, "exponent"), exponent);
+            glUniform1f(glGetUniformLocation(program_id_, "heightscale"), heightscale);
+            glUniform1f(glGetUniformLocation(program_id_, "offset"), offset);
+            glUniform1f(glGetUniformLocation(program_id_, "scale"), scale);
         }
 
         void Cleanup() {
