@@ -12,6 +12,7 @@ uniform mat4 MV;
 uniform vec3 La, Ld, Ls;
 uniform vec3 ka, kd, ks;
 uniform float alpha;
+uniform float lvl_water;
 
 void main() {
     if(height < 0.001){
@@ -27,6 +28,12 @@ void main() {
     } else {
         color = vec3(0.7, 0.7, 0.7);
     }
+
+    /*if(height < lvl_water){
+        color = vec3(0.f, 1.f, 0.f);
+    } else {
+        color = vec3(1.f, 0.f, 0.f);
+    }*/
 
     /*float delta = 0.03;
     float dx = (texture(tex, vec2(uv.x+delta, uv.y)).x - texture(tex, vec2(uv.x-delta, uv.y)).x);

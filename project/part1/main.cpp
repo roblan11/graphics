@@ -160,7 +160,8 @@ void GUI(GLFWwindow* window) {
     static float offset = 0.9;
     static float scale = 2.f;
 
-    glfwPollEvents();
+    static float lvl_water = 0.3;
+
     ImGui_ImplGlfwGL3_NewFrame();
 
     {
@@ -174,10 +175,21 @@ void GUI(GLFWwindow* window) {
         ImGui::SliderFloat("heightscale", &heightscale, 0.1f, 3.0f);
         ImGui::SliderFloat("offset", &offset, 0.f, 2.f);
         ImGui::SliderFloat("scale", &scale, 0.1f, 3.0f);
+        ImGui::SliderFloat("lvl_water", &lvl_water, 0.f, 1.0f);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
         heightmap.Parameters(octaves, lacunarity, gain, amplitude, exponent, heightscale, offset, scale);
+        terrain.Parameters(lvl_water);
     }
+
+    ImGui::Render();
+
+    // bool show_test_window = true;
+    //
+    // {
+    //     ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
+    //     ImGui::ShowTestWindow(&show_test_window);
+    // }
 }
 
 int main(int argc, char *argv[]) {
@@ -227,24 +239,23 @@ int main(int argc, char *argv[]) {
 
     // initialize our OpenGL program
     Init(window);
-    ImGui_ImplGlfwGL3_Init(window, true);
+    ImGui_ImplGlfwGL3_Init(window, false);
 
     // render loop
     while(!glfwWindowShouldClose(window)){
+        Display();
 
         GUI(window);
 
-        Display();
-        ImGui::Render();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    ImGui_ImplGlfwGL3_Shutdown();
 
     // cleanup
     terrain.Cleanup();
     framebuffer.Cleanup();
     heightmap.Cleanup();
-    ImGui_ImplGlfwGL3_Shutdown();
 
     // close OpenGL window and terminate GLFW
     glfwDestroyWindow(window);

@@ -62,6 +62,11 @@ class Terrain : public Material, public Light {
         GLuint MV_id_;                         // model, view matrix ID
 
     public:
+        void Parameters(float lvl_water) {
+            glUniform1f(glGetUniformLocation(program_id_, "lvl_water"), lvl_water);
+        }
+
+
         void Init(GLuint texture) {
             // compile the shaders.
             program_id_ = icg_helper::LoadShaders("terrain_vshader.glsl",
@@ -173,7 +178,7 @@ class Terrain : public Material, public Light {
             // other uniforms
             MVP_id_ = glGetUniformLocation(program_id_, "MVP");
             MV_id_ = glGetUniformLocation(program_id_, "MV");
-
+            Parameters(0.3);
             // to avoid the current object being polluted
             glBindVertexArray(0);
             glUseProgram(0);
