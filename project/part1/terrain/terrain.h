@@ -2,6 +2,44 @@
 #include "icg_helper.h"
 #include <glm/gtc/type_ptr.hpp>
 
+struct Terrain_Parameters {
+    float lvl_sand;
+    float mix_sand_grass;
+    float lvl_grass;
+    float mix_grass_snow;
+    float lvl_snow;
+
+    GLuint lvl_sand_id;
+    GLuint mix_sand_grass_id;
+    GLuint lvl_grass_id;
+    GLuint mix_grass_snow_id;
+    GLuint lvl_snow_id;
+
+    void Init(GLuint pid) {
+        lvl_sand_id = glGetUniformLocation(pid, "lvl_sand");
+        mix_sand_grass_id = glGetUniformLocation(pid, "mix_sand_grass");
+        lvl_grass_id = glGetUniformLocation(pid, "lvl_grass");
+        mix_grass_snow_id = glGetUniformLocation(pid, "mix_grass_snow");
+        lvl_snow_id = glGetUniformLocation(pid, "lvl_snow");
+    }
+
+    void Pass(float lvl_sand, float mix_sand_grass, float lvl_grass, float mix_grass_snow, float lvl_snow) {
+        this->lvl_sand = lvl_sand;
+        this->mix_sand_grass = mix_sand_grass;
+        this->lvl_grass = lvl_grass;
+        this->mix_grass_snow = mix_grass_snow;
+        this->lvl_snow = lvl_snow;
+    }
+
+    void Update() {
+        glUniform1f(lvl_sand_id, lvl_sand);
+        glUniform1f(mix_sand_grass_id, mix_sand_grass);
+        glUniform1f(lvl_grass_id, lvl_grass);
+        glUniform1f(mix_grass_snow_id, mix_grass_snow);
+        glUniform1f(lvl_snow_id, lvl_snow);
+    }
+};
+
 struct Light {
         glm::vec3 La = glm::vec3(1.0f, 1.0f, 1.f);
         glm::vec3 Ld = glm::vec3(1.0f, 1.0f, 1.f);
@@ -49,7 +87,7 @@ struct Material {
         }
 };
 
-class Terrain : public Material, public Light {
+class Terrain : public Material, public Light, public Terrain_Parameters {
 
     private:
         GLuint vertex_array_id_;                // vertex array object
@@ -62,11 +100,6 @@ class Terrain : public Material, public Light {
         GLuint MV_id_;                         // model, view matrix ID
 
     public:
-        void Parameters(float lvl_water) {
-            glUniform1f(glGetUniformLocation(program_id_, "lvl_water"), lvl_water);
-        }
-
-
         void Init(GLuint texture) {
             // compile the shaders.
             program_id_ = icg_helper::LoadShaders("terrain_vshader.glsl",
@@ -81,6 +114,8 @@ class Terrain : public Material, public Light {
             // vertex one vertex array
             glGenVertexArrays(1, &vertex_array_id_);
             glBindVertexArray(vertex_array_id_);
+
+            Terrain_Parameters::Init(program_id_);
 
             // vertex coordinates and indices
             {
@@ -144,44 +179,16 @@ class Terrain : public Material, public Light {
 
             }
 
-            // load texture
-            {
-//                int width;
-//                int height;
-//                int nb_component;
-                //string filename = "quad_texture.tga";
-                // set stb_image to have the same coordinates as OpenGL
-                //stbi_set_flip_vertically_on_load(1);
-                //unsigned char* image = stbi_load(filename.c_str(), &width,
-                                                 //&height, &nb_component, 0);
-
-                //if(image == nullptr) {
-                    //throw(string("Failed to load texture"));
-                //}
-
-//                if(nb_component == 3) {
-//                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,
-//                                 GL_RGB, GL_UNSIGNED_BYTE, image);
-//                } else if(nb_component == 4) {
-//                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
-//                                 GL_RGBA, GL_UNSIGNED_BYTE, image);
-//                }
-
-//                GLuint tex_id = glGetUniformLocation(program_id_, "tex");
-//                glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
-
-//                // cleanup
-//                glBindTexture(GL_TEXTURE_2D, 0);
-//                stbi_image_free(image);
-            }
-
             // other uniforms
             MVP_id_ = glGetUniformLocation(program_id_, "MVP");
             MV_id_ = glGetUniformLocation(program_id_, "MV");
-            Parameters(0.3);
             // to avoid the current object being polluted
             glBindVertexArray(0);
             glUseProgram(0);
+        }
+
+        void Update(float lvl_sand, float mix_sand_grass, float lvl_grass, float mix_grass_snow, float lvl_snow) {
+            Terrain_Parameters::Pass(lvl_sand, mix_sand_grass, lvl_grass, mix_grass_snow, lvl_snow);
         }
 
         void Cleanup() {
@@ -211,6 +218,8 @@ class Terrain : public Material, public Light {
             // setup MV
             glm::mat4 MV = view*model;
             glUniformMatrix4fv(MV_id_, ONE, DONT_TRANSPOSE, glm::value_ptr(MV));
+
+            Terrain_Parameters::Update();
 
             Material::Setup(program_id_);
             Light::Setup(program_id_);

@@ -1,17 +1,15 @@
 #pragma once
 #include "icg_helper.h"
 
-struct Parameters {
-    int octaves = 5;
-    float lacunarity = 2.f;
-    float gain = 0.35;
-    float amplitude = 0.7;
-    float exponent = 0.8;
-    float heightscale = 1.3;
-    float offset = 0.9;
-    float scale = 1.8;
-
-    GLuint program_id;
+struct Heightmap_Parameters {
+    int octaves;
+    float lacunarity;
+    float gain;
+    float amplitude;
+    float exponent;
+    float heightscale;
+    float offset;
+    float scale;
 
     GLuint octaves_id;
     GLuint lacunarity_id;
@@ -23,18 +21,14 @@ struct Parameters {
     GLuint scale_id;
 
     void Init(GLuint pid) {
-        program_id = pid;
-
-        octaves_id = glGetUniformLocation(program_id, "octaves");
-        lacunarity_id = glGetUniformLocation(program_id, "lacunarity");
-        gain_id = glGetUniformLocation(program_id, "gain");
-        amplitude_id = glGetUniformLocation(program_id, "amplitude");
-        exponent_id = glGetUniformLocation(program_id, "exponent");
-        heightscale_id = glGetUniformLocation(program_id, "heightscale");
-        offset_id = glGetUniformLocation(program_id, "offset");
-        scale_id = glGetUniformLocation(program_id, "scale");
-
-        Update();
+        octaves_id = glGetUniformLocation(pid, "octaves");
+        lacunarity_id = glGetUniformLocation(pid, "lacunarity");
+        gain_id = glGetUniformLocation(pid, "gain");
+        amplitude_id = glGetUniformLocation(pid, "amplitude");
+        exponent_id = glGetUniformLocation(pid, "exponent");
+        heightscale_id = glGetUniformLocation(pid, "heightscale");
+        offset_id = glGetUniformLocation(pid, "offset");
+        scale_id = glGetUniformLocation(pid, "scale");
     }
 
     void Pass(int octaves, float lacunarity, float gain, float amplitude, float exponent, float heightscale, float offset, float scale) {
@@ -46,8 +40,6 @@ struct Parameters {
         this->heightscale = heightscale;
         this->offset = offset;
         this->scale = scale;
-
-        Update();
     }
 
     void Update() {
@@ -62,7 +54,7 @@ struct Parameters {
     }
 };
 
-class HeightMap : public Parameters {
+class HeightMap : public Heightmap_Parameters {
 
     private:
         GLuint vertex_array_id_;        // vertex array object
@@ -94,7 +86,7 @@ class HeightMap : public Parameters {
             glGenVertexArrays(1, &vertex_array_id_);
             glBindVertexArray(vertex_array_id_);
 
-            Parameters::Init(program_id_);
+            Heightmap_Parameters::Init(program_id_);
 
             // vertex coordinates
             {
@@ -155,7 +147,7 @@ class HeightMap : public Parameters {
         }
 
         void Update(int octaves, float lacunarity, float gain, float amplitude, float exponent, float heightscale, float offset, float scale) {
-            Parameters::Pass(octaves, lacunarity, gain, amplitude, exponent, heightscale, offset, scale);
+            Heightmap_Parameters::Pass(octaves, lacunarity, gain, amplitude, exponent, heightscale, offset, scale);
         }
 
         void Cleanup() {
@@ -181,6 +173,7 @@ class HeightMap : public Parameters {
                         this->screenquad_width_);
             glUniform1f(glGetUniformLocation(program_id_, "tex_height"),
                         this->screenquad_height_);
+            Heightmap_Parameters::Update();
 
             // where do you look at?
             glUniform1f(glGetUniformLocation(program_id_, "position_looking_at_x"), lookAtX);

@@ -12,34 +12,27 @@ uniform mat4 MV;
 uniform vec3 La, Ld, Ls;
 uniform vec3 ka, kd, ks;
 uniform float alpha;
-uniform float lvl_water;
+
+uniform float lvl_sand;
+uniform float mix_sand_grass;
+uniform float lvl_grass;
+uniform float mix_grass_snow;
+uniform float lvl_snow;
 
 void main() {
-    if(height < 0.001){
+    if(height < lvl_sand){
         color = vec3(0, 0.6, 0.9);
-    } else if (height < 0.02){
+    } else if (height < mix_sand_grass){
         color = vec3(0.6, 0.7, 0.0);
-    } else if (height < 0.07){
-        color = mix(vec3(0.6, 0.7, 0.0), vec3(0.2, 0.7, 0.1), (height-0.02)/0.07);
-    } else if (height < 0.2){
+    } else if (height < lvl_grass){
+        color = mix(vec3(0.6, 0.7, 0.0), vec3(0.2, 0.7, 0.1), (height-mix_sand_grass)/(lvl_grass-mix_sand_grass));
+    } else if (height < mix_grass_snow){
         color = vec3(0.2, 0.7, 0.1);
-    } else if (height < 0.4){
-        color = mix(vec3(0.2, 0.7, 0.1), vec3(0.7, 0.7, 0.7), (height-0.2)/0.2);
+    } else if (height < lvl_snow){
+        color = mix(vec3(0.2, 0.7, 0.1), vec3(0.7, 0.7, 0.7), (height-mix_grass_snow)/(lvl_snow-mix_grass_snow));
     } else {
         color = vec3(0.7, 0.7, 0.7);
     }
-
-    /*if(height < lvl_water){
-        color = vec3(0.f, 1.f, 0.f);
-    } else {
-        color = vec3(1.f, 0.f, 0.f);
-    }*/
-
-    /*float delta = 0.03;
-    float dx = (texture(tex, vec2(uv.x+delta, uv.y)).x - texture(tex, vec2(uv.x-delta, uv.y)).x);
-    float dy = (texture(tex, vec2(uv.x, uv.y + delta)).x - texture(tex, vec2(uv.x, uv.y - delta)).x);
-    vec3 direction = vec3(5*(-dx), 5*(-dy), 1.f);
-    vec3 n = normalize(direction);*/
 
     vec3 x = dFdx(vpoint_mv.xyz);
     vec3 y = dFdy(vpoint_mv.xyz);

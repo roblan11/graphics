@@ -160,36 +160,49 @@ void GUI(GLFWwindow* window) {
     static float offset = 0.9;
     static float scale = 2.f;
 
-    static float lvl_water = 0.3;
-
     ImGui_ImplGlfwGL3_NewFrame();
 
     {
-        ImGui::Text("heightmap options");
+        ImGui::Begin("heightmap options");
 
-        ImGui::SliderInt("octaves", &octaves, 1, 10);
+        ImGui::SliderInt("# octaves", &octaves, 1, 10);
         ImGui::SliderFloat("lacunarity", &lacunarity, 0.1f, 5.0f);
         ImGui::SliderFloat("gain", &gain, 0.01f, 1.0f);
         ImGui::SliderFloat("amplitude", &amplitude, 0.01f, 1.0f);
         ImGui::SliderFloat("exponent", &exponent, 0.01f, 3.0f);
-        ImGui::SliderFloat("heightscale", &heightscale, 0.1f, 3.0f);
-        ImGui::SliderFloat("offset", &offset, 0.f, 2.f);
-        ImGui::SliderFloat("scale", &scale, 0.1f, 3.0f);
-        ImGui::SliderFloat("lvl_water", &lvl_water, 0.f, 1.0f);
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::SliderFloat("scale the height", &heightscale, 0.1f, 3.0f);
+        ImGui::SliderFloat("negative offset", &offset, 0.f, 2.f);
+        ImGui::SliderFloat("terrain scale", &scale, 0.1f, 3.0f);
+        ImGui::End();
 
         heightmap.Update(octaves, lacunarity, gain, amplitude, exponent, heightscale, offset, scale);
-        terrain.Parameters(lvl_water);
+    }
+
+    static float lvl_sand = 0.001;
+    static float mix_sand_grass = 0.02;
+    static float lvl_grass = 0.07;
+    static float mix_grass_snow = 0.2;
+    static float lvl_snow = 0.4;
+
+    {
+        ImGui::Begin("terrain options");
+
+        ImGui::SliderFloat("sand height", &lvl_sand, 0.f, mix_sand_grass);
+        ImGui::SliderFloat("sand-grass mix height", &mix_sand_grass, lvl_sand, lvl_grass);
+        ImGui::SliderFloat("grass height", &lvl_grass, mix_sand_grass, mix_grass_snow);
+        ImGui::SliderFloat("grass-snow mix height", &mix_grass_snow, lvl_grass, lvl_snow);
+        ImGui::SliderFloat("snow height", &lvl_snow, mix_grass_snow, 1.f);
+        ImGui::End();
+
+        terrain.Update(lvl_sand, mix_sand_grass, lvl_grass, mix_grass_snow, lvl_snow);
+    }
+    {
+        ImGui::Begin("general information");
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::End();
     }
 
     ImGui::Render();
-
-    // bool show_test_window = true;
-    //
-    // {
-    //     ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
-    //     ImGui::ShowTestWindow(&show_test_window);
-    // }
 }
 
 int main(int argc, char *argv[]) {
