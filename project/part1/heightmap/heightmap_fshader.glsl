@@ -29,7 +29,7 @@ float lerp(float t, float a, float b) {
     return a + t * (b - a);
 }
 
-float grad(int hash, float x, float y, float z) {
+/*float grad_3d(int hash, float x, float y, float z) {
     // CONVERT LO 4 BITS OF HASH CODE INTO 12 GRADIENT DIRECTIONS.
     int h = hash & 15;
     float u = h<8 ? x : y,
@@ -37,7 +37,7 @@ float grad(int hash, float x, float y, float z) {
     return ((h&1) == 0 ? u : -u) + ((h&2) == 0 ? v : -v);
 }
 
-float noise(float x, float y, float z) {
+float noise_3d(float x, float y, float z) {
     // FIND UNIT CUBE THAT CONTAINS POINT.
     int X = int(floor(x)) & 255,
         Y = int(floor(y)) & 255,
@@ -54,14 +54,47 @@ float noise(float x, float y, float z) {
     int A = p[X  ]+Y, AA = p[A]+Z, AB = p[A+1]+Z,
         B = p[X+1]+Y, BA = p[B]+Z, BB = p[B+1]+Z;
     // AND ADD BLENDED RESULTS FROM  8 CORNERS OF CUBE
-    return lerp(w, lerp(v, lerp(u, grad(p[AA  ], x  , y  , z   ),
-                                   grad(p[BA  ], x-1, y  , z   )),
-                           lerp(u, grad(p[AB  ], x  , y-1, z   ),
-                                   grad(p[BB  ], x-1, y-1, z   ))),
-                   lerp(v, lerp(u, grad(p[AA+1], x  , y  , z-1 ),
-                                   grad(p[BA+1], x-1, y  , z-1 )),
-                           lerp(u, grad(p[AB+1], x  , y-1, z-1 ),
-                                   grad(p[BB+1], x-1, y-1, z-1 ))));
+    return lerp(w, lerp(v, lerp(u, grad_3d(p[AA  ], x  , y  , z   ),
+                                   grad_3d(p[BA  ], x-1, y  , z   )),
+                           lerp(u, grad_3d(p[AB  ], x  , y-1, z   ),
+                                   grad_3d(p[BB  ], x-1, y-1, z   ))),
+                   lerp(v, lerp(u, grad_3d(p[AA+1], x  , y  , z-1 ),
+                                   grad_3d(p[BA+1], x-1, y  , z-1 )),
+                           lerp(u, grad_3d(p[AB+1], x  , y-1, z-1 ),
+                                   grad_3d(p[BB+1], x-1, y-1, z-1 ))));
+}*/
+
+float grad_2d(int hash, float x, float y) {
+    switch(hash & 0x3)
+    {
+        case 0x0: return  x + y;
+        case 0x1: return -x + y;
+        case 0x2: return  x - y;
+        case 0x3: return -x - y;
+        default: return 0; // never happens
+    }
+    /*int h = hash & 0x3;
+    return ((h&1) == 0 ? x : -x)+((h&2) == 0 ? y : -y);*/
+}
+
+float noise_2d(float x, float y) {
+    // FIND UNIT CUBE THAT CONTAINS POINT.
+    int X = int(floor(x)) & 255,
+        Y = int(floor(y)) & 255;
+    // FIND RELATIVE X,Y,Z OF POINT IN CUBE.
+    x -= floor(x);
+    y -= floor(y);
+    // COMPUTE FADE CURVES FOR EACH OF X,Y,Z.
+    float u = fade(x),
+          v = fade(y);
+    // HASH COORDINATES OF THE 8 CUBE CORNERS,
+    int A = p[X  ]+Y, AA = p[A], AB = p[A+1],
+        B = p[X+1]+Y, BA = p[B], BB = p[B+1];
+    // AND ADD BLENDED RESULTS FROM  8 CORNERS OF CUBE
+    return lerp(v, lerp(u, grad_2d(p[AA], x  , y  ),
+                           grad_2d(p[BA], x-1, y  )),
+                   lerp(u, grad_2d(p[AB], x  , y-1),
+                           grad_2d(p[BB], x-1, y-1)));
 }
 
 float fBm(vec2 xy) {
@@ -72,7 +105,8 @@ float fBm(vec2 xy) {
 
     // Loop of octaves
     for (int i = 0; i < octaves; i++) {
-        float n = noise(xy.x, xy.y, 0.f);
+        //float n = noise_3d(xy.x, xy.y, 0.f);
+        float n = noise_2d(xy.x, xy.y);
         n = 1 - abs(n);
         n = pow(n, exponent);
         z += amp * (n*heightscale - offset);

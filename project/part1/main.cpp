@@ -178,7 +178,7 @@ void GUI(GLFWwindow* window) {
         ImGui::SliderFloat("lvl_water", &lvl_water, 0.f, 1.0f);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-        heightmap.Parameters(octaves, lacunarity, gain, amplitude, exponent, heightscale, offset, scale);
+        heightmap.Update(octaves, lacunarity, gain, amplitude, exponent, heightscale, offset, scale);
         terrain.Parameters(lvl_water);
     }
 

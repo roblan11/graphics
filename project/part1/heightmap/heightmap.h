@@ -1,7 +1,68 @@
 #pragma once
 #include "icg_helper.h"
 
-class HeightMap {
+struct Parameters {
+    int octaves = 5;
+    float lacunarity = 2.f;
+    float gain = 0.35;
+    float amplitude = 0.7;
+    float exponent = 0.8;
+    float heightscale = 1.3;
+    float offset = 0.9;
+    float scale = 1.8;
+
+    GLuint program_id;
+
+    GLuint octaves_id;
+    GLuint lacunarity_id;
+    GLuint gain_id;
+    GLuint amplitude_id;
+    GLuint exponent_id;
+    GLuint heightscale_id;
+    GLuint offset_id;
+    GLuint scale_id;
+
+    void Init(GLuint pid) {
+        program_id = pid;
+
+        octaves_id = glGetUniformLocation(program_id, "octaves");
+        lacunarity_id = glGetUniformLocation(program_id, "lacunarity");
+        gain_id = glGetUniformLocation(program_id, "gain");
+        amplitude_id = glGetUniformLocation(program_id, "amplitude");
+        exponent_id = glGetUniformLocation(program_id, "exponent");
+        heightscale_id = glGetUniformLocation(program_id, "heightscale");
+        offset_id = glGetUniformLocation(program_id, "offset");
+        scale_id = glGetUniformLocation(program_id, "scale");
+
+        Update();
+    }
+
+    void Pass(int octaves, float lacunarity, float gain, float amplitude, float exponent, float heightscale, float offset, float scale) {
+        this->octaves = octaves;
+        this->lacunarity = lacunarity;
+        this->gain = gain;
+        this->amplitude = amplitude;
+        this->exponent = exponent;
+        this->heightscale = heightscale;
+        this->offset = offset;
+        this->scale = scale;
+
+        Update();
+    }
+
+    void Update() {
+        glUniform1i(octaves_id, octaves);
+        glUniform1f(lacunarity_id, lacunarity);
+        glUniform1f(gain_id, gain);
+        glUniform1f(amplitude_id, amplitude);
+        glUniform1f(exponent_id, exponent);
+        glUniform1f(heightscale_id, heightscale);
+        glUniform1f(offset_id, offset);
+        glUniform1f(scale_id, scale);
+    }
+};
+
+class HeightMap : public Parameters {
 
     private:
         GLuint vertex_array_id_;        // vertex array object
@@ -33,8 +94,7 @@ class HeightMap {
             glGenVertexArrays(1, &vertex_array_id_);
             glBindVertexArray(vertex_array_id_);
 
-            Parameters(5, 2.f, 0.35, 0.7, 0.8, 1.3, 0.9, 2.f);
-
+            Parameters::Init(program_id_);
 
             // vertex coordinates
             {
@@ -94,15 +154,8 @@ class HeightMap {
             glUseProgram(0);
         }
 
-        void Parameters(int octaves, float lacunarity, float gain, float amplitude, float exponent, float heightscale, float offset, float scale) {
-            glUniform1i(glGetUniformLocation(program_id_, "octaves"), octaves);
-            glUniform1f(glGetUniformLocation(program_id_, "lacunarity"), lacunarity);
-            glUniform1f(glGetUniformLocation(program_id_, "gain"), gain);
-            glUniform1f(glGetUniformLocation(program_id_, "amplitude"), amplitude);
-            glUniform1f(glGetUniformLocation(program_id_, "exponent"), exponent);
-            glUniform1f(glGetUniformLocation(program_id_, "heightscale"), heightscale);
-            glUniform1f(glGetUniformLocation(program_id_, "offset"), offset);
-            glUniform1f(glGetUniformLocation(program_id_, "scale"), scale);
+        void Update(int octaves, float lacunarity, float gain, float amplitude, float exponent, float heightscale, float offset, float scale) {
+            Parameters::Pass(octaves, lacunarity, gain, amplitude, exponent, heightscale, offset, scale);
         }
 
         void Cleanup() {
