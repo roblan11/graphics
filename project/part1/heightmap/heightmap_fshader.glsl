@@ -71,10 +71,8 @@ float grad_2d(int hash, float x, float y) {
         case 0x1: return -x + y;
         case 0x2: return  x - y;
         case 0x3: return -x - y;
-        default: return 0; // never happens
+        default: return 0.f; // never happens
     }
-    /*int h = hash & 0x3;
-    return ((h&1) == 0 ? x : -x)+((h&2) == 0 ? y : -y);*/
 }
 
 float noise_2d(float x, float y) {
