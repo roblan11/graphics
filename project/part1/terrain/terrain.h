@@ -99,6 +99,48 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
         GLuint MVP_id_;                         // model, view, proj matrix ID
         GLuint MV_id_;                         // model, view matrix ID
 
+        void CreateGrid(size_t grid_dim, float grid_start, float grid_end) {
+            std::vector<GLfloat> vertices;
+            std::vector<GLuint> indices;
+
+            float delta = (grid_end - grid_start) / grid_dim;
+
+            for (size_t i = 0; i <= grid_dim; i++) {
+                for (size_t j = 0; j <= grid_dim; j++) {
+                    // compute vertices
+                    vertices.push_back((i * delta) + grid_start);
+                    vertices.push_back((j * delta) + grid_start);
+                }
+            }
+
+            for (int i = 0; i < grid_dim; i++) {
+                if ((i&1) == 0) {
+                    for (int j = 0; j <= grid_dim; j++) {
+                        indices.push_back(j + (grid_dim+1)*i);
+                        indices.push_back(j + (grid_dim+1)*(i+1));
+                    }
+                } else {
+                    for (int j = grid_dim; j >= 0; j--) {
+                        indices.push_back(j + (grid_dim+1)*i);
+                        indices.push_back(j + (grid_dim+1)*(i+1));
+                    }
+                }
+            }
+
+            num_indices_ = indices.size();
+            std::cout << num_indices_ << " indices" << '\n';
+
+            // position buffer
+            glGenBuffers(1, &vertex_buffer_object_position_);
+            glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_position_);
+            glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
+
+            // vertex indices
+            glGenBuffers(1, &vertex_buffer_object_index_);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertex_buffer_object_index_);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, num_indices_ * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
+        }
+
     public:
         void Init(GLuint texture) {
             // compile the shaders.
@@ -119,47 +161,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
 
             // vertex coordinates and indices
             {
-                std::vector<GLfloat> vertices;
-                std::vector<GLuint> indices;
-                // TODO 5: make a triangle grid with dimension 100x100.
-                // always two subsequent entries in 'vertices' form a 2D vertex position.
-
-                int grid_dim = 512;
-                float delta = 2.f / grid_dim;
-
-                for (size_t i = 0; i <= grid_dim; i++) {
-                    for (size_t j = 0; j <= grid_dim; j++) {
-                        // compute vertices
-                        vertices.push_back((i * delta) - 1.f);
-                        vertices.push_back((j * delta) - 1.f);
-
-                        if (i>0 && j>0) {
-                            // compute indeces
-                            size_t index = i*(grid_dim + 1) + j;
-                            indices.push_back(index - grid_dim - 2);
-                            indices.push_back(index - grid_dim - 1);
-                            indices.push_back(index - 1);
-
-                            indices.push_back(index - grid_dim - 1);
-                            indices.push_back(index - 1);
-                            indices.push_back(index);
-                        }
-                    }
-                }
-
-                num_indices_ = indices.size();
-
-                // position buffer
-                glGenBuffers(1, &vertex_buffer_object_position_);
-                glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_position_);
-                glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat),
-                             &vertices[0], GL_STATIC_DRAW);
-
-                // vertex indices
-                glGenBuffers(1, &vertex_buffer_object_index_);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertex_buffer_object_index_);
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint),
-                             &indices[0], GL_STATIC_DRAW);
+                CreateGrid(512, -1.f, 1.f);
 
                 // position shader attribute
                 GLuint loc_position = glGetAttribLocation(program_id_, "position");
@@ -224,7 +226,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
             Material::Setup(program_id_);
             Light::Setup(program_id_);
 
-            glDrawElements(GL_TRIANGLES, num_indices_, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLE_STRIP, num_indices_, GL_UNSIGNED_INT, 0);
 
             glBindVertexArray(0);
             glUseProgram(0);

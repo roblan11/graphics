@@ -53,7 +53,7 @@ void main() {
         vec3 r = reflect(-l, n);
 
         /// 3) compute specular term.
-        if(height < 0.001){
+        if(height < lvl_sand) {
           gray += Ls * ks * pow(max(dot(r, v), 0.0), alpha);
         }
     }
