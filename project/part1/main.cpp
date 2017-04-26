@@ -45,7 +45,7 @@ void Init(GLFWwindow* window) {
     glEnable(GL_DEPTH_TEST);
 
     // setup view and projection matrices
-    cameraPosition = vec3(2.0f, 0.0f, 2.0f);
+    cameraPosition = vec3(-1.5, 0.0f, 1.5);
     cameraLookingAt = vec3(0.0f, 0.0f, 0.0f);
     cameraUp = vec3(0.0f, 0.0f, 1.0f);
     view_matrix = lookAt(cameraPosition, cameraLookingAt, cameraUp);
@@ -62,7 +62,7 @@ void Init(GLFWwindow* window) {
     // this unsures that the framebuffer has the same size as the window
     // (see http://www.glfw.org/docs/latest/window.html#window_fbsize)
     glfwGetFramebufferSize(window, &window_width, &window_height);
-    GLuint framebuffer_texture_id = framebuffer.Init(window_width, window_height, true);
+    GLuint framebuffer_texture_id = framebuffer.Init(window_width, window_height);
     heightmap.Init(window_width, window_height, framebuffer_texture_id);
     terrain.Init(framebuffer_texture_id);
 }
