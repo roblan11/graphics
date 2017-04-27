@@ -123,10 +123,6 @@ void main() {
 
     float red = fBm(abs(scale*xy));
 
-    if(red < 0){
-        color =  vec3(0.0, 0.0, 0.0);
-    } else {
-        color =  vec3(red, 0.0, 0.0);
-    }
+    color =  vec3(red, 0.0, 0.0);
     //color = vec3(noise(uv.x*7, uv.y*7, 0.0), 0.0, 0.0);
 }

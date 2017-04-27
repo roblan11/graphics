@@ -131,16 +131,14 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             cameraLookingAt -= MOVE_STRAIGHT_FACTOR * dmove;
         } else if (key == GLFW_KEY_A) {
             vec3 cameraPositionToLookingAt = cameraLookingAt - cameraPosition;
-            float distXYsquare = cameraPositionToLookingAt.x * cameraPositionToLookingAt.x +
-                cameraPositionToLookingAt.y * cameraPositionToLookingAt.y;
+            //float distXYsquare = dot(cameraPositionToLookingAt, cameraPositionToLookingAt);
             vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
-            cameraLookingAt += mat3(0.05) * horizontalAxis;
+            cameraLookingAt += mat3(0.1) * horizontalAxis;
         } else if (key == GLFW_KEY_D) {
             vec3 cameraPositionToLookingAt = cameraLookingAt - cameraPosition;
-            float distXYsquare = cameraPositionToLookingAt.x * cameraPositionToLookingAt.x +
-                cameraPositionToLookingAt.y * cameraPositionToLookingAt.y;
+            //float distXYsquare = dot(cameraPositionToLookingAt, cameraPositionToLookingAt);
             vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
-            cameraLookingAt -= mat3(0.05) * horizontalAxis;
+            cameraLookingAt -= mat3(0.1) * horizontalAxis;
         }
 
         // move terrain_model_matrix

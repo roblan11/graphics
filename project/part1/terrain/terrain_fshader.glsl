@@ -20,8 +20,8 @@ uniform float mix_grass_snow;
 uniform float lvl_snow;
 
 void main() {
-    if(height < lvl_sand){
-        color = vec3(0, 0.6, 0.9);
+    if(height < 0){
+        color = vec3(0.2, 0.2, 0.2);
     } else if (height < mix_sand_grass){
         color = vec3(0.6, 0.7, 0.0);
     } else if (height < lvl_grass){
@@ -52,10 +52,6 @@ void main() {
         vec3 v = normalize(view_dir);
         vec3 r = reflect(-l, n);
 
-        /// 3) compute specular term.
-        if(height < lvl_sand) {
-          gray += Ls * ks * pow(max(dot(r, v), 0.0), alpha);
-        }
     }
     color = color * gray;
     //color = n;

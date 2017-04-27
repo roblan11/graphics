@@ -161,7 +161,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
 
             // vertex coordinates and indices
             {
-                CreateGrid(512, -1.f, 1.f);
+                CreateGrid(2048, -1.f, 1.f);
 
                 // position shader attribute
                 GLuint loc_position = glGetAttribLocation(program_id_, "position");
