@@ -177,10 +177,10 @@ void GUI(GLFWwindow* window) {
     }
 
     static float mix_uw_sand = 0.005;
-    static float mix_sand_grass = 0.02;
-    static float lvl_grass = 0.07;
-    static float mix_grass_rock = 0.15;
-    static float lvl_rock = 0.2;
+    static float mix_sand_grass = 0.015;
+    static float lvl_grass = 0.12;
+    static float mix_grass_rock = 0.18;
+    static float lvl_rock = 0.3;
     static float mix_rock_snow = 0.35;
     static float lvl_snow = 0.4;
 
