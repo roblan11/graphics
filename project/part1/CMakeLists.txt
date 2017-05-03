@@ -7,7 +7,9 @@ file(GLOB TEXTURES
     terrain/grass.tga
     terrain/snow.tga
     terrain/rock.tga
-    terrain/sand.tga)
+    terrain/sand.tga
+    skybox/skybox_texture.tga
+    water/waterDUDV.tga)
 copy_files_once(${TEXTURES})
 
 # list all the files you want to copy everytime
@@ -15,7 +17,9 @@ copy_files_once(${TEXTURES})
 file(GLOB SHADERS
     heightmap/*.glsl
     terrain/*.glsl
-    screenquad/*.glsl)
+    screenquad/*.glsl
+    skybox/*.glsl
+    water/*.glsl)
 deploy_shaders_to_build_dir(${SHADERS})
 
 add_executable(${EXERCISENAME} ${SOURCES} ${HEADERS} ${SHADERS})

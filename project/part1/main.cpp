@@ -9,7 +9,9 @@
 #include "framebuffer.h"
 #include "heightmap/heightmap.h"
 
+#include "skybox/skybox.h"
 #include "terrain/terrain.h"
+#include "water/water.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
@@ -27,7 +29,10 @@ float cameraTheta = 90;
 float cameraPhi = 0;
 
 FrameBuffer framebuffer;
+FrameBuffer reflectionBuffer;
 HeightMap heightmap;
+Skybox skybox;
+Water water;
 
 using namespace glm;
 
@@ -39,32 +44,36 @@ vec3 cameraUp;
 mat4 view_matrix;
 mat4 cube_model_matrix;
 mat4 terrain_model_matrix;
+mat4 skybox_model_matrix;
+mat4 water_model_matrix;
 
 void Init(GLFWwindow* window) {
     glClearColor(1.0, 1.0, 1.0 /*white*/, 1.0 /*solid*/);
     glEnable(GL_DEPTH_TEST);
 
     // setup view and projection matrices
-    cameraPosition = vec3(-1.5, 0.0f, 1.5);
+    cameraPosition = vec3(-4, -1.0f, 4);
     cameraLookingAt = vec3(0.0f, 0.0f, 0.0f);
-    cameraUp = vec3(0.0f, 0.0f, 1.0f);
+    vec3 axeZ = vec3(0.0f, 0.0f, 1.0f);
+    vec3 positionToLookingAt = cameraLookingAt - cameraPosition;
+    vec3 crossHorizontal = cross(axeZ, positionToLookingAt);
+    cameraUp = cross(positionToLookingAt, crossHorizontal);
     view_matrix = lookAt(cameraPosition, cameraLookingAt, cameraUp);
     float ratio = window_width / (float) window_height;
     projection_matrix = perspective(45.0f, ratio, 0.1f, 10.0f);
 
-    // create the model matrix (remember OpenGL is right handed)
-    // accumulated transformation
-    //cube_model_matrix = scale(IDENTITY_MATRIX, vec3(0.5));
-    //cube_model_matrix = translate(cube_model_matrix, vec3(0.0, 0.0, 0.6));
-    terrain_model_matrix = IDENTITY_MATRIX;
+    terrain_model_matrix = scale(IDENTITY_MATRIX, vec3(5.0f));
+    water_model_matrix = scale(IDENTITY_MATRIX, vec3(5.0f));
+    water_model_matrix[3][2] = 0.05f;
+    skybox_model_matrix = rotate(scale(IDENTITY_MATRIX, vec3(9.0f)), 1.57f, vec3(1,0,0));
 
-    // on retina/hidpi displays, pixels != screen coordinates
-    // this unsures that the framebuffer has the same size as the window
-    // (see http://www.glfw.org/docs/latest/window.html#window_fbsize)
     glfwGetFramebufferSize(window, &window_width, &window_height);
     GLuint framebuffer_texture_id = framebuffer.Init(window_width, window_height);
+    GLuint reflection_texture_id = reflectionBuffer.Init(window_width, window_height);
     heightmap.Init(window_width, window_height, framebuffer_texture_id);
+    skybox.Init();
     terrain.Init(framebuffer_texture_id);
+    water.Init(reflection_texture_id);
 }
 
 // transforms glfw screen coordinates into normalized OpenGL coordinates.
@@ -88,11 +97,24 @@ void Display() {
     }
     framebuffer.Unbind();
 
+    // TODO CAUSES PROBLEM WHEN DRAWN
+    // reflectionBuffer.Bind();
+    // {
+    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //    vec3 cam_pos_mirrored = vec3(cameraPosition.x, cameraPosition.y, -cameraPosition.z);
+    //    mat4 view_mirrored = lookAt(cam_pos_mirrored, cameraLookingAt, cameraUp);
+    //    mat4 view_projection_mirrored = projection_matrix * view_mirrored;
+    //    terrain.Draw(terrain_model_matrix, view_mirrored, projection_matrix);
+    //    skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix); // THIS LINE CAUSES THE PROBLEM
+    // }
+    // reflectionBuffer.Unbind();
+
     // render to Window
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     terrain.Draw(terrain_model_matrix, view_matrix, projection_matrix);
-    //heightmap.Draw();
+    skybox.Draw(skybox_model_matrix, view_matrix, projection_matrix);
+    water.Draw(water_model_matrix, view_matrix, projection_matrix);
 }
 
 // gets called when the windows/framebuffer is resized.
@@ -141,10 +163,18 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             cameraLookingAt -= mat3(0.1) * horizontalAxis;
         }
 
-        // move terrain_model_matrix
-        terrain_model_matrix = IDENTITY_MATRIX;
+        // move model_matrix
         terrain_model_matrix[3][0] = cameraLookingAt.x;
         terrain_model_matrix[3][1] = cameraLookingAt.y;
+        water_model_matrix[3][0] = cameraLookingAt.x;
+        water_model_matrix[3][1] = cameraLookingAt.y;
+        skybox_model_matrix[3][0] = cameraLookingAt.x;
+        skybox_model_matrix[3][1] = cameraLookingAt.y;
+
+        vec3 axeZ = vec3(0.0f, 0.0f, 1.0f);
+        vec3 positionToLookingAt = cameraLookingAt - cameraPosition;
+        vec3 crossHorizontal = cross(axeZ, positionToLookingAt);
+        cameraUp = cross(positionToLookingAt, crossHorizontal);
     }
 }
 
