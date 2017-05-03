@@ -11,6 +11,16 @@ uniform float position_looking_at_x;
 uniform float position_looking_at_y;
 uniform int[256] p;
 
+// Properties
+uniform int octaves;
+uniform float lacunarity;
+uniform float gain;
+uniform float amplitude;
+uniform float exponent;
+uniform float heightscale;
+uniform float offset;
+uniform float scale;
+
 float fade(float t) {
     return t * t * t * (t * (t * 6 - 15) + 10);
 }
@@ -65,53 +75,44 @@ float grad_2d(int hash, float x, float y) {
     }
 }
 
-float noise(float x, float y, float z) {
-      int X = int(floor(x)) & 255,                  // FIND UNIT CUBE THAT
-          Y = int(floor(y)) & 255,                  // CONTAINS POINT.
-          Z = int(floor(z)) & 255;
-      x -= floor(x);                                // FIND RELATIVE X,Y,Z
-      y -= floor(y);                                // OF POINT IN CUBE.
-      z -= floor(z);
-      float u = fade(x),                                 // COMPUTE FADE CURVES
-            v = fade(y),                                 // FOR EACH OF X,Y,Z.
-            w = fade(z);
-      int A = p[X  ]+Y, AA = p[A]+Z, AB = p[A+1]+Z,      // HASH COORDINATES OF
-          B = p[X+1]+Y, BA = p[B]+Z, BB = p[B+1]+Z;      // THE 8 CUBE CORNERS,
-
-      return lerp(w, lerp(v, lerp(u, grad(p[AA  ], x  , y  , z   ),  // AND ADD
-                                     grad(p[BA  ], x-1, y  , z   )), // BLENDED
-                             lerp(u, grad(p[AB  ], x  , y-1, z   ),  // RESULTS
-                                     grad(p[BB  ], x-1, y-1, z   ))),// FROM  8
-                     lerp(v, lerp(u, grad(p[AA+1], x  , y  , z-1 ),  // CORNERS
-                                     grad(p[BA+1], x-1, y  , z-1 )), // OF CUBE
-                             lerp(u, grad(p[AB+1], x  , y-1, z-1 ),
-                                     grad(p[BB+1], x-1, y-1, z-1 ))));
+float noise_2d(float x, float y) {
+    // FIND UNIT CUBE THAT CONTAINS POINT.
+    int X = int(floor(x)) & 255,
+        Y = int(floor(y)) & 255;
+    // FIND RELATIVE X,Y,Z OF POINT IN CUBE.
+    x -= floor(x);
+    y -= floor(y);
+    // COMPUTE FADE CURVES FOR EACH OF X,Y,Z.
+    float u = fade(x),
+          v = fade(y);
+    // HASH COORDINATES OF THE 8 CUBE CORNERS,
+    int A = p[X  ]+Y, AA = p[A], AB = p[A+1],
+        B = p[X+1]+Y, BA = p[B], BB = p[B+1];
+    // AND ADD BLENDED RESULTS FROM  8 CORNERS OF CUBE
+    return lerp(v, lerp(u, grad_2d(p[AA], x  , y  ),
+                           grad_2d(p[BA], x-1, y  )),
+                   lerp(u, grad_2d(p[AB], x  , y-1),
+                           grad_2d(p[BB], x-1, y-1)));
 }
 
 float fBm(vec2 xy) {
-  // source: https://thebookofshaders.com/13/
+    // source: https://thebookofshaders.com/13/
 
-  // Properties
-  const int octaves = 5;
-  float lacunarity = 2.f;
-  float gain = 0.35;
-  //
-  // Initial values
-  float amplitude = 0.7;
+    float amp = amplitude;
+    float z = 0.f;
 
-  float z = 0.f;
-  //
-  // Loop of octaves
-  for (int i = 0; i < octaves; i++) {
-    float n = noise(xy.x, xy.y, 0.f);
-    n = 1 - abs(n);     // create creases
-    n = pow(n, 0.8);      // sharpen creases
-    z += amplitude * (n*1.3 - 0.9);
+    // Loop of octaves
+    for (int i = 0; i < octaves; i++) {
+        //float n = noise_3d(xy.x, xy.y, 0.f);
+        float n = noise_2d(xy.x, xy.y);
+        n = 1 - abs(n);
+        n = pow(n, exponent);
+        z += amp * (n*heightscale - offset);
 
-    xy *= lacunarity;
-    amplitude *= gain;
-  }
-  return z;
+        xy *= lacunarity;
+        amp *= gain;
+    }
+    return z;
 }
 
 void main() {
@@ -120,7 +121,7 @@ void main() {
     xy.x += position_looking_at_x;
     xy.y += position_looking_at_y;
 
-    float red = fBm(2*xy + vec2(17.f, 6.f));
+    float red = fBm(abs(scale*xy));
 
     color =  vec3(red, 0.0, 0.0);
     //color = vec3(noise(uv.x*7, uv.y*7, 0.0), 0.0, 0.0);
