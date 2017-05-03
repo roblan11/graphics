@@ -8,10 +8,6 @@ in float height;
 out vec3 color;
 
 uniform sampler2D tex;
-uniform sampler2D rock_texture;
-uniform sampler2D sand_texture;
-uniform sampler2D grass_texture;
-uniform sampler2D snow_texture;
 uniform mat4 MV;
 uniform vec3 La, Ld, Ls;
 uniform vec3 ka, kd, ks;
@@ -28,38 +24,14 @@ void main() {
         color = vec3(0.2, 0.2, 0.2);
     } else if (height < mix_sand_grass){
         color = vec3(0.6, 0.7, 0.0);
-    } else if (height < 0.07){
-        color = mix(vec3(0.6, 0.7, 0.0), vec3(0.2, 0.7, 0.1), (height-0.02)/0.07);
-    } else if (height < 0.2){
+    } else if (height < lvl_grass){
+        color = mix(vec3(0.6, 0.7, 0.0), vec3(0.2, 0.7, 0.1), (height-mix_sand_grass)/(lvl_grass-mix_sand_grass));
+    } else if (height < mix_grass_snow){
         color = vec3(0.2, 0.7, 0.1);
-    } else if (height < 0.4){
-        color = mix(vec3(0.2, 0.7, 0.1), vec3(0.7, 0.7, 0.7), (height-0.2)/0.2);
+    } else if (height < lvl_snow){
+        color = mix(vec3(0.2, 0.7, 0.1), vec3(0.7, 0.7, 0.7), (height-mix_grass_snow)/(lvl_snow-mix_grass_snow));
     } else {
         color = vec3(0.7, 0.7, 0.7);
-    }
-
-    /*float delta = 0.03;
-    float dx = (texture(tex, vec2(uv.x+delta, uv.y)).x - texture(tex, vec2(uv.x-delta, uv.y)).x);
-    float dy = (texture(tex, vec2(uv.x, uv.y + delta)).x - texture(tex, vec2(uv.x, uv.y - delta)).x);
-    vec3 direction = vec3(5*(-dx), 5*(-dy), 1.f);
-    vec3 n = normalize(direction);*/
-
-    if(height < 0.001){
-        color = vec3(0, 0.6, 0.9);
-    } else if (height < 0.02){
-        color = texture(sand_texture, uv*10).xyz;
-    } else if (height < 0.05){
-        color = mix(texture(sand_texture, uv*10).xyz, texture(grass_texture, uv*10).xyz, (height-0.02)/0.03);
-    } else if (height < 0.15){
-        color = texture(grass_texture, uv*10).xyz;
-    } else if (height < 0.25){
-        color = mix(texture(grass_texture, uv*10).xyz, texture(rock_texture, uv*5).xyz, (height-0.15)/0.1);
-    } else if (height < 0.35){
-        color = texture(rock_texture, uv*5).xyz;
-    } else if (height < 0.4) {
-        color = mix(texture(rock_texture, uv*5).xyz, texture(snow_texture, uv*5).xyz, (height-0.35)/0.05);
-    } else {
-        color = texture(snow_texture, uv*5).xyz;
     }
 
     vec3 x = dFdx(vpoint_mv.xyz);
@@ -81,6 +53,6 @@ void main() {
         vec3 r = reflect(-l, n);
 
     }
-    //color = n;
     color = color * gray;
+    //color = n;
 }

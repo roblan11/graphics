@@ -11,6 +11,9 @@
 
 #include "terrain/terrain.h"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw_gl3.h"
+
 #define MOVE_VERTICALLY_FACTOR 0.05
 #define MOVE_LATERAL_FACTOR 0.1f
 #define MOVE_STRAIGHT_FACTOR 0.2f
@@ -145,6 +148,61 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     }
 }
 
+void GUI(GLFWwindow* window) {
+    static int octaves = 5;
+    static float lacunarity = 2.0f;
+    static float gain = 0.35;
+    static float amplitude = 0.7;
+    static float exponent = 0.8;
+    static float heightscale = 1.3;
+    static float offset = 0.9;
+    static float scale = 2.f;
+
+    ImGui_ImplGlfwGL3_NewFrame();
+
+    {
+        ImGui::Begin("heightmap options");
+
+        ImGui::SliderInt("# octaves", &octaves, 1, 10);
+        ImGui::SliderFloat("lacunarity", &lacunarity, 0.1f, 5.0f);
+        ImGui::SliderFloat("gain", &gain, 0.01f, 1.0f);
+        ImGui::SliderFloat("amplitude", &amplitude, 0.01f, 1.0f);
+        ImGui::SliderFloat("exponent", &exponent, 0.01f, 3.0f);
+        ImGui::SliderFloat("scale the height", &heightscale, 0.1f, 3.0f);
+        ImGui::SliderFloat("negative offset", &offset, 0.f, 2.f);
+        ImGui::SliderFloat("terrain scale", &scale, 0.1f, 3.0f);
+        ImGui::End();
+
+        heightmap.Update(octaves, lacunarity, gain, amplitude, exponent, heightscale, offset, scale);
+    }
+
+    static float lvl_sand = 0.001;
+    static float mix_sand_grass = 0.02;
+    static float lvl_grass = 0.07;
+    static float mix_grass_snow = 0.2;
+    static float lvl_snow = 0.4;
+
+    {
+        ImGui::Begin("terrain options");
+
+        ImGui::SliderFloat("sand height", &lvl_sand, 0.f, mix_sand_grass);
+        ImGui::SliderFloat("sand-grass mix height", &mix_sand_grass, lvl_sand, lvl_grass);
+        ImGui::SliderFloat("grass height", &lvl_grass, mix_sand_grass, mix_grass_snow);
+        ImGui::SliderFloat("grass-snow mix height", &mix_grass_snow, lvl_grass, lvl_snow);
+        ImGui::SliderFloat("snow height", &lvl_snow, mix_grass_snow, 1.f);
+        ImGui::End();
+
+        terrain.Update(lvl_sand, mix_sand_grass, lvl_grass, mix_grass_snow, lvl_snow);
+    }
+    {
+        ImGui::Begin("general information");
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::End();
+    }
+
+    ImGui::Render();
+}
+
 int main(int argc, char *argv[]) {
     // GLFW Initialization
     if(!glfwInit()) {
@@ -192,13 +250,18 @@ int main(int argc, char *argv[]) {
 
     // initialize our OpenGL program
     Init(window);
+    ImGui_ImplGlfwGL3_Init(window, false);
 
     // render loop
     while(!glfwWindowShouldClose(window)){
         Display();
+
+        GUI(window);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    ImGui_ImplGlfwGL3_Shutdown();
 
     // cleanup
     terrain.Cleanup();
