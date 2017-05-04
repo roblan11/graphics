@@ -99,12 +99,11 @@ void Display() {
 
     reflectionBuffer.Bind();
     {
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      vec3 cam_pos_mirrored = vec3(cameraPosition.x, cameraPosition.y, -cameraPosition.z);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        vec3 cam_pos_mirrored = vec3(cameraPosition.x, cameraPosition.y, -cameraPosition.z);
         mat4 view_mirrored = lookAt(cam_pos_mirrored, cameraLookingAt, cameraUp);
-        mat4 view_projection_mirrored = projection_matrix * view_mirrored;
         terrain.Draw(terrain_model_matrix, view_mirrored, projection_matrix);
-        skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix); // THIS LINE CAUSES THE PROBLEM
+        skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix);
     }
     reflectionBuffer.Unbind();
 

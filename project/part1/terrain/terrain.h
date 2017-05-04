@@ -98,6 +98,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
         GLuint num_indices_;                    // number of vertices to render
         GLuint MVP_id_;                         // model, view, proj matrix ID
         GLuint MV_id_;                         // model, view matrix ID
+        GLuint clipping_plane_id_;
 
         void CreateGrid(size_t grid_dim, float grid_start, float grid_end) {
             std::vector<GLfloat> vertices;
@@ -153,6 +154,8 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
 
             glUseProgram(program_id_);
 
+            glEnable(GL_CLIP_DISTANCE0);
+
             // vertex one vertex array
             glGenVertexArrays(1, &vertex_array_id_);
             glBindVertexArray(vertex_array_id_);
@@ -184,6 +187,11 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
             // other uniforms
             MVP_id_ = glGetUniformLocation(program_id_, "MVP");
             MV_id_ = glGetUniformLocation(program_id_, "MV");
+
+            glm::vec4 clippingPlane = glm::vec4(0, 0,- 1, 15);
+            clipping_plane_id_ = glGetUniformLocation(program_id_, "clippingPlane");
+            glUniform4fv(clipping_plane_id_, 1, glm::value_ptr(clippingPlane));
+
             // to avoid the current object being polluted
             glBindVertexArray(0);
             glUseProgram(0);
