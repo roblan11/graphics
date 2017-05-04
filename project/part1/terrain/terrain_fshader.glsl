@@ -7,54 +7,31 @@ in float height;
 
 out vec3 color;
 
-// TODO uw_texture
-uniform sampler2D rock_texture;
-uniform sampler2D sand_texture;
-uniform sampler2D grass_texture;
-uniform sampler2D snow_texture;
+uniform sampler2D tex;
 uniform mat4 MV;
-/*uniform vec3 La, Ld, Ls;
-uniform vec3 ka, kd, ks;*/
-uniform vec3 Ld;
-uniform vec3 kd;
+uniform vec3 La, Ld, Ls;
+uniform vec3 ka, kd, ks;
 uniform float alpha;
 
-uniform float mix_uw_sand;
+uniform float lvl_sand;
 uniform float mix_sand_grass;
 uniform float lvl_grass;
-uniform float mix_grass_rock;
-uniform float lvl_rock;
-uniform float mix_rock_snow;
+uniform float mix_grass_snow;
 uniform float lvl_snow;
 
-uniform float scale_uw;
-uniform float scale_sand;
-uniform float scale_grass;
-uniform float scale_rock;
-uniform float scale_snow;
-
-
 void main() {
-    vec3 tex_color = vec3(0.f);
-
-    if(height < -mix_uw_sand){
-        tex_color = texture(rock_texture, uv*scale_uw).xyz; // TODO use seperate texture under water
-    } else if(height < mix_uw_sand) {
-        tex_color = mix(texture(rock_texture, uv*scale_uw).xyz, texture(sand_texture, uv*scale_sand).xyz, (height+mix_uw_sand)/(2*mix_uw_sand));
+    if(height < 0){
+        color = vec3(0.2, 0.2, 0.2);
     } else if (height < mix_sand_grass){
-        tex_color = texture(sand_texture, uv*scale_sand).xyz;
+        color = vec3(0.6, 0.7, 0.0);
     } else if (height < lvl_grass){
-        tex_color = mix(texture(sand_texture, uv*scale_sand).xyz, texture(grass_texture, uv*scale_grass).xyz, (height-mix_sand_grass)/(lvl_grass-mix_sand_grass));
-    } else if (height < mix_grass_rock){
-        tex_color = texture(grass_texture, uv*scale_grass).xyz;
-    } else if (height < lvl_rock){
-        tex_color = mix(texture(grass_texture, uv*scale_grass).xyz, texture(rock_texture, uv*scale_rock).xyz, (height-mix_grass_rock)/(lvl_rock-mix_grass_rock));
-    } else if (height < mix_rock_snow){
-        tex_color = texture(rock_texture, uv*scale_rock).xyz;
-    } else if (height < lvl_snow) {
-        tex_color = mix(texture(rock_texture, uv*scale_rock).xyz, texture(snow_texture, uv*scale_snow).xyz, (height-mix_rock_snow)/(lvl_snow-mix_rock_snow));
+        color = mix(vec3(0.6, 0.7, 0.0), vec3(0.2, 0.7, 0.1), (height-mix_sand_grass)/(lvl_grass-mix_sand_grass));
+    } else if (height < mix_grass_snow){
+        color = vec3(0.2, 0.7, 0.1);
+    } else if (height < lvl_snow){
+        color = mix(vec3(0.2, 0.7, 0.1), vec3(0.7, 0.7, 0.7), (height-mix_grass_snow)/(lvl_snow-mix_grass_snow));
     } else {
-        tex_color = texture(snow_texture, uv*scale_snow).xyz;
+        color = vec3(0.7, 0.7, 0.7);
     }
 
     vec3 x = dFdx(vpoint_mv.xyz);
@@ -63,7 +40,7 @@ void main() {
 
     vec3 gray = vec3(0.f);
     /// 1) compute ambient term.
-    //gray += La * ka;
+    gray += La * ka;
 
     vec3 l = normalize(light_dir);
     float lambert = dot(n, l);
@@ -76,6 +53,7 @@ void main() {
         vec3 r = reflect(-l, n);
 
     }
-    color = tex_color * gray;
+    color = color * gray;
     //color = n;
 }
+

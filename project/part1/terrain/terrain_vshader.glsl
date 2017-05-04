@@ -26,3 +26,4 @@ void main() {
     light_dir = light_pos - vpoint_mv.xyz;
     view_dir = -vpoint_mv.xyz;
 }
+
