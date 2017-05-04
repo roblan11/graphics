@@ -171,7 +171,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
             }
 
             num_indices_ = indices.size();
-            std::cout << num_indices_ << " indices" << '\n';
+            std::cout << num_indices_ << " terrain indices" << '\n';
 
             // position buffer
             glGenBuffers(1, &vertex_buffer_object_position_);
@@ -209,8 +209,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                 // position shader attribute
                 GLuint loc_position = glGetAttribLocation(program_id_, "position");
                 glEnableVertexAttribArray(loc_position);
-                glVertexAttribPointer(loc_position, 2, GL_FLOAT, DONT_NORMALIZE,
-                                      ZERO_STRIDE, ZERO_BUFFER_OFFSET);
+                glVertexAttribPointer(loc_position, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
             }
 
             {

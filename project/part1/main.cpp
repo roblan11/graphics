@@ -97,22 +97,23 @@ void Display() {
     }
     framebuffer.Unbind();
 
-    // TODO CAUSES PROBLEM WHEN DRAWN
-    // reflectionBuffer.Bind();
-    // {
-    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //    vec3 cam_pos_mirrored = vec3(cameraPosition.x, cameraPosition.y, -cameraPosition.z);
-    //    mat4 view_mirrored = lookAt(cam_pos_mirrored, cameraLookingAt, cameraUp);
-    //    mat4 view_projection_mirrored = projection_matrix * view_mirrored;
-    //    terrain.Draw(terrain_model_matrix, view_mirrored, projection_matrix);
-    //    skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix); // THIS LINE CAUSES THE PROBLEM
-    // }
-    // reflectionBuffer.Unbind();
-
-    // render to Window
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     terrain.Draw(terrain_model_matrix, view_matrix, projection_matrix);
+
+    // TODO CAUSES PROBLEM WHEN DRAWN
+    reflectionBuffer.Bind();
+    {
+       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+       vec3 cam_pos_mirrored = vec3(cameraPosition.x, cameraPosition.y, -cameraPosition.z);
+       mat4 view_mirrored = lookAt(cam_pos_mirrored, cameraLookingAt, cameraUp);
+       mat4 view_projection_mirrored = projection_matrix * view_mirrored;
+       terrain.Draw(terrain_model_matrix, view_mirrored, projection_matrix);
+       skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix);
+    }
+    reflectionBuffer.Unbind();
+
+    // render to Window
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     water.Draw(water_model_matrix, view_matrix, projection_matrix);
