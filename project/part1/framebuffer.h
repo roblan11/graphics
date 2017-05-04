@@ -64,8 +64,7 @@ class FrameBuffer {
                 glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                           GL_RENDERBUFFER, depth_render_buffer_id_);
 
-                if (glCheckFramebufferStatus(GL_FRAMEBUFFER) !=
-                    GL_FRAMEBUFFER_COMPLETE) {
+                if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
                     cerr << "!!!ERROR: Framebuffer not OK :(" << endl;
                 }
                 glBindFramebuffer(GL_FRAMEBUFFER, 0); // avoid pollution

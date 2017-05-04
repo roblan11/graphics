@@ -141,13 +141,18 @@ class Water {
             moveFactor = fmod(moveFactor, 1.0f);
             glUniform1f(glGetUniformLocation(program_id_, "moveFactor"), moveFactor);
 
-            // bind textures
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture_id_);
+            // Bind reflection texture
+            {
+                // glEnable(GL_BLEND);
+                // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-            // bind textures
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, texture_mirror_id_);
+                // bind textures
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, texture_id_);
+
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, texture_mirror_id_);
+            }
 
             // setup MVP
             GLuint MVP_id = glGetUniformLocation(program_id_, "MVP");
