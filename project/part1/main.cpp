@@ -209,23 +209,42 @@ void GUI(GLFWwindow* window) {
         heightmap.Update(octaves, lacunarity, gain, amplitude, exponent, heightscale, offset, scale);
     }
 
-    static float lvl_sand = 0.001;
-    static float mix_sand_grass = 0.02;
-    static float lvl_grass = 0.07;
-    static float mix_grass_snow = 0.2;
+    static float mix_uw_sand = 0.005;
+    static float mix_sand_grass = 0.015;
+    static float lvl_grass = 0.12;
+    static float mix_grass_rock = 0.18;
+    static float lvl_rock = 0.3;
+    static float mix_rock_snow = 0.35;
     static float lvl_snow = 0.4;
+
+    static float scale_uw = 2.f;
+    static float scale_sand = 10.f;
+    static float scale_grass = 10.f;
+    static float scale_rock = 5.f;
+    static float scale_snow = 5.f;
 
     {
         ImGui::Begin("terrain options");
+        ImGui::Text("heights");
+        ImGui::SliderFloat("waterline mix", &mix_uw_sand, 0.f, mix_sand_grass);
+        ImGui::SliderFloat("sand-grass mix", &mix_sand_grass, mix_uw_sand, lvl_grass);
+        ImGui::SliderFloat("grass lvl", &lvl_grass, mix_sand_grass, mix_grass_rock);
+        ImGui::SliderFloat("grass-rock mix", &mix_grass_rock, lvl_grass, lvl_rock);
+        ImGui::SliderFloat("rock lvl", &lvl_rock, mix_grass_rock, mix_rock_snow);
+        ImGui::SliderFloat("rock-snow mix", &mix_rock_snow, lvl_rock, lvl_snow);
+        ImGui::SliderFloat("snow lvl", &lvl_snow, mix_rock_snow, 1.f);
 
-        ImGui::SliderFloat("sand height", &lvl_sand, 0.f, mix_sand_grass);
-        ImGui::SliderFloat("sand-grass mix height", &mix_sand_grass, lvl_sand, lvl_grass);
-        ImGui::SliderFloat("grass height", &lvl_grass, mix_sand_grass, mix_grass_snow);
-        ImGui::SliderFloat("grass-snow mix height", &mix_grass_snow, lvl_grass, lvl_snow);
-        ImGui::SliderFloat("snow height", &lvl_snow, mix_grass_snow, 1.f);
+        ImGui::Text("texture scale");
+        ImGui::SliderFloat("uw tex", &scale_uw, 1.f, 20.f);
+        ImGui::SliderFloat("sand tex", &scale_sand, 1.f, 20.f);
+        ImGui::SliderFloat("grass tex", &scale_grass, 1.f, 20.f);
+        ImGui::SliderFloat("rock tex", &scale_rock, 1.f, 20.f);
+        ImGui::SliderFloat("snow tex", &scale_snow, 1.f, 20.f);
+
         ImGui::End();
 
-        terrain.Update(lvl_sand, mix_sand_grass, lvl_grass, mix_grass_snow, lvl_snow);
+        terrain.Update(mix_uw_sand, mix_sand_grass, lvl_grass, mix_grass_rock, lvl_rock, mix_rock_snow, lvl_snow, scale_uw, scale_sand, scale_grass, scale_rock, scale_snow);
+
     }
     {
         ImGui::Begin("general information");
