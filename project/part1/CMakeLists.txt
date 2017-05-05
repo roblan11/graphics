@@ -8,6 +8,7 @@ file(GLOB TEXTURES
     terrain/snow.tga
     terrain/rock.tga
     terrain/sand.tga
+    terrain/uw.tga
     skybox/skybox_texture.tga
     water/waterDUDV.tga)
 copy_files_once(${TEXTURES})

@@ -104,7 +104,7 @@ class Water {
                 texture_mirror_id_ = (tex_mirror==-1)? texture_id_ : tex_mirror;
 
                 // texture uniforms
-                GLuint tex_id = glGetUniformLocation(program_id_, "tex_wnoise");
+                GLuint tex_id = glGetUniformLocation(program_id_, "tex");
                 glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
                 GLuint tex_mirror_id = glGetUniformLocation(program_id_, "tex_mirror");
                 glUniform1i(tex_mirror_id, 1 /*GL_TEXTURE1*/);

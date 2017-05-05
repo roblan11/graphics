@@ -7,7 +7,7 @@ in float height;
 
 out vec3 color;
 
-// TODO uw_texture
+uniform sampler2D uw_texture;
 uniform sampler2D rock_texture;
 uniform sampler2D sand_texture;
 uniform sampler2D grass_texture;
@@ -38,7 +38,7 @@ void main() {
     vec3 tex_color = vec3(0.f);
 
     if(height < -mix_uw_sand){
-        tex_color = texture(rock_texture, uv*scale_uw).xyz; // TODO use seperate texture under water
+        tex_color = texture(uw_texture, uv*scale_uw).xyz;
     } else if(height < mix_uw_sand) {
         tex_color = mix(texture(rock_texture, uv*scale_uw).xyz, texture(sand_texture, uv*scale_sand).xyz, (height+mix_uw_sand)/(2*mix_uw_sand));
     } else if (height < mix_sand_grass){

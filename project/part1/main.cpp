@@ -236,7 +236,7 @@ void GUI(GLFWwindow* window) {
         ImGui::SliderFloat("snow lvl", &lvl_snow, mix_rock_snow, 1.f);
 
         ImGui::Text("texture scale");
-        ImGui::SliderFloat("underwater tex", &scale_uw, 1.f, 20.f);
+        ImGui::SliderFloat("uw tex", &scale_uw, 1.f, 20.f);
         ImGui::SliderFloat("sand tex", &scale_sand, 1.f, 20.f);
         ImGui::SliderFloat("grass tex", &scale_grass, 1.f, 20.f);
         ImGui::SliderFloat("rock tex", &scale_rock, 1.f, 20.f);

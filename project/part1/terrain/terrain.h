@@ -134,13 +134,14 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
         GLuint vertex_buffer_object_position_;  // memory buffer for positions
         GLuint vertex_buffer_object_index_;     // memory buffer for indices
         GLuint program_id_;                     // GLSL shader program ID
+        GLuint uw_texture_id_;                  // underwater texture ID
         GLuint grass_texture_id_;               // grass texture ID
         GLuint rock_texture_id_;                // rock texture ID
         GLuint sand_texture_id_;                // sand texture ID
         GLuint snow_texture_id_;                // sand texture ID
         GLuint num_indices_;                    // number of vertices to render
         GLuint MVP_id_;                         // model, view, proj matrix ID
-        GLuint MV_id_;                         // model, view matrix ID
+        GLuint MV_id_;                          // model, view matrix ID
 
         void CreateGrid(size_t grid_dim, float grid_start, float grid_end) {
             std::vector<GLfloat> vertices;
@@ -221,6 +222,30 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                 glTexCoord2f(1.0f, 1.0f);    glVertex3f(8.0f, 8.0f, 0.0f);
                 glTexCoord2f(1.0f, 0.0f);    glVertex3f(8.0f, 0.0f, 0.0f);
 
+                string uw_file = "uw.tga";
+                int uw_tex_width;
+                int uw_tex_height;
+                int uw_nb_component;
+                unsigned char* uw_img = stbi_load(uw_file.c_str(), &uw_tex_width, &uw_tex_height, &uw_nb_component, 0);
+                if (uw_img == nullptr) {
+                  throw("Failed to load uw texture");
+                 }
+                glGenTextures(1, &uw_texture_id_);
+                glBindTexture(GL_TEXTURE_2D, uw_texture_id_);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+                 if(uw_nb_component == 3) {
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, uw_tex_width, uw_tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, uw_img);
+                } else if(uw_nb_component == 4) {
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, uw_tex_width, uw_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, uw_img);
+                }
+                GLuint uw_id = glGetUniformLocation(program_id_, "uw_texture");
+                glUniform1i(uw_id, 1);
+                glBindTexture(GL_TEXTURE_2D, 0);
+                stbi_image_free(uw_img);
+
                 string sand_file = "sand.tga";
                 int sand_tex_width;
                 int sand_tex_height;
@@ -241,7 +266,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sand_tex_width, sand_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, sand_img);
                 }
                 GLuint sand_id = glGetUniformLocation(program_id_, "sand_texture");
-                glUniform1i(sand_id, 1);
+                glUniform1i(sand_id, 2);
                 glBindTexture(GL_TEXTURE_2D, 0);
                 stbi_image_free(sand_img);
 
@@ -265,7 +290,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, grass_tex_width, grass_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, grass_img);
                 }
                 GLuint grass_id = glGetUniformLocation(program_id_, "grass_texture");
-                glUniform1i(grass_id, 2);
+                glUniform1i(grass_id, 3);
                 glBindTexture(GL_TEXTURE_2D, 0);
                 stbi_image_free(grass_img);
 
@@ -289,7 +314,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, rock_tex_width, rock_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rock_img);
                 }
                 GLuint rock_id = glGetUniformLocation(program_id_, "rock_texture");
-                glUniform1i(rock_id, 3);
+                glUniform1i(rock_id, 4);
                 glBindTexture(GL_TEXTURE_2D, 0);
                 stbi_image_free(rock_img);
 
@@ -313,7 +338,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, snow_tex_width, snow_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, snow_img);
                 }
                 GLuint snow_id = glGetUniformLocation(program_id_, "snow_texture");
-                glUniform1i(snow_id, 4);
+                glUniform1i(snow_id, 5);
                 glBindTexture(GL_TEXTURE_2D, 0);
                 stbi_image_free(snow_img);
             }
@@ -337,6 +362,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
             glDeleteBuffers(1, &vertex_buffer_object_index_);
             glDeleteVertexArrays(1, &vertex_array_id_);
             glDeleteProgram(program_id_);
+            glDeleteTextures(1, &uw_texture_id_);
             glDeleteTextures(1, &sand_texture_id_);
             glDeleteTextures(1, &grass_texture_id_);
             glDeleteTextures(1, &rock_texture_id_);
@@ -353,12 +379,14 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
             // glActiveTexture(GL_TEXTURE0);
             // glBindTexture(GL_TEXTURE_2D, texture_id_);
             glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, sand_texture_id_);
+            glBindTexture(GL_TEXTURE_2D, uw_texture_id_);
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, grass_texture_id_);
+            glBindTexture(GL_TEXTURE_2D, sand_texture_id_);
             glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, rock_texture_id_);
+            glBindTexture(GL_TEXTURE_2D, grass_texture_id_);
             glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, rock_texture_id_);
+            glActiveTexture(GL_TEXTURE5);
             glBindTexture(GL_TEXTURE_2D, snow_texture_id_);
 
             // setup MVP
