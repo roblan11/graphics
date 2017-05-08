@@ -3,6 +3,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 struct Terrain_Parameters {
+
     float mix_uw_sand;
     float mix_sand_grass;
     float lvl_grass;
@@ -81,9 +82,9 @@ struct Terrain_Parameters {
 };
 
 struct Light {
-        // glm::vec3 La = glm::vec3(1.0f, 1.0f, 1.f);
+        glm::vec3 La = glm::vec3(1.0f, 1.0f, 1.f);
         glm::vec3 Ld = glm::vec3(1.0f, 1.0f, 1.f);
-        // glm::vec3 Ls = glm::vec3(1.0f, 1.0f, 1.f);
+        glm::vec3 Ls = glm::vec3(1.0f, 1.0f, 1.f);
 
         glm::vec3 light_pos = glm::vec3(0.0f, 0.0f, 2.0f);
 
@@ -94,36 +95,36 @@ struct Light {
             // given in camera space
             GLuint light_pos_id = glGetUniformLocation(program_id, "light_pos");
 
-            // GLuint La_id = glGetUniformLocation(program_id, "La");
+            GLuint La_id = glGetUniformLocation(program_id, "La");
             GLuint Ld_id = glGetUniformLocation(program_id, "Ld");
-            // GLuint Ls_id = glGetUniformLocation(program_id, "Ls");
+            GLuint Ls_id = glGetUniformLocation(program_id, "Ls");
 
             glUniform3fv(light_pos_id, ONE, glm::value_ptr(light_pos));
-            // glUniform3fv(La_id, ONE, glm::value_ptr(La));
+            glUniform3fv(La_id, ONE, glm::value_ptr(La));
             glUniform3fv(Ld_id, ONE, glm::value_ptr(Ld));
-            // glUniform3fv(Ls_id, ONE, glm::value_ptr(Ls));
+            glUniform3fv(Ls_id, ONE, glm::value_ptr(Ls));
         }
 };
 
 struct Material {
-        // glm::vec3 ka = glm::vec3(0.3f, 0.3f, 0.3f);
-        glm::vec3 kd = glm::vec3(0.9f, 0.9f, 0.9f);
-        // glm::vec3 ks = glm::vec3(0.4f, 0.4f, 0.4f);
-        // float alpha = 100.0f;
+        glm::vec3 ka = glm::vec3(0.5f, 0.5f, 0.5f);
+        glm::vec3 kd = glm::vec3(0.6f, 0.6f, 0.6f);
+        glm::vec3 ks = glm::vec3(0.4f, 0.4f, 0.4f);
+        float alpha = 100.0f;
 
         // pass material properties to the shaders
         void Setup(GLuint program_id) {
             glUseProgram(program_id);
 
-            // GLuint ka_id = glGetUniformLocation(program_id, "ka");
+            GLuint ka_id = glGetUniformLocation(program_id, "ka");
             GLuint kd_id = glGetUniformLocation(program_id, "kd");
-            // GLuint ks_id = glGetUniformLocation(program_id, "ks");
-            // GLuint alpha_id = glGetUniformLocation(program_id, "alpha");
+            GLuint ks_id = glGetUniformLocation(program_id, "ks");
+            GLuint alpha_id = glGetUniformLocation(program_id, "alpha");
 
-            // glUniform3fv(ka_id, ONE, glm::value_ptr(ka));
+            glUniform3fv(ka_id, ONE, glm::value_ptr(ka));
             glUniform3fv(kd_id, ONE, glm::value_ptr(kd));
-            // glUniform3fv(ks_id, ONE, glm::value_ptr(ks));
-            // glUniform1f(alpha_id, alpha);
+            glUniform3fv(ks_id, ONE, glm::value_ptr(ks));
+            glUniform1f(alpha_id, alpha);
         }
 };
 
@@ -138,10 +139,12 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
         GLuint grass_texture_id_;               // grass texture ID
         GLuint rock_texture_id_;                // rock texture ID
         GLuint sand_texture_id_;                // sand texture ID
-        GLuint snow_texture_id_;                // sand texture ID
+        GLuint snow_texture_id_;                // snow texture IDGLuint num_indices_;
         GLuint num_indices_;                    // number of vertices to render
         GLuint MVP_id_;                         // model, view, proj matrix ID
         GLuint MV_id_;                          // model, view matrix ID
+        GLuint texture_id_;                     // texture ID
+        GLuint clipping_plane_id_;              // clipping place ID
 
         void CreateGrid(size_t grid_dim, float grid_start, float grid_end) {
             std::vector<GLfloat> vertices;
@@ -172,7 +175,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
             }
 
             num_indices_ = indices.size();
-            std::cout << num_indices_ << " terrain indices" << '\n';
+            std::cout << num_indices_ << " indices" << '\n';
 
             // position buffer
             glGenBuffers(1, &vertex_buffer_object_position_);
@@ -197,6 +200,8 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
 
             glUseProgram(program_id_);
 
+            glEnable(GL_CLIP_DISTANCE0);
+
             // vertex one vertex array
             glGenVertexArrays(1, &vertex_array_id_);
             glBindVertexArray(vertex_array_id_);
@@ -210,35 +215,35 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                 // position shader attribute
                 GLuint loc_position = glGetAttribLocation(program_id_, "position");
                 glEnableVertexAttribArray(loc_position);
-                glVertexAttribPointer(loc_position, 2, GL_FLOAT, DONT_NORMALIZE, ZERO_STRIDE, ZERO_BUFFER_OFFSET);
+                glVertexAttribPointer(loc_position, 2, GL_FLOAT, DONT_NORMALIZE,
+                                      ZERO_STRIDE, ZERO_BUFFER_OFFSET);
             }
 
+            //assign texture
             {
-                // set stb_image to have the same coordinates as OpenGL
                 stbi_set_flip_vertically_on_load(1);
-
-                glTexCoord2f(0.0f, 0.0f);    glVertex3f(0.0f, 0.0f, 0.0f);
-                glTexCoord2f(0.0f, 1.0f);    glVertex3f(0.0f, 8.0f, 0.0f);
-                glTexCoord2f(1.0f, 1.0f);    glVertex3f(8.0f, 8.0f, 0.0f);
-                glTexCoord2f(1.0f, 0.0f);    glVertex3f(8.0f, 0.0f, 0.0f);
-
+                this->texture_id_ = texture;
+                glBindTexture(GL_TEXTURE_2D, texture_id_);
+                //GLuint tex_id = glGetUniformLocation(program_id_, "tex");
+                //glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
+                //glBindTexture(GL_TEXTURE_2D, 0);
                 string uw_file = "uw.tga";
                 int uw_tex_width;
                 int uw_tex_height;
                 int uw_nb_component;
                 unsigned char* uw_img = stbi_load(uw_file.c_str(), &uw_tex_width, &uw_tex_height, &uw_nb_component, 0);
                 if (uw_img == nullptr) {
-                  throw("Failed to load uw texture");
-                 }
+                    throw("Failed to load uw texture");
+                }
                 glGenTextures(1, &uw_texture_id_);
                 glBindTexture(GL_TEXTURE_2D, uw_texture_id_);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-                 if(uw_nb_component == 3) {
+                if (uw_nb_component == 3) {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, uw_tex_width, uw_tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, uw_img);
-                } else if(uw_nb_component == 4) {
+                } else if (uw_nb_component == 4) {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, uw_tex_width, uw_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, uw_img);
                 }
                 GLuint uw_id = glGetUniformLocation(program_id_, "uw_texture");
@@ -252,7 +257,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                 int sand_nb_component;
                 unsigned char* sand_img = stbi_load(sand_file.c_str(), &sand_tex_width, &sand_tex_height, &sand_nb_component, 0);
                 if (sand_img == nullptr) {
-                  throw("Failed to load sand texture");
+                    throw("Failed to load sand texture");
                 }
                 glGenTextures(1, &sand_texture_id_);
                 glBindTexture(GL_TEXTURE_2D, sand_texture_id_);
@@ -260,9 +265,9 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-                if(sand_nb_component == 3) {
+                if (sand_nb_component == 3) {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, sand_tex_width, sand_tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, sand_img);
-                } else if(sand_nb_component == 4) {
+                } else if (sand_nb_component == 4) {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sand_tex_width, sand_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, sand_img);
                 }
                 GLuint sand_id = glGetUniformLocation(program_id_, "sand_texture");
@@ -276,7 +281,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                 int grass_nb_component;
                 unsigned char* grass_img = stbi_load(grass_file.c_str(), &grass_tex_width, &grass_tex_height, &grass_nb_component, 0);
                 if (grass_img == nullptr) {
-                  throw("Failed to load grass texture");
+                    throw("Failed to load grass texture");
                 }
                 glGenTextures(1, &grass_texture_id_);
                 glBindTexture(GL_TEXTURE_2D, grass_texture_id_);
@@ -284,9 +289,9 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-                if(grass_nb_component == 3) {
+                if (grass_nb_component == 3) {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, grass_tex_width, grass_tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, grass_img);
-                } else if(grass_nb_component == 4) {
+                } else if (grass_nb_component == 4) {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, grass_tex_width, grass_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, grass_img);
                 }
                 GLuint grass_id = glGetUniformLocation(program_id_, "grass_texture");
@@ -300,7 +305,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                 int rock_nb_component;
                 unsigned char* rock_img = stbi_load(rock_file.c_str(), &rock_tex_width, &rock_tex_height, &rock_nb_component, 0);
                 if (rock_img == nullptr) {
-                  throw("Failed to load rock texture");
+                    throw("Failed to load rock texture");
                 }
                 glGenTextures(1, &rock_texture_id_);
                 glBindTexture(GL_TEXTURE_2D, rock_texture_id_);
@@ -308,9 +313,9 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-                if(rock_nb_component == 3) {
+                if (rock_nb_component == 3) {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, rock_tex_width, rock_tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, rock_img);
-                } else if(rock_nb_component == 4) {
+                } else if (rock_nb_component == 4) {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, rock_tex_width, rock_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rock_img);
                 }
                 GLuint rock_id = glGetUniformLocation(program_id_, "rock_texture");
@@ -324,7 +329,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                 int snow_nb_component;
                 unsigned char* snow_img = stbi_load(snow_file.c_str(), &snow_tex_width, &snow_tex_height, &snow_nb_component, 0);
                 if (snow_img == nullptr) {
-                  throw("Failed to load snow texture");
+                    throw("Failed to load snow texture");
                 }
                 glGenTextures(1, &snow_texture_id_);
                 glBindTexture(GL_TEXTURE_2D, snow_texture_id_);
@@ -332,9 +337,9 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-                if(snow_nb_component == 3) {
+                if (snow_nb_component == 3) {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, snow_tex_width, snow_tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, snow_img);
-                } else if(snow_nb_component == 4) {
+                } else if (snow_nb_component == 4) {
                     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, snow_tex_width, snow_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, snow_img);
                 }
                 GLuint snow_id = glGetUniformLocation(program_id_, "snow_texture");
@@ -346,6 +351,11 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
             // other uniforms
             MVP_id_ = glGetUniformLocation(program_id_, "MVP");
             MV_id_ = glGetUniformLocation(program_id_, "MV");
+
+            glm::vec4 clippingPlane = glm::vec4(0, 0,- 1, 15);
+            clipping_plane_id_ = glGetUniformLocation(program_id_, "clippingPlane");
+            glUniform4fv(clipping_plane_id_, 1, glm::value_ptr(clippingPlane));
+
             // to avoid the current object being polluted
             glBindVertexArray(0);
             glUseProgram(0);
@@ -369,6 +379,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
             glDeleteTextures(1, &snow_texture_id_);
         }
 
+
         void Draw(const glm::mat4 &model,
                   const glm::mat4 &view,
                   const glm::mat4 &projection) {
@@ -376,8 +387,8 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
             glBindVertexArray(vertex_array_id_);
 
             // bind textures
-            // glActiveTexture(GL_TEXTURE0);
-            // glBindTexture(GL_TEXTURE_2D, texture_id_);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture_id_);
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, uw_texture_id_);
             glActiveTexture(GL_TEXTURE2);

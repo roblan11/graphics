@@ -6,6 +6,8 @@
 #include "icg_helper.h"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "camera/camera.h"
+
 #include "framebuffer.h"
 #include "heightmap/heightmap.h"
 
@@ -16,18 +18,13 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
 
-#define MOVE_VERTICALLY_FACTOR 0.05
-#define MOVE_LATERAL_FACTOR 0.1f
-#define MOVE_STRAIGHT_FACTOR 0.2f
-
 //Cube cube;
 Terrain terrain;
 
 int window_width = 800;
 int window_height = 600;
-float cameraTheta = 90;
-float cameraPhi = 0;
 
+Camera camera;
 FrameBuffer framebuffer;
 FrameBuffer reflectionBuffer;
 HeightMap heightmap;
@@ -37,12 +34,7 @@ Water water;
 using namespace glm;
 
 mat4 projection_matrix;
-mat4 old_trackball_matrix;
-vec3 cameraPosition;
-vec3 cameraLookingAt;
-vec3 cameraUp;
-mat4 view_matrix;
-mat4 cube_model_matrix;
+//mat4 cube_model_matrix;
 mat4 terrain_model_matrix;
 mat4 skybox_model_matrix;
 mat4 water_model_matrix;
@@ -52,13 +44,6 @@ void Init(GLFWwindow* window) {
     glEnable(GL_DEPTH_TEST);
 
     // setup view and projection matrices
-    cameraPosition = vec3(-4, -1.0f, 4);
-    cameraLookingAt = vec3(0.0f, 0.0f, 0.0f);
-    vec3 axeZ = vec3(0.0f, 0.0f, 1.0f);
-    vec3 positionToLookingAt = cameraLookingAt - cameraPosition;
-    vec3 crossHorizontal = cross(axeZ, positionToLookingAt);
-    cameraUp = cross(positionToLookingAt, crossHorizontal);
-    view_matrix = lookAt(cameraPosition, cameraLookingAt, cameraUp);
     float ratio = window_width / (float) window_height;
     projection_matrix = perspective(45.0f, ratio, 0.1f, 10.0f);
 
@@ -70,6 +55,7 @@ void Init(GLFWwindow* window) {
     glfwGetFramebufferSize(window, &window_width, &window_height);
     GLuint framebuffer_texture_id = framebuffer.Init(window_width, window_height);
     GLuint reflection_texture_id = reflectionBuffer.Init(window_width, window_height);
+    camera.Init(vec3(-4, -1.0f, 4), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f));
     heightmap.Init(window_width, window_height, framebuffer_texture_id);
     skybox.Init();
     terrain.Init(framebuffer_texture_id);
@@ -88,32 +74,28 @@ vec2 TransformScreenCoords(GLFWwindow* window, int x, int y) {
 }
 
 void Display() {
-    view_matrix = lookAt(cameraPosition, cameraLookingAt, cameraUp);
+    mat4 view_matrix = camera.ViewMatrix(false);
     // render to framebuffer
     framebuffer.Bind();
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        heightmap.Draw(cameraLookingAt.x, cameraLookingAt.y);
+        heightmap.Draw(camera.getPositionLookingAtX(), camera.getPositionLookingAtY());
     }
     framebuffer.Unbind();
 
-    glViewport(0, 0, window_width, window_height);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    terrain.Draw(terrain_model_matrix, view_matrix, projection_matrix);
-
-    // TODO CAUSES PROBLEM WHEN DRAWN
     reflectionBuffer.Bind();
     {
-       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-       vec3 cam_pos_mirrored = vec3(cameraPosition.x, cameraPosition.y, -cameraPosition.z);
-       mat4 view_mirrored = lookAt(cam_pos_mirrored, cameraLookingAt, cameraUp);
-       mat4 view_projection_mirrored = projection_matrix * view_mirrored;
-       terrain.Draw(terrain_model_matrix, view_mirrored, projection_matrix);
-       skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        mat4 view_mirrored = camera.ViewMatrix(true);
+        terrain.Draw(terrain_model_matrix, view_mirrored, projection_matrix);
+        skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix);
     }
     reflectionBuffer.Unbind();
 
     // render to Window
+    glViewport(0, 0, window_width, window_height);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    terrain.Draw(terrain_model_matrix, view_matrix, projection_matrix);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     water.Draw(water_model_matrix, view_matrix, projection_matrix);
@@ -146,39 +128,22 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         glfwSetWindowShouldClose(window, GL_TRUE);
     } else if (action == GLFW_PRESS) {
         if (key == GLFW_KEY_W) {
-            vec3 dmove = normalize(cameraLookingAt - cameraPosition);
-            dmove.z = 0.0f;
-            cameraPosition += MOVE_STRAIGHT_FACTOR * dmove;
-            cameraLookingAt += MOVE_STRAIGHT_FACTOR * dmove;
+            camera.MoveForward();
         } else if (key == GLFW_KEY_S) {
-            vec3 dmove = normalize(cameraLookingAt - cameraPosition);
-            dmove.z = 0.0f;
-            cameraPosition -= MOVE_STRAIGHT_FACTOR * dmove;
-            cameraLookingAt -= MOVE_STRAIGHT_FACTOR * dmove;
+            camera.MoveBackward();
         } else if (key == GLFW_KEY_A) {
-            vec3 cameraPositionToLookingAt = cameraLookingAt - cameraPosition;
-            //float distXYsquare = dot(cameraPositionToLookingAt, cameraPositionToLookingAt);
-            vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
-            cameraLookingAt += mat3(0.1) * horizontalAxis;
+            camera.LookOnTheLeft();
         } else if (key == GLFW_KEY_D) {
-            vec3 cameraPositionToLookingAt = cameraLookingAt - cameraPosition;
-            //float distXYsquare = dot(cameraPositionToLookingAt, cameraPositionToLookingAt);
-            vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
-            cameraLookingAt -= mat3(0.1) * horizontalAxis;
+            camera.LookOnTheRight();
         }
 
         // move model_matrix
-        terrain_model_matrix[3][0] = cameraLookingAt.x;
-        terrain_model_matrix[3][1] = cameraLookingAt.y;
-        water_model_matrix[3][0] = cameraLookingAt.x;
-        water_model_matrix[3][1] = cameraLookingAt.y;
-        skybox_model_matrix[3][0] = cameraLookingAt.x;
-        skybox_model_matrix[3][1] = cameraLookingAt.y;
-
-        vec3 axeZ = vec3(0.0f, 0.0f, 1.0f);
-        vec3 positionToLookingAt = cameraLookingAt - cameraPosition;
-        vec3 crossHorizontal = cross(axeZ, positionToLookingAt);
-        cameraUp = cross(positionToLookingAt, crossHorizontal);
+        terrain_model_matrix[3][0] = camera.getPositionLookingAtX();
+        terrain_model_matrix[3][1] = camera.getPositionLookingAtY();
+        water_model_matrix[3][0] = camera.getPositionLookingAtX();
+        water_model_matrix[3][1] = camera.getPositionLookingAtY();
+        skybox_model_matrix[3][0] = camera.getPositionLookingAtX();
+        skybox_model_matrix[3][1] = camera.getPositionLookingAtY();
     }
 }
 
@@ -245,6 +210,7 @@ void GUI(GLFWwindow* window) {
         ImGui::End();
 
         terrain.Update(mix_uw_sand, mix_sand_grass, lvl_grass, mix_grass_rock, lvl_rock, mix_rock_snow, lvl_snow, scale_uw, scale_sand, scale_grass, scale_rock, scale_snow);
+
     }
     {
         ImGui::Begin("general information");

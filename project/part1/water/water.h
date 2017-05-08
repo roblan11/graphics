@@ -2,7 +2,7 @@
 #include "icg_helper.h"
 #include "glm/gtc/type_ptr.hpp"
 
-const float WAVE_SPEED = 0.0001f;
+const float WAVE_SPEED = 0.001f;
 
 class Water {
 
@@ -10,7 +10,7 @@ class Water {
         GLuint vertex_array_id_;        // vertex array object
         GLuint program_id_;             // GLSL shader program ID
         GLuint vertex_buffer_object_;   // memory buffer
-        GLuint texture_id_;             // texture ID
+        GLuint texture_dudv_id_;             // texture ID
         GLuint texture_mirror_id_;      // texture mirror ID
         float moveFactor;
 
@@ -87,8 +87,8 @@ class Water {
                     throw(string("Failed to load texture"));
                 }
 
-                glGenTextures(1, &texture_id_);
-                glBindTexture(GL_TEXTURE_2D, texture_id_);
+                glGenTextures(1, &texture_dudv_id_);
+                glBindTexture(GL_TEXTURE_2D, texture_dudv_id_);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
@@ -101,11 +101,11 @@ class Water {
                 }
 
 
-                texture_mirror_id_ = (tex_mirror==-1)? texture_id_ : tex_mirror;
+                texture_mirror_id_ = (tex_mirror==-1)? texture_dudv_id_ : tex_mirror;
 
                 // texture uniforms
-                GLuint tex_id = glGetUniformLocation(program_id_, "tex");
-                glUniform1i(tex_id, 0 /*GL_TEXTURE0*/);
+                GLuint tex_dudv_id = glGetUniformLocation(program_id_, "tex_dudv");
+                glUniform1i(tex_dudv_id, 0 /*GL_TEXTURE0*/);
                 GLuint tex_mirror_id = glGetUniformLocation(program_id_, "tex_mirror");
                 glUniform1i(tex_mirror_id, 1 /*GL_TEXTURE1*/);
 
@@ -127,7 +127,7 @@ class Water {
             glDeleteBuffers(1, &vertex_buffer_object_);
             glDeleteProgram(program_id_);
             glDeleteVertexArrays(1, &vertex_array_id_);
-            glDeleteTextures(1, &texture_id_);
+            glDeleteTextures(1, &texture_dudv_id_);
             glDeleteTextures(1, &texture_mirror_id_);
         }
 
@@ -145,7 +145,7 @@ class Water {
             {
                 // bind textures
                 glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, texture_id_);
+                glBindTexture(GL_TEXTURE_2D, texture_dudv_id_);
 
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, texture_mirror_id_);
