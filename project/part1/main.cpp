@@ -135,16 +135,22 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             camera.LookOnTheLeft();
         } else if (key == GLFW_KEY_D) {
             camera.LookOnTheRight();
+        } else if (key == GLFW_KEY_G) {
+            camera.InitBezier(glfwGetTime());
         }
-
-        // move model_matrix
-        terrain_model_matrix[3][0] = camera.getPositionLookingAtX();
-        terrain_model_matrix[3][1] = camera.getPositionLookingAtY();
-        water_model_matrix[3][0] = camera.getPositionLookingAtX();
-        water_model_matrix[3][1] = camera.getPositionLookingAtY();
-        skybox_model_matrix[3][0] = camera.getPositionLookingAtX();
-        skybox_model_matrix[3][1] = camera.getPositionLookingAtY();
+    } else if (action == GLFW_REPEAT) {
+        if (key == GLFW_KEY_G) {
+            camera.MoveBezier(glfwGetTime());
+        }
     }
+
+    // move model_matrix
+    terrain_model_matrix[3][0] = camera.getPositionLookingAtX();
+    terrain_model_matrix[3][1] = camera.getPositionLookingAtY();
+    water_model_matrix[3][0] = camera.getPositionLookingAtX();
+    water_model_matrix[3][1] = camera.getPositionLookingAtY();
+    skybox_model_matrix[3][0] = camera.getPositionLookingAtX();
+    skybox_model_matrix[3][1] = camera.getPositionLookingAtY();
 }
 
 void GUI(GLFWwindow* window) {

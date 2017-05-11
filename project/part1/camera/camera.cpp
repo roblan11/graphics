@@ -40,10 +40,6 @@ void Camera::Init(vec3 position, vec3 lookingAt, vec3 up)
     lookingAt_ = lookingAt;
     up_ = up;
     velocity_ = 0.0f;
-
-    // until properly implemented
-    vec2 points[] = {vec2(1.0, 1.0), vec2(5.0, 5.0), vec2(1.0, 5.0)};
-    Bezier::Init(points, 3, 10.0, 2.0);
 }
 
 mat4 Camera::ViewMatrix(bool reflection)
@@ -85,6 +81,16 @@ void Camera::LookOnTheRight()
     vec3 cameraPositionToLookingAt = lookingAt_ - position_;
     vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
     lookingAt_ -= mat3(0.1) * horizontalAxis;
+}
+
+void Camera::InitBezier(float time) {
+    vec2 points[] = {vec2(0.0, 0.0), vec2(1.0, 1.0), vec2(0.0, 1.0)};
+    Bezier::Init(points, 3, time + 10, time);
+    bezierInitialized = true;
+}
+
+void Camera::MoveBezier(float time) {
+    position_ = vec3(Bezier::GetPosition(time), 3.0);
 }
 
 vec3 Camera::ComputeUpVector(vec3 pos, vec3 lookAt)

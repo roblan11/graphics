@@ -17,8 +17,6 @@ struct Bezier {
 
     vec2 GetPosition(float time);
 
-    vec2 getBezierPoint( vec2* points, int numPoints, float t );
-
     void Cleanup();
 };
 
@@ -44,6 +42,8 @@ class Camera : public Bezier {
         void LookOnTheLeft();
 
         void LookOnTheRight();
+
+        void InitBezier(float time);
 
         void MoveBezier(float time);
 
