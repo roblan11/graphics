@@ -5,11 +5,34 @@
 
 using namespace glm;
 
-using namespace std;
-
 #define MOVE_VERTICALLY_FACTOR 0.05
 #define MOVE_LATERAL_FACTOR 0.1f
 #define MOVE_STRAIGHT_FACTOR 0.2f
+
+void Bezier::Init(vec2* pts, int N, float maxTime, float startTime) {
+    points = new vec2[numPoints];
+    memcpy(points, pts, N * sizeof(vec2));
+    numPoints = N;
+    runFor = maxTime;
+}
+
+vec2 Bezier::GetPosition(float time) {
+    float t = clamp((time-runFrom)/runFor, 0.f, 1.f);
+    vec2* temp = new vec2[numPoints];
+    memcpy(temp, points, numPoints * sizeof(vec2));
+    for (int i = numPoints-1; i > 0; i--) {
+        for (size_t j = 0; j < i; j++) {
+            temp[j] = temp[j] + t * (temp[j+1] - temp[j]);
+        }
+    }
+    vec2 ret = temp[0];
+    delete[] temp;
+    return ret;
+}
+
+void Bezier::Cleanup() {
+    delete[] points;
+}
 
 void Camera::Init(vec3 position, vec3 lookingAt, vec3 up)
 {
@@ -17,7 +40,10 @@ void Camera::Init(vec3 position, vec3 lookingAt, vec3 up)
     lookingAt_ = lookingAt;
     up_ = up;
     velocity_ = 0.0f;
-    // cout << "Hello world!" << endl;
+
+    // until properly implemented
+    vec2 points[] = {vec2(1.0, 1.0), vec2(5.0, 5.0), vec2(1.0, 5.0)};
+    Bezier::Init(points, 3, 10.0, 2.0);
 }
 
 mat4 Camera::ViewMatrix(bool reflection)
@@ -72,4 +98,10 @@ vec3 Camera::ComputeUpVector(vec3 pos, vec3 lookAt)
 void Camera::CorrectUpVector()
 {
     up_ = ComputeUpVector(position_, lookingAt_);
+}
+
+void Camera::Cleanup() {
+  if (bezierInitialized) {
+      Bezier::Cleanup();
+  }
 }

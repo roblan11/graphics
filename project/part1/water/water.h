@@ -2,7 +2,7 @@
 #include "icg_helper.h"
 #include "glm/gtc/type_ptr.hpp"
 
-const float WAVE_SPEED = 0.001f;
+float WAVE_SPEED;
 
 class Water {
 
@@ -121,6 +121,10 @@ class Water {
             glUseProgram(0);
         }
 
+        void Update(float wave_speed) {
+            WAVE_SPEED = wave_speed / 10000.f;
+        }
+
         void Cleanup() {
             glBindVertexArray(0);
             glUseProgram(0);
@@ -137,7 +141,7 @@ class Water {
 
             glm::mat4 MVP = projection * view * model;
 
-            moveFactor += WAVE_SPEED * glfwGetTime();
+            moveFactor += WAVE_SPEED;
             moveFactor = fmod(moveFactor, 1.0f);
             glUniform1f(glGetUniformLocation(program_id_, "moveFactor"), moveFactor);
 

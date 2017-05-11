@@ -5,13 +5,29 @@
 #pragma once
 //#include "icg_helper.h"
 #include <glm/gtc/type_ptr.hpp>
+using namespace glm;
 
-class Camera {
+struct Bezier {
+    vec2* points;
+    int numPoints;
+    float runFor;
+    float runFrom;
+
+    void Init(vec2* pts, int N, float maxTime, float startTime);
+
+    vec2 GetPosition(float time);
+
+    vec2 getBezierPoint( vec2* points, int numPoints, float t );
+
+    void Cleanup();
+};
+
+class Camera : public Bezier {
 
     public:
-        void Init(glm::vec3 position, glm::vec3 lookingAt, glm::vec3 up);
+        void Init(vec3 position, vec3 lookingAt, vec3 up);
 
-        glm::mat4 ViewMatrix(bool reflection);
+        mat4 ViewMatrix(bool reflection);
 
         float getPositionLookingAtX() {
             return lookingAt_.x;
@@ -29,19 +45,22 @@ class Camera {
 
         void LookOnTheRight();
 
-        glm::vec3 ComputeUpVector(glm::vec3 pos, glm::vec3 lookAt);
+        void MoveBezier(float time);
+
+        vec3 ComputeUpVector(vec3 pos, vec3 lookAt);
 
         void CorrectUpVector();
 
         void Cleanup();
 
-        void Draw();
+        //void Draw();
 
     private:
-        glm::vec3 position_;
-        glm::vec3 lookingAt_;
-        glm::vec3 up_;
+        vec3 position_;
+        vec3 lookingAt_;
+        vec3 up_;
         float velocity_;
+        bool bezierInitialized;
 };
 
 #endif

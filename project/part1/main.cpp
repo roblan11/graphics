@@ -148,75 +148,88 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 }
 
 void GUI(GLFWwindow* window) {
-    static int octaves = 5;
-    static float lacunarity = 2.0f;
-    static float gain = 0.35;
-    static float amplitude = 0.7;
-    static float exponent = 0.8;
-    static float heightscale = 1.3;
-    static float offset = 0.9;
-    static float scale = 2.f;
-
     ImGui_ImplGlfwGL3_NewFrame();
 
-    {
-        ImGui::Begin("heightmap options");
-
-        ImGui::SliderInt("# octaves", &octaves, 1, 10);
-        ImGui::SliderFloat("lacunarity", &lacunarity, 0.1f, 5.0f);
-        ImGui::SliderFloat("gain", &gain, 0.01f, 1.0f);
-        ImGui::SliderFloat("amplitude", &amplitude, 0.01f, 1.0f);
-        ImGui::SliderFloat("exponent", &exponent, 0.01f, 3.0f);
-        ImGui::SliderFloat("scale the height", &heightscale, 0.1f, 3.0f);
-        ImGui::SliderFloat("negative offset", &offset, 0.f, 2.f);
-        ImGui::SliderFloat("terrain scale", &scale, 0.1f, 3.0f);
-        ImGui::End();
-
-        heightmap.Update(octaves, lacunarity, gain, amplitude, exponent, heightscale, offset, scale);
-    }
-
-    static float mix_uw_sand = 0.005;
-    static float mix_sand_grass = 0.015;
-    static float lvl_grass = 0.12;
-    static float mix_grass_rock = 0.18;
-    static float lvl_rock = 0.3;
-    static float mix_rock_snow = 0.35;
-    static float lvl_snow = 0.4;
-
-    static float scale_uw = 2.f;
-    static float scale_sand = 10.f;
-    static float scale_grass = 10.f;
-    static float scale_rock = 5.f;
-    static float scale_snow = 5.f;
+    ImGui::Begin("options");
 
     {
-        ImGui::Begin("terrain options");
-        ImGui::Text("heights");
-        ImGui::SliderFloat("waterline mix", &mix_uw_sand, 0.f, mix_sand_grass);
-        ImGui::SliderFloat("sand-grass mix", &mix_sand_grass, mix_uw_sand, lvl_grass);
-        ImGui::SliderFloat("grass lvl", &lvl_grass, mix_sand_grass, mix_grass_rock);
-        ImGui::SliderFloat("grass-rock mix", &mix_grass_rock, lvl_grass, lvl_rock);
-        ImGui::SliderFloat("rock lvl", &lvl_rock, mix_grass_rock, mix_rock_snow);
-        ImGui::SliderFloat("rock-snow mix", &mix_rock_snow, lvl_rock, lvl_snow);
-        ImGui::SliderFloat("snow lvl", &lvl_snow, mix_rock_snow, 1.f);
+        static int octaves = 5;
+        static float lacunarity = 2.0f;
+        static float gain = 0.35;
+        static float amplitude = 0.7;
+        static float exponent = 0.8;
+        static float heightscale = 1.3;
+        static float offset = 0.9;
+        static float scale = 2.f;
 
-        ImGui::Text("texture scale");
-        ImGui::SliderFloat("uw tex", &scale_uw, 1.f, 20.f);
-        ImGui::SliderFloat("sand tex", &scale_sand, 1.f, 20.f);
-        ImGui::SliderFloat("grass tex", &scale_grass, 1.f, 20.f);
-        ImGui::SliderFloat("rock tex", &scale_rock, 1.f, 20.f);
-        ImGui::SliderFloat("snow tex", &scale_snow, 1.f, 20.f);
+        if(ImGui::CollapsingHeader("heightmap")) {
+            ImGui::SliderInt("# octaves", &octaves, 1, 10);
+            ImGui::SliderFloat("lacunarity", &lacunarity, 0.1f, 5.0f);
+            ImGui::SliderFloat("gain", &gain, 0.01f, 1.0f);
+            ImGui::SliderFloat("amplitude", &amplitude, 0.01f, 1.0f);
+            ImGui::SliderFloat("exponent", &exponent, 0.01f, 3.0f);
+            ImGui::SliderFloat("scale the height", &heightscale, 0.1f, 3.0f);
+            ImGui::SliderFloat("negative offset", &offset, 0.f, 2.f);
+            ImGui::SliderFloat("terrain scale", &scale, 0.1f, 3.0f);
 
-        ImGui::End();
-
-        terrain.Update(mix_uw_sand, mix_sand_grass, lvl_grass, mix_grass_rock, lvl_rock, mix_rock_snow, lvl_snow, scale_uw, scale_sand, scale_grass, scale_rock, scale_snow);
-
+            heightmap.Update(octaves, lacunarity, gain, amplitude, exponent, heightscale, offset, scale);
+        }
     }
+
     {
-        ImGui::Begin("general information");
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
+        static float mix_uw_sand = 0.005;
+        static float mix_sand_grass = 0.015;
+        static float lvl_grass = 0.12;
+        static float mix_grass_rock = 0.18;
+        static float lvl_rock = 0.3;
+        static float mix_rock_snow = 0.35;
+        static float lvl_snow = 0.4;
+
+        static float scale_uw = 2.f;
+        static float scale_sand = 10.f;
+        static float scale_grass = 10.f;
+        static float scale_rock = 5.f;
+        static float scale_snow = 5.f;
+
+        if(ImGui::CollapsingHeader("terrain")) {
+            ImGui::Text("heights");
+            ImGui::SliderFloat("waterline mix", &mix_uw_sand, 0.f, mix_sand_grass);
+            ImGui::SliderFloat("sand-grass mix", &mix_sand_grass, mix_uw_sand, lvl_grass);
+            ImGui::SliderFloat("grass lvl", &lvl_grass, mix_sand_grass, mix_grass_rock);
+            ImGui::SliderFloat("grass-rock mix", &mix_grass_rock, lvl_grass, lvl_rock);
+            ImGui::SliderFloat("rock lvl", &lvl_rock, mix_grass_rock, mix_rock_snow);
+            ImGui::SliderFloat("rock-snow mix", &mix_rock_snow, lvl_rock, lvl_snow);
+            ImGui::SliderFloat("snow lvl", &lvl_snow, mix_rock_snow, 1.f);
+
+            ImGui::Text("texture scale");
+            ImGui::SliderFloat("uw tex", &scale_uw, 1.f, 20.f);
+            ImGui::SliderFloat("sand tex", &scale_sand, 1.f, 20.f);
+            ImGui::SliderFloat("grass tex", &scale_grass, 1.f, 20.f);
+            ImGui::SliderFloat("rock tex", &scale_rock, 1.f, 20.f);
+            ImGui::SliderFloat("snow tex", &scale_snow, 1.f, 20.f);
+
+
+            terrain.Update(mix_uw_sand, mix_sand_grass, lvl_grass, mix_grass_rock, lvl_rock, mix_rock_snow, lvl_snow, scale_uw, scale_sand, scale_grass, scale_rock, scale_snow);
+        }
     }
+
+    {
+        static float wave_speed = 5.f;
+
+        if(ImGui::CollapsingHeader("water")) {
+            ImGui::SliderFloat("waterline mix", &wave_speed, 0.f, 10.f);
+
+            water.Update(wave_speed);
+        }
+    }
+
+    {
+        if(ImGui::CollapsingHeader("general information")) {
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        }
+    }
+
+    ImGui::End();
 
     ImGui::Render();
 }
