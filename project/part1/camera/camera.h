@@ -21,6 +21,10 @@ class Camera {
             return lookingAt_.y;
         }
 
+        glm::vec3 getPosition() {
+            return position_;
+        }
+
         void MoveForward();
 
         void MoveBackward();

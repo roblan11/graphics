@@ -2,7 +2,7 @@
 #include "icg_helper.h"
 #include "glm/gtc/type_ptr.hpp"
 
-const float WAVE_SPEED = 0.001f;
+const float WAVE_SPEED = 0.05f;
 
 class Water {
 
@@ -12,10 +12,11 @@ class Water {
         GLuint vertex_buffer_object_;   // memory buffer
         GLuint texture_dudv_id_;             // texture ID
         GLuint texture_mirror_id_;      // texture mirror ID
+        GLuint move_factor_id_;
         float moveFactor;
 
     public:
-        void Init(GLuint tex_mirror = -1) {
+        void Init(GLuint tex_mirror) {
             // compile the shaders
             program_id_ = icg_helper::LoadShaders("water_vshader.glsl",
                                                   "water_fshader.glsl");
@@ -100,8 +101,7 @@ class Water {
                                  GL_RGBA, GL_UNSIGNED_BYTE, image);
                 }
 
-
-                texture_mirror_id_ = (tex_mirror==-1)? texture_dudv_id_ : tex_mirror;
+                texture_mirror_id_ = tex_mirror;
 
                 // texture uniforms
                 GLuint tex_dudv_id = glGetUniformLocation(program_id_, "tex_dudv");
@@ -114,6 +114,7 @@ class Water {
                 stbi_image_free(image);
             }
 
+            move_factor_id_ = glGetUniformLocation(program_id_, "moveFactor");
             moveFactor = 0.0f;
 
             // to avoid the current object being polluted
@@ -137,11 +138,10 @@ class Water {
 
             glm::mat4 MVP = projection * view * model;
 
-            moveFactor += WAVE_SPEED * glfwGetTime();
-            moveFactor = fmod(moveFactor, 1.0f);
-            glUniform1f(glGetUniformLocation(program_id_, "moveFactor"), moveFactor);
+            moveFactor = fmod(WAVE_SPEED * glfwGetTime(), 1.0f);
+            glUniform1f(move_factor_id_, moveFactor);
 
-            // Bind reflection texture
+            // Bind texture
             {
                 // bind textures
                 glActiveTexture(GL_TEXTURE0);

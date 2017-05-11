@@ -23,9 +23,12 @@ void Camera::Init(vec3 position, vec3 lookingAt, vec3 up)
 mat4 Camera::ViewMatrix(bool reflection)
 {
     if (reflection) {
+        float dz = position_.z - lookingAt_.z;
+        float k = position_.z / dz; // asssuming water at z=0
+        vec3 lookingAtBis = position_ + k * (lookingAt_ - position_);
         vec3 cam_pos_mirrored = vec3(position_.x, position_.y, -position_.z);
-        vec3 up = ComputeUpVector(cam_pos_mirrored, lookingAt_);
-        return lookAt(cam_pos_mirrored, lookingAt_, up);
+        vec3 up = ComputeUpVector(cam_pos_mirrored, lookingAtBis);
+        return lookAt(cam_pos_mirrored, lookingAtBis, up);
     } else {
         return lookAt(position_, lookingAt_, up_);
     }

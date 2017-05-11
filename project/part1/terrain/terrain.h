@@ -352,9 +352,7 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
             MVP_id_ = glGetUniformLocation(program_id_, "MVP");
             MV_id_ = glGetUniformLocation(program_id_, "MV");
 
-            glm::vec4 clippingPlane = glm::vec4(0, 0,- 1, 15);
             clipping_plane_id_ = glGetUniformLocation(program_id_, "clippingPlane");
-            glUniform4fv(clipping_plane_id_, 1, glm::value_ptr(clippingPlane));
 
             // to avoid the current object being polluted
             glBindVertexArray(0);
@@ -380,7 +378,8 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
         }
 
 
-        void Draw(const glm::mat4 &model,
+        void Draw(const glm::vec4 &clippingPlane,
+                  const glm::mat4 &model,
                   const glm::mat4 &view,
                   const glm::mat4 &projection) {
             glUseProgram(program_id_);
@@ -403,6 +402,8 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
             // setup MVP
             glm::mat4 MVP = projection*view*model;
             glUniformMatrix4fv(MVP_id_, ONE, DONT_TRANSPOSE, glm::value_ptr(MVP));
+
+            glUniform4fv(clipping_plane_id_, 1, glm::value_ptr(clippingPlane));
 
             // setup MV
             glm::mat4 MV = view*model;

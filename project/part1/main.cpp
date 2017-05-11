@@ -34,7 +34,6 @@ Water water;
 using namespace glm;
 
 mat4 projection_matrix;
-//mat4 cube_model_matrix;
 mat4 terrain_model_matrix;
 mat4 skybox_model_matrix;
 mat4 water_model_matrix;
@@ -49,13 +48,12 @@ void Init(GLFWwindow* window) {
 
     terrain_model_matrix = scale(IDENTITY_MATRIX, vec3(5.0f));
     water_model_matrix = scale(IDENTITY_MATRIX, vec3(5.0f));
-    water_model_matrix[3][2] = 0.05f;
     skybox_model_matrix = rotate(scale(IDENTITY_MATRIX, vec3(9.0f)), 1.57f, vec3(1,0,0));
 
     glfwGetFramebufferSize(window, &window_width, &window_height);
     GLuint framebuffer_texture_id = framebuffer.Init(window_width, window_height);
     GLuint reflection_texture_id = reflectionBuffer.Init(window_width, window_height);
-    camera.Init(vec3(-4, -1.0f, 4), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f));
+    camera.Init(vec3(-4, -1.0f, 4), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 0.0f, 1.0f));
     heightmap.Init(window_width, window_height, framebuffer_texture_id);
     skybox.Init();
     terrain.Init(framebuffer_texture_id);
@@ -87,7 +85,8 @@ void Display() {
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mat4 view_mirrored = camera.ViewMatrix(true);
-        terrain.Draw(terrain_model_matrix, view_mirrored, projection_matrix);
+        vec4 clippingPlaneAbove = vec4(0.0, 0.0, 1.0, 0.0);
+        terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix);
         skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix);
     }
     reflectionBuffer.Unbind();
@@ -95,11 +94,14 @@ void Display() {
     // render to Window
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    terrain.Draw(terrain_model_matrix, view_matrix, projection_matrix);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    water.Draw(water_model_matrix, view_matrix, projection_matrix);
-    glDisable(GL_BLEND);
+    vec4 clippingPlane = vec4(0.0, 0.0, 0.0, 0.0);
+    terrain.Draw(clippingPlane, terrain_model_matrix, view_matrix, projection_matrix);
+    // glEnable(GL_BLEND);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // {
+        water.Draw(water_model_matrix, view_matrix, projection_matrix);
+    // }
+    // glDisable(GL_BLEND);
     skybox.Draw(skybox_model_matrix, view_matrix, projection_matrix);
 }
 
@@ -284,7 +286,9 @@ int main(int argc, char *argv[]) {
     // cleanup
     terrain.Cleanup();
     framebuffer.Cleanup();
+    reflectionBuffer.Cleanup();
     heightmap.Cleanup();
+    water.Cleanup();
 
     // close OpenGL window and terminate GLFW
     glfwDestroyWindow(window);
