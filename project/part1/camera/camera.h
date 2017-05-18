@@ -8,14 +8,17 @@
 using namespace glm;
 
 struct Bezier {
-    vec2* points;
+    vec3* points;
     int numPoints;
     float runFor;
     float runFrom;
+    bool restart;
 
-    void Init(vec2* pts, int N, float maxTime, float startTime);
+    void Init(vec3* pts, float runTime, float startTime);
 
-    vec2 GetPosition(float time);
+    float Ease(float t);
+
+    vec3 GetPosition(float time);
 
     void Cleanup();
 };

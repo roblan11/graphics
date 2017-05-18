@@ -237,6 +237,16 @@ void GUI(GLFWwindow* window) {
 
     ImGui::End();
 
+    ImGui::Begin("Controls");
+    ImGui::TextColored(ImVec4(1.0f,0.5f,0.5f,1.0f), "Noclip camera");
+    ImGui::Text("  W : move forward");
+    ImGui::Text("  S : move back");
+    ImGui::Text("  A : rotate left");
+    ImGui::Text("  D : rotate right");
+    ImGui::TextColored(ImVec4(1.0f,0.5f,0.5f,1.0f), "Bezier camera");
+    ImGui::Text("  G (hold) : move");
+    ImGui::End();
+
     ImGui::Render();
 }
 

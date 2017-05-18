@@ -9,23 +9,35 @@ using namespace glm;
 #define MOVE_LATERAL_FACTOR 0.1f
 #define MOVE_STRAIGHT_FACTOR 0.2f
 
-void Bezier::Init(vec2* pts, int N, float maxTime, float startTime) {
-    points = new vec2[numPoints];
-    memcpy(points, pts, N * sizeof(vec2));
-    numPoints = N;
-    runFor = maxTime;
+void Bezier::Init(vec3 pts[4], float runTime, float startTime) {
+    points = new vec3[numPoints];
+    memcpy(points, pts, 4 * sizeof(vec3));
+    restart = false;
+    numPoints = 4;
+    runFor = runTime;
+    runFrom = startTime;
 }
 
-vec2 Bezier::GetPosition(float time) {
-    float t = clamp((time-runFrom)/runFor, 0.f, 1.f);
-    vec2* temp = new vec2[numPoints];
-    memcpy(temp, points, numPoints * sizeof(vec2));
+float Bezier::Ease(float t) {
+  return t * t * t * (t * (t * 6 - 15) + 10);
+}
+
+vec3 Bezier::GetPosition(float time) {
+    float t;
+    if(time >= runFrom+runFor) {
+        restart = true;
+        t = 1.0;
+    } else {
+        float t = Ease((time-runFrom)/runFor);
+    }
+    vec3* temp = new vec3[numPoints];
+    memcpy(temp, points, numPoints * sizeof(vec3));
     for (int i = numPoints-1; i > 0; i--) {
         for (size_t j = 0; j < i; j++) {
             temp[j] = temp[j] + t * (temp[j+1] - temp[j]);
         }
     }
-    vec2 ret = temp[0];
+    vec3 ret = temp[0];
     delete[] temp;
     return ret;
 }
@@ -84,13 +96,16 @@ void Camera::LookOnTheRight()
 }
 
 void Camera::InitBezier(float time) {
-    vec2 points[] = {vec2(0.0, 0.0), vec2(1.0, 1.0), vec2(0.0, 1.0)};
-    Bezier::Init(points, 3, time + 10, time);
+    vec3 points[4] = {vec3(0.0, 0.0, 2.0), vec3(1.0, 1.0, 1.0), vec3(0.0, 1.0, 2.0), vec3(0.0, 0.0, 2.0)};
+    Bezier::Init(points, 10, time);
     bezierInitialized = true;
 }
 
 void Camera::MoveBezier(float time) {
-    position_ = vec3(Bezier::GetPosition(time), 3.0);
+    position_ = vec3(Bezier::GetPosition(time));
+    if(Bezier::restart) {
+        InitBezier(time);
+    }
 }
 
 vec3 Camera::ComputeUpVector(vec3 pos, vec3 lookAt)
