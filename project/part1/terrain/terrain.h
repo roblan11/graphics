@@ -84,7 +84,6 @@ struct Terrain_Parameters {
 struct Light {
         glm::vec3 La = glm::vec3(1.0f, 1.0f, 1.f);
         glm::vec3 Ld = glm::vec3(1.0f, 1.0f, 1.f);
-        glm::vec3 Ls = glm::vec3(1.0f, 1.0f, 1.f);
 
         glm::vec3 light_pos = glm::vec3(0.0f, 0.0f, 2.0f);
 
@@ -97,19 +96,16 @@ struct Light {
 
             GLuint La_id = glGetUniformLocation(program_id, "La");
             GLuint Ld_id = glGetUniformLocation(program_id, "Ld");
-            GLuint Ls_id = glGetUniformLocation(program_id, "Ls");
 
             glUniform3fv(light_pos_id, ONE, glm::value_ptr(light_pos));
             glUniform3fv(La_id, ONE, glm::value_ptr(La));
             glUniform3fv(Ld_id, ONE, glm::value_ptr(Ld));
-            glUniform3fv(Ls_id, ONE, glm::value_ptr(Ls));
         }
 };
 
 struct Material {
-        glm::vec3 ka = glm::vec3(0.5f, 0.5f, 0.5f);
-        glm::vec3 kd = glm::vec3(0.6f, 0.6f, 0.6f);
-        glm::vec3 ks = glm::vec3(0.4f, 0.4f, 0.4f);
+        glm::vec3 ka = glm::vec3(0.25f, 0.25f, 0.25f);
+        glm::vec3 kd = glm::vec3(0.65f, 0.65f, 0.65f);
         float alpha = 100.0f;
 
         // pass material properties to the shaders
@@ -118,12 +114,10 @@ struct Material {
 
             GLuint ka_id = glGetUniformLocation(program_id, "ka");
             GLuint kd_id = glGetUniformLocation(program_id, "kd");
-            GLuint ks_id = glGetUniformLocation(program_id, "ks");
             GLuint alpha_id = glGetUniformLocation(program_id, "alpha");
 
             glUniform3fv(ka_id, ONE, glm::value_ptr(ka));
             glUniform3fv(kd_id, ONE, glm::value_ptr(kd));
-            glUniform3fv(ks_id, ONE, glm::value_ptr(ks));
             glUniform1f(alpha_id, alpha);
         }
 };

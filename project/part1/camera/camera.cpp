@@ -9,11 +9,11 @@ using namespace glm;
 #define MOVE_LATERAL_FACTOR 0.1f
 #define MOVE_STRAIGHT_FACTOR 0.2f
 
-void Bezier::Init(vec3 pts[4], float runTime, float startTime) {
+void Bezier::Init(vec3* pts, size_t N, float runTime, float startTime) {
+    numPoints = N;
     points = new vec3[numPoints];
-    memcpy(points, pts, 4 * sizeof(vec3));
+    memcpy(points, pts, numPoints * sizeof(vec3));
     restart = false;
-    numPoints = 4;
     runFor = runTime;
     runFrom = startTime;
 }
@@ -28,7 +28,7 @@ vec3 Bezier::GetPosition(float time) {
         restart = true;
         t = 1.0;
     } else {
-        float t = Ease((time-runFrom)/runFor);
+        t = Ease((time-runFrom)/runFor);
     }
     vec3* temp = new vec3[numPoints];
     memcpy(temp, points, numPoints * sizeof(vec3));
@@ -96,8 +96,8 @@ void Camera::LookOnTheRight()
 }
 
 void Camera::InitBezier(float time) {
-    vec3 points[4] = {vec3(0.0, 0.0, 2.0), vec3(1.0, 1.0, 1.0), vec3(0.0, 1.0, 2.0), vec3(0.0, 0.0, 2.0)};
-    Bezier::Init(points, 10, time);
+    vec3 points[] = {position_, position_+vec3(2.0, 2.0, 0.0), position_+vec3(1.0, 2.0, -1.0), position_+vec3(1.0, 1.0, 0.0)};
+    Bezier::Init(points, 4, 10, time);
     bezierInitialized = true;
 }
 

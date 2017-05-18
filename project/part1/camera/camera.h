@@ -14,7 +14,7 @@ struct Bezier {
     float runFrom;
     bool restart;
 
-    void Init(vec3* pts, float runTime, float startTime);
+    void Init(vec3* pts, size_t N, float runTime, float startTime);
 
     float Ease(float t);
 
