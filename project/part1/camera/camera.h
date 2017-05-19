@@ -13,25 +13,31 @@ class Camera {
 
         glm::mat4 ViewMatrix(bool reflection);
 
-        float getPositionLookingAtX() {
-            return lookingAt_.x;
+        float getPositionX() {
+            return position_.x;
         }
 
-        float getPositionLookingAtY() {
-            return lookingAt_.y;
+        float getPositionY() {
+            return position_.y;
         }
 
-        glm::vec3 getPosition() {
-            return position_;
-        }
+        void MoveForward(float currentTime);
+        void MovingForward(float currentTime);
 
-        void MoveForward();
+        void MoveBackward(float currentTime);
+        void MovingBackward(float currentTime);
 
-        void MoveBackward();
+        void LookOnTheLeft(float currentTime);
+        void LookingOnTheLeft(float currentTime);
 
-        void LookOnTheLeft();
+        void LookOnTheRight(float currentTime);
+        void LookingOnTheRight(float currentTime);
 
-        void LookOnTheRight();
+        void LookAbove();
+        void LookingAbove();
+
+        void LookBelow();
+        void LookingBelow();
 
         glm::vec3 ComputeUpVector(glm::vec3 pos, glm::vec3 lookAt);
 
@@ -39,13 +45,26 @@ class Camera {
 
         void Cleanup();
 
-        void Draw();
+        void Update(float currentTime);
 
     private:
+        void UpdateOrigin(float currentTime);
+
         glm::vec3 position_;
         glm::vec3 lookingAt_;
         glm::vec3 up_;
-        float velocity_;
+        glm::vec3 positionOrigin_;
+        glm::vec3 lookingAtOrigin_;
+        glm::vec3 velocityPositionOrigin_;
+        glm::vec3 velocityLookingAtOrigin_;
+        float timeOriginPosition_;
+        float timeOriginLookingAt_;
+        static const float MOVE_VERTICALLY_FACTOR;
+        static const float MOVE_LATERAL_FACTOR;
+        static const float MOVE_STRAIGHT_FACTOR;
+        static const float MOVE_STRAIGHT_REAPEAT_FACTOR;
+        static const float INITIAL_VELOCITY;
+        static const float ACCELERATION;
 };
 
 #endif

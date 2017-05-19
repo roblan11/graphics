@@ -72,12 +72,14 @@ vec2 TransformScreenCoords(GLFWwindow* window, int x, int y) {
 }
 
 void Display() {
+    float currentTime = glfwGetTime();
+    camera.Update(currentTime);
     mat4 view_matrix = camera.ViewMatrix(false);
     // render to framebuffer
     framebuffer.Bind();
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        heightmap.Draw(camera.getPositionLookingAtX(), camera.getPositionLookingAtY());
+        heightmap.Draw(camera.getPositionX(), camera.getPositionY());
     }
     framebuffer.Unbind();
 
@@ -86,7 +88,7 @@ void Display() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mat4 view_mirrored = camera.ViewMatrix(true);
         vec4 clippingPlaneAbove = vec4(0.0, 0.0, 1.0, 0.0);
-        terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix);
+        //terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix);
         skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix);
     }
     reflectionBuffer.Unbind();
@@ -102,7 +104,7 @@ void Display() {
         water.Draw(water_model_matrix, view_matrix, projection_matrix);
     // }
     // glDisable(GL_BLEND);
-    skybox.Draw(skybox_model_matrix, view_matrix, projection_matrix);
+    // skybox.Draw(skybox_model_matrix, view_matrix, projection_matrix);
 }
 
 // gets called when the windows/framebuffer is resized.
@@ -126,27 +128,46 @@ void ErrorCallback(int error, const char* description) {
 }
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    float currentTime = glfwGetTime();
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
     } else if (action == GLFW_PRESS) {
         if (key == GLFW_KEY_W) {
-            camera.MoveForward();
+            camera.MoveForward(currentTime);
         } else if (key == GLFW_KEY_S) {
-            camera.MoveBackward();
+            camera.MoveBackward(currentTime);
         } else if (key == GLFW_KEY_A) {
-            camera.LookOnTheLeft();
+            camera.LookOnTheLeft(currentTime);
         } else if (key == GLFW_KEY_D) {
-            camera.LookOnTheRight();
+            camera.LookOnTheRight(currentTime);
+        } else if (key == GLFW_KEY_Q) {
+            camera.LookAbove();
+        } else if (key == GLFW_KEY_E) {
+            camera.LookBelow();
         }
-
-        // move model_matrix
-        terrain_model_matrix[3][0] = camera.getPositionLookingAtX();
-        terrain_model_matrix[3][1] = camera.getPositionLookingAtY();
-        water_model_matrix[3][0] = camera.getPositionLookingAtX();
-        water_model_matrix[3][1] = camera.getPositionLookingAtY();
-        skybox_model_matrix[3][0] = camera.getPositionLookingAtX();
-        skybox_model_matrix[3][1] = camera.getPositionLookingAtY();
+    } else if (action == GLFW_REPEAT) {
+        if (key == GLFW_KEY_W) {
+            camera.MovingForward(currentTime);
+        } else if (key == GLFW_KEY_S) {
+            camera.MovingBackward(currentTime);
+        } else if (key == GLFW_KEY_A) {
+            camera.LookingOnTheLeft(currentTime);
+        } else if (key == GLFW_KEY_D) {
+            camera.LookingOnTheRight(currentTime);
+        } else if (key == GLFW_KEY_Q) {
+            camera.LookingAbove();
+        } else if (key == GLFW_KEY_E) {
+            camera.LookingBelow();
+        }
     }
+
+    // move model_matrix
+    terrain_model_matrix[3][0] = camera.getPositionX();
+    terrain_model_matrix[3][1] = camera.getPositionY();
+    water_model_matrix[3][0] = camera.getPositionX();
+    water_model_matrix[3][1] = camera.getPositionY();
+    skybox_model_matrix[3][0] = camera.getPositionX();
+    skybox_model_matrix[3][1] = camera.getPositionY();
 }
 
 void GUI(GLFWwindow* window) {

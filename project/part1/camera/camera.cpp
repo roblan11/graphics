@@ -7,17 +7,24 @@ using namespace glm;
 
 using namespace std;
 
-#define MOVE_VERTICALLY_FACTOR 0.05
-#define MOVE_LATERAL_FACTOR 0.1f
-#define MOVE_STRAIGHT_FACTOR 0.2f
+const float Camera::MOVE_VERTICALLY_FACTOR = 0.05f;
+const float Camera::MOVE_LATERAL_FACTOR = 1.8f;
+const float Camera::MOVE_STRAIGHT_FACTOR = 0.05f;
+const float Camera::MOVE_STRAIGHT_REAPEAT_FACTOR = 0.005f;
+const float Camera::INITIAL_VELOCITY= 0.3f;
+const float Camera::ACCELERATION = 0.2f;
 
 void Camera::Init(vec3 position, vec3 lookingAt, vec3 up)
 {
     position_ = position;
+    positionOrigin_ = position;
     lookingAt_ = lookingAt;
+    lookingAtOrigin_ = lookingAt;
     up_ = up;
-    velocity_ = 0.0f;
-    // cout << "Hello world!" << endl;
+    velocityPositionOrigin_ = vec3(0.0f);
+    velocityLookingAtOrigin_ = vec3(0.0f);
+    timeOriginPosition_ = 0.0f;
+    timeOriginLookingAt_ = 0.0f;
 }
 
 mat4 Camera::ViewMatrix(bool reflection)
@@ -34,34 +41,126 @@ mat4 Camera::ViewMatrix(bool reflection)
     }
 }
 
-void Camera::MoveForward()
+void Camera::Update(float currentTime)
 {
-    vec3 dmove = normalize(lookingAt_ - position_);
-    dmove.z = 0.0f;
-    position_ += MOVE_STRAIGHT_FACTOR * dmove;
-    lookingAt_ += MOVE_STRAIGHT_FACTOR * dmove;
+    float position_dt = currentTime - timeOriginPosition_;
+    float position_dt_dt = position_dt * position_dt;
+    position_ = positionOrigin_ + mat3(INITIAL_VELOCITY * position_dt -
+            0.5 * ACCELERATION * position_dt_dt) * velocityPositionOrigin_;
+    if (INITIAL_VELOCITY < ACCELERATION * position_dt) {
+        positionOrigin_ = position_;
+        velocityPositionOrigin_ = vec3(0.0f);
+        timeOriginPosition_ = currentTime;
+    }
+    float lookingAt_dt = currentTime - timeOriginLookingAt_;
+    float lookingAt_dt_dt = lookingAt_dt *  lookingAt_dt;
+    lookingAt_ = lookingAtOrigin_ + mat3(INITIAL_VELOCITY * lookingAt_dt -
+            0.5 * ACCELERATION * lookingAt_dt_dt) * velocityLookingAtOrigin_;
+    if (INITIAL_VELOCITY < ACCELERATION * lookingAt_dt) {
+        lookingAtOrigin_ = lookingAt_;
+        velocityLookingAtOrigin_ = vec3(0.0f);
+        timeOriginLookingAt_ = currentTime;
+    }
 }
 
-void Camera::MoveBackward()
+void Camera::MoveForward(float currentTime)
 {
     vec3 dmove = normalize(lookingAt_ - position_);
-    dmove.z = 0.0f;
-    position_ -= MOVE_STRAIGHT_FACTOR * dmove;
-    lookingAt_ -= MOVE_STRAIGHT_FACTOR * dmove;
+    velocityPositionOrigin_ = dmove;
+    velocityLookingAtOrigin_ = dmove;
+    UpdateOrigin(currentTime);
 }
 
-void Camera::LookOnTheLeft()
+void Camera::MovingForward(float currentTime)
+{
+    if (currentTime - timeOriginPosition_ > 0.1) {
+        UpdateOrigin(currentTime);
+    }
+}
+
+void Camera::MoveBackward(float currentTime)
+{
+    vec3 dmove = normalize(position_ - lookingAt_);
+    velocityPositionOrigin_ = dmove;
+    velocityLookingAtOrigin_ = dmove;
+    UpdateOrigin(currentTime);
+}
+
+void Camera::MovingBackward(float currentTime)
+{
+    if (currentTime - timeOriginPosition_ > 0.1) {
+        UpdateOrigin(currentTime);
+    }
+}
+
+void Camera::LookOnTheLeft(float currentTime)
 {
     vec3 cameraPositionToLookingAt = lookingAt_ - position_;
     vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
-    lookingAt_ += mat3(0.1) * horizontalAxis;
+    velocityLookingAtOrigin_ = mat3(MOVE_LATERAL_FACTOR) * horizontalAxis;
+    UpdateOrigin(currentTime);
 }
 
-void Camera::LookOnTheRight()
+void Camera::LookingOnTheLeft(float currentTime)
+{
+    if (currentTime - timeOriginPosition_ > 0.1) {
+        UpdateOrigin(currentTime);
+    }
+}
+
+void Camera::LookOnTheRight(float currentTime)
 {
     vec3 cameraPositionToLookingAt = lookingAt_ - position_;
-    vec3 horizontalAxis = normalize(cross(vec3(0.0f, 0.0f, 1.0f), cameraPositionToLookingAt));
-    lookingAt_ -= mat3(0.1) * horizontalAxis;
+    vec3 horizontalAxis = normalize(cross(cameraPositionToLookingAt, vec3(0.0f, 0.0f, 1.0f)));
+    velocityLookingAtOrigin_ = mat3(MOVE_LATERAL_FACTOR) * horizontalAxis;
+    UpdateOrigin(currentTime);
+}
+
+void Camera::LookingOnTheRight(float currentTime)
+{
+    if (currentTime - timeOriginPosition_ > 0.1) {
+        UpdateOrigin(currentTime);
+    }
+}
+
+void Camera::LookAbove()
+{
+    vec3 cameraPositionToLookingAt = normalize(lookingAt_ - position_);
+    if (cameraPositionToLookingAt.z < 0.9) {
+        vec3 op = vec3(0.0f, 0.0f, 1.0f);
+        vec3 movingAxes = normalize(op - dot(op, cameraPositionToLookingAt) * cameraPositionToLookingAt);
+        lookingAt_ += mat3(0.1) * movingAxes;
+    }
+}
+
+void Camera::LookingAbove()
+{
+    vec3 cameraPositionToLookingAt = normalize(lookingAt_ - position_);
+    if (cameraPositionToLookingAt.z < 0.9) {
+        vec3 op = vec3(0.0f, 0.0f, 1.0f);
+        vec3 movingAxes = normalize(op - dot(op, cameraPositionToLookingAt) * cameraPositionToLookingAt);
+        lookingAt_ += mat3(0.1) * movingAxes;
+    }
+}
+
+void Camera::LookBelow()
+{
+    vec3 cameraPositionToLookingAt = normalize(lookingAt_ - position_);
+    if (cameraPositionToLookingAt.z > -0.9) {
+        vec3 op = vec3(0.0f, 0.0f, 1.0f);
+        vec3 movingAxes = normalize(op - dot(op, cameraPositionToLookingAt) * cameraPositionToLookingAt);
+        lookingAt_ -= mat3(0.1) * movingAxes;
+    }
+}
+
+void Camera::LookingBelow()
+{
+    vec3 cameraPositionToLookingAt = normalize(lookingAt_ - position_);
+    if (cameraPositionToLookingAt.z > -0.9) {
+        vec3 op = vec3(0.0f, 0.0f, 1.0f);
+        vec3 movingAxes = normalize(op - dot(op, cameraPositionToLookingAt) * cameraPositionToLookingAt);
+        lookingAt_ -= mat3(0.1) * movingAxes;
+    }
 }
 
 vec3 Camera::ComputeUpVector(vec3 pos, vec3 lookAt)
@@ -75,4 +174,11 @@ vec3 Camera::ComputeUpVector(vec3 pos, vec3 lookAt)
 void Camera::CorrectUpVector()
 {
     up_ = ComputeUpVector(position_, lookingAt_);
+}
+
+void Camera::UpdateOrigin(float currentTime) {
+    timeOriginPosition_ = currentTime;
+    timeOriginLookingAt_ = currentTime;
+    positionOrigin_ = position_;
+    lookingAtOrigin_ = lookingAt_;
 }
