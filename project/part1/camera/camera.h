@@ -33,11 +33,11 @@ class Camera {
         void LookOnTheRight(float currentTime);
         void LookingOnTheRight(float currentTime);
 
-        void LookAbove();
-        void LookingAbove();
+        void LookAbove(float currentTime);
+        void LookingAbove(float currentTime);
 
-        void LookBelow();
-        void LookingBelow();
+        void LookBelow(float currentTime);
+        void LookingBelow(float currentTime);
 
         glm::vec3 ComputeUpVector(glm::vec3 pos, glm::vec3 lookAt);
 
@@ -59,10 +59,9 @@ class Camera {
         glm::vec3 velocityLookingAtOrigin_;
         float timeOriginPosition_;
         float timeOriginLookingAt_;
-        static const float MOVE_VERTICALLY_FACTOR;
-        static const float MOVE_LATERAL_FACTOR;
+        static const float MOVE_PITCH_FACTOR;
+        static const float MOVE_YAW_FACTOR;
         static const float MOVE_STRAIGHT_FACTOR;
-        static const float MOVE_STRAIGHT_REAPEAT_FACTOR;
         static const float INITIAL_VELOCITY;
         static const float ACCELERATION;
 };

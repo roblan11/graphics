@@ -46,9 +46,9 @@ void Init(GLFWwindow* window) {
     float ratio = window_width / (float) window_height;
     projection_matrix = perspective(45.0f, ratio, 0.1f, 10.0f);
 
-    terrain_model_matrix = scale(IDENTITY_MATRIX, vec3(5.0f));
-    water_model_matrix = scale(IDENTITY_MATRIX, vec3(5.0f));
-    skybox_model_matrix = rotate(scale(IDENTITY_MATRIX, vec3(9.0f)), 1.57f, vec3(1,0,0));
+    terrain_model_matrix = scale(IDENTITY_MATRIX, vec3(9.0f));
+    water_model_matrix = scale(IDENTITY_MATRIX, vec3(9.0f));
+    skybox_model_matrix = rotate(scale(IDENTITY_MATRIX, vec3(13.0f)), 1.57f, vec3(1,0,0));
 
     glfwGetFramebufferSize(window, &window_width, &window_height);
     GLuint framebuffer_texture_id = framebuffer.Init(window_width, window_height);
@@ -88,7 +88,7 @@ void Display() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mat4 view_mirrored = camera.ViewMatrix(true);
         vec4 clippingPlaneAbove = vec4(0.0, 0.0, 1.0, 0.0);
-        //terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix);
+        terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix);
         skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix);
     }
     reflectionBuffer.Unbind();
@@ -98,6 +98,7 @@ void Display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec4 clippingPlane = vec4(0.0, 0.0, 0.0, 0.0);
     terrain.Draw(clippingPlane, terrain_model_matrix, view_matrix, projection_matrix);
+    skybox.Draw(skybox_model_matrix, view_matrix, projection_matrix);
     // glEnable(GL_BLEND);
     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // {
@@ -141,9 +142,9 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         } else if (key == GLFW_KEY_D) {
             camera.LookOnTheRight(currentTime);
         } else if (key == GLFW_KEY_Q) {
-            camera.LookAbove();
+            camera.LookAbove(currentTime);
         } else if (key == GLFW_KEY_E) {
-            camera.LookBelow();
+            camera.LookBelow(currentTime);
         }
     } else if (action == GLFW_REPEAT) {
         if (key == GLFW_KEY_W) {
@@ -155,9 +156,9 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         } else if (key == GLFW_KEY_D) {
             camera.LookingOnTheRight(currentTime);
         } else if (key == GLFW_KEY_Q) {
-            camera.LookingAbove();
+            camera.LookingAbove(currentTime);
         } else if (key == GLFW_KEY_E) {
-            camera.LookingBelow();
+            camera.LookingBelow(currentTime);
         }
     }
 
