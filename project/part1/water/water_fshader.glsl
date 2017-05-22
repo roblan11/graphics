@@ -1,5 +1,5 @@
 #version 330 core
-out vec3 color;
+out vec4 color;
 in vec2 uv;
 uniform sampler2D tex_dudv;
 uniform sampler2D tex_mirror;
@@ -24,5 +24,5 @@ void main() {
 
     vec3 color_from_mirror = texture(tex_mirror, reflectionCoords).rrr;
     vec3 mix_color = mix(vec3(0.0, 0.3, 0.5), color_from_mirror, 0.2);
-    color = mix_color;
+    color = vec4(mix(vec3(0.0, 0.0, 1.0), mix_color, 0.5), 0.7);
 }

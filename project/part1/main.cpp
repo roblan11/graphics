@@ -98,14 +98,13 @@ void Display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec4 clippingPlane = vec4(0.0, 0.0, 0.0, 0.0);
     terrain.Draw(clippingPlane, terrain_model_matrix, view_matrix, projection_matrix);
-    skybox.Draw(skybox_model_matrix, view_matrix, projection_matrix);
-    // glEnable(GL_BLEND);
-    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    {
         water.Draw(water_model_matrix, view_matrix, projection_matrix);
-    // }
-    // glDisable(GL_BLEND);
-    // skybox.Draw(skybox_model_matrix, view_matrix, projection_matrix);
+    }
+    glDisable(GL_BLEND);
+    skybox.Draw(skybox_model_matrix, view_matrix, projection_matrix);
 }
 
 // gets called when the windows/framebuffer is resized.
