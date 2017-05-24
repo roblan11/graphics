@@ -30,21 +30,31 @@ class Camera : public Bezier {
 
         mat4 ViewMatrix(bool reflection);
 
-        float getPositionLookingAtX() {
-            return lookingAt_.x;
+        float getPositionX() {
+            return position_.x;
         }
 
-        float getPositionLookingAtY() {
-            return lookingAt_.y;
+        float getPositionY() {
+            return position_.y;
         }
 
-        void MoveForward();
+        void MoveForward(float currentTime);
+        void MovingForward(float currentTime);
 
-        void MoveBackward();
+        void MoveBackward(float currentTime);
+        void MovingBackward(float currentTime);
 
-        void LookOnTheLeft();
+        void LookOnTheLeft(float currentTime);
+        void LookingOnTheLeft(float currentTime);
 
-        void LookOnTheRight();
+        void LookOnTheRight(float currentTime);
+        void LookingOnTheRight(float currentTime);
+
+        void LookAbove(float currentTime);
+        void LookingAbove(float currentTime);
+
+        void LookBelow(float currentTime);
+        void LookingBelow(float currentTime);
 
         void InitBezier(float time);
 
@@ -56,14 +66,27 @@ class Camera : public Bezier {
 
         void Cleanup();
 
-        //void Draw();
+        void Update(float currentTime);
 
     private:
-        vec3 position_;
-        vec3 lookingAt_;
-        vec3 up_;
-        float velocity_;
+        void UpdateOrigin(float currentTime);
+
+        glm::vec3 position_;
+        glm::vec3 lookingAt_;
+        glm::vec3 up_;
+        glm::vec3 positionOrigin_;
+        glm::vec3 lookingAtOrigin_;
+        glm::vec3 velocityPositionOrigin_;
+        glm::vec3 velocityLookingAtOrigin_;
         bool bezierInitialized;
+        float velocity_;
+        float timeOriginPosition_;
+        float timeOriginLookingAt_;
+        static const float MOVE_PITCH_FACTOR;
+        static const float MOVE_YAW_FACTOR;
+        static const float MOVE_STRAIGHT_FACTOR;
+        static const float INITIAL_VELOCITY;
+        static const float ACCELERATION;
 };
 
 #endif

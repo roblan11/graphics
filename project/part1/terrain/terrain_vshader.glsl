@@ -24,9 +24,10 @@ void main() {
     vec3 pos_3d = vec3(position.x, position.y, height);
 
     vpoint_mv = MV * vec4(pos_3d, 1.0);
+    gl_ClipDistance[0] = dot(vec4(pos_3d, 1.0), clippingPlane);
+    //gl_ClipDistance[0] = dot(vpoint_mv, clippingPlane);
 
     gl_Position = MVP * vec4(pos_3d, 1.0);
-    gl_ClipDistance[0] = dot(gl_Position, clippingPlane);
 
     light_dir = light_pos - vpoint_mv.xyz;
     view_dir = -vpoint_mv.xyz;
