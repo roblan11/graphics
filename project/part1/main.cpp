@@ -166,12 +166,13 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     }
 
     // move model_matrix
-    terrain_model_matrix[3][0] = camera.getPositionX();
-    terrain_model_matrix[3][1] = camera.getPositionY();
-    water_model_matrix[3][0] = camera.getPositionX();
-    water_model_matrix[3][1] = camera.getPositionY();
-    skybox_model_matrix[3][0] = camera.getPositionX();
-    skybox_model_matrix[3][1] = camera.getPositionY();
+    vec2 worldCenter = camera.getWorldCenterPosition();
+    terrain_model_matrix[3][0] = worldCenter.x;
+    terrain_model_matrix[3][1] = worldCenter.y;
+    water_model_matrix[3][0] = worldCenter.x;
+    water_model_matrix[3][1] = worldCenter.y;
+    skybox_model_matrix[3][0] = worldCenter.x;
+    skybox_model_matrix[3][1] = worldCenter.y;
 }
 
 void GUI(GLFWwindow* window) {

@@ -38,6 +38,8 @@ class Camera : public Bezier {
             return position_.y;
         }
 
+        glm::vec2 getWorldCenterPosition();
+
         void MoveForward(float currentTime);
         void MovingForward(float currentTime);
 
@@ -60,8 +62,6 @@ class Camera : public Bezier {
 
         void MoveBezier(float time);
 
-        vec3 ComputeUpVector(vec3 pos, vec3 lookAt);
-
         void CorrectUpVector();
 
         void Cleanup();
@@ -70,6 +70,8 @@ class Camera : public Bezier {
 
     private:
         void UpdateOrigin(float currentTime);
+
+        vec3 ComputeUpVector(vec3 pos, vec3 lookAt);
 
         glm::vec3 position_;
         glm::vec3 lookingAt_;

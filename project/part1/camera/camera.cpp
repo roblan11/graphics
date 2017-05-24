@@ -100,6 +100,16 @@ void Camera::Update(float currentTime)
     }
 }
 
+vec2 Camera::getWorldCenterPosition()
+{
+    const float offset = 8.0f;
+    vec3 op = lookingAt_ - position_;
+    op.z = position_.z;
+    vec3 tmp = position_ + mat3(offset) * normalize(op);
+    vec2 ret = vec2(tmp.x, tmp.y);
+    return ret;
+}
+
 void Camera::MoveForward(float currentTime)
 {
     vec3 dmove = normalize(lookingAt_ - position_);
