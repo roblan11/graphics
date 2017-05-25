@@ -23,12 +23,18 @@ struct Bezier {
     void Cleanup();
 };
 
+enum class CameraMode {BIRD, FPS, BEZIER};
+
 class Camera : public Bezier {
 
     public:
         void Init(vec3 position, vec3 lookingAt, vec3 up);
 
         mat4 ViewMatrix(bool reflection);
+
+        void SetMode(CameraMode newMode) {
+            mode = newMode;
+        }
 
         float getPositionX() {
             return position_.x;
@@ -84,6 +90,7 @@ class Camera : public Bezier {
         float velocity_;
         float timeOriginPosition_;
         float timeOriginLookingAt_;
+        CameraMode mode;
         static const float MOVE_PITCH_FACTOR;
         static const float MOVE_YAW_FACTOR;
         static const float MOVE_STRAIGHT_FACTOR;

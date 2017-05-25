@@ -132,7 +132,14 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
     } else if (action == GLFW_PRESS) {
-        if (key == GLFW_KEY_W) {
+        if (key == GLFW_KEY_1) {
+            camera.SetMode(CameraMode::BIRD);
+        } else if (key == GLFW_KEY_2) {
+            camera.SetMode(CameraMode::FPS);
+        } else if (key == GLFW_KEY_3) {
+            camera.SetMode(CameraMode::BEZIER);
+            camera.InitBezier(currentTime);
+        } else if (key == GLFW_KEY_W) {
             camera.MoveForward(currentTime);
         } else if (key == GLFW_KEY_S) {
             camera.MoveBackward(currentTime);
@@ -140,17 +147,13 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             camera.LookOnTheLeft(currentTime);
         } else if (key == GLFW_KEY_D) {
             camera.LookOnTheRight(currentTime);
-        } else if (key == GLFW_KEY_G) {
-            camera.InitBezier(currentTime);
         } else if (key == GLFW_KEY_Q) {
             camera.LookAbove(currentTime);
         } else if (key == GLFW_KEY_E) {
             camera.LookBelow(currentTime);
         }
     } else if (action == GLFW_REPEAT) {
-        if (key == GLFW_KEY_G) {
-            camera.MoveBezier(currentTime);
-        } else if (key == GLFW_KEY_W) {
+        if (key == GLFW_KEY_W) {
             camera.MovingForward(currentTime);
         } else if (key == GLFW_KEY_S) {
             camera.MovingBackward(currentTime);
