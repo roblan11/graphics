@@ -81,9 +81,10 @@ mat4 Camera::ViewMatrix(bool reflection)
 
 void Camera::Update(float currentTime)
 {
-    if (mode == CameraMode::FPS) {
+    //if (mode == CameraMode::FPS) {
         // FPS
-    } else if (mode == CameraMode::BIRD) {
+    //} else
+        if (mode == CameraMode::BIRD || mode == CameraMode::FPS) {
         float position_dt = currentTime - timeOriginPosition_;
         float position_dt_dt = position_dt * position_dt;
         position_ = positionOrigin_ + mat3(INITIAL_VELOCITY * position_dt -
@@ -213,6 +214,11 @@ void Camera::LookingBelow(float currentTime)
     if (cameraPositionToLookingAt.z < 0.9 && currentTime - timeOriginLookingAt_ > 0.1) {
         UpdateOrigin(currentTime);
     }
+}
+
+void Camera::SetHeight(float height)
+{
+    position_.z = height;
 }
 
 void Camera::InitBezier(float time) {

@@ -64,6 +64,8 @@ class Camera : public Bezier {
         void LookBelow(float currentTime);
         void LookingBelow(float currentTime);
 
+        void SetHeight(float height);
+
         void InitBezier(float time);
 
         void MoveBezier(float time);
@@ -73,6 +75,8 @@ class Camera : public Bezier {
         void Cleanup();
 
         void Update(float currentTime);
+
+        CameraMode mode;
 
     private:
         void UpdateOrigin(float currentTime);
@@ -90,7 +94,6 @@ class Camera : public Bezier {
         float velocity_;
         float timeOriginPosition_;
         float timeOriginLookingAt_;
-        CameraMode mode;
         static const float MOVE_PITCH_FACTOR;
         static const float MOVE_YAW_FACTOR;
         static const float MOVE_STRAIGHT_FACTOR;

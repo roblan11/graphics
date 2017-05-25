@@ -75,13 +75,25 @@ void Display() {
     float currentTime = glfwGetTime();
     camera.Update(currentTime);
     mat4 view_matrix = camera.ViewMatrix(false);
+
+    float height;
+    vec4 a = vec4(camera.getWorldCenterPosition().x,camera.getWorldCenterPosition().y,0,1);
+    vec4 b = view_matrix*vec4(camera.getWorldCenterPosition().x,camera.getWorldCenterPosition().y,0,1);
+    vec4 c = view_matrix*vec4(camera.getPositionX(),camera.getPositionY(),0,1);
+
     // render to framebuffer
     framebuffer.Bind();
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         heightmap.Draw(camera.getPositionX(), camera.getPositionY());
+        glReadPixels(a.x,a.y,1,1,GL_RED,GL_FLOAT,&height);
     }
     framebuffer.Unbind();
+
+    //if(camera.mode == CameraMode.FPS){
+        //camera.SetHeight(height*4);
+        //std::cout << height << std::endl;
+    //}
 
     reflectionBuffer.Bind();
     {
