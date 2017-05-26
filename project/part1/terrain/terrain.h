@@ -375,9 +375,13 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
         void Draw(const glm::vec4 &clippingPlane,
                   const glm::mat4 &model,
                   const glm::mat4 &view,
-                  const glm::mat4 &projection) {
+                  const glm::mat4 &projection,
+                  float lookAtX, float lookAtY) {
             glUseProgram(program_id_);
             glBindVertexArray(vertex_array_id_);
+
+            glUniform1f(glGetUniformLocation(program_id_, "position_looking_at_x"), lookAtX);
+            glUniform1f(glGetUniformLocation(program_id_, "position_looking_at_y"), lookAtY);
 
             // bind textures
             glActiveTexture(GL_TEXTURE0);

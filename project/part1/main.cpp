@@ -100,7 +100,7 @@ void Display() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mat4 view_mirrored = camera.ViewMatrix(true);
         vec4 clippingPlaneAbove = vec4(0.0, 0.0, 1.0, 0.0);
-        terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix);
+        terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix, camera.getPositionX(), camera.getPositionY());
         skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix);
     }
     reflectionBuffer.Unbind();
@@ -109,7 +109,7 @@ void Display() {
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec4 clippingPlane = vec4(0.0, 0.0, 0.0, 0.0);
-    terrain.Draw(clippingPlane, terrain_model_matrix, view_matrix, projection_matrix);
+    terrain.Draw(clippingPlane, terrain_model_matrix, view_matrix, projection_matrix, camera.getPositionX(), camera.getPositionY());
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     {
@@ -139,6 +139,9 @@ void ErrorCallback(int error, const char* description) {
     fputs(description, stderr);
 }
 
+// 1: bird, 2: fps, 3: bezier
+int currentCamMode = 1;
+
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     float currentTime = glfwGetTime();
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
@@ -146,11 +149,14 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     } else if (action == GLFW_PRESS) {
         if (key == GLFW_KEY_1) {
             camera.SetMode(CameraMode::BIRD);
+            currentCamMode = 1;
         } else if (key == GLFW_KEY_2) {
             camera.SetMode(CameraMode::FPS);
+            currentCamMode = 2;
         } else if (key == GLFW_KEY_3) {
             camera.SetMode(CameraMode::BEZIER);
             camera.InitBezier(currentTime);
+            currentCamMode = 3;
         } else if (key == GLFW_KEY_W) {
             camera.MoveForward(currentTime);
         } else if (key == GLFW_KEY_S) {
@@ -274,14 +280,31 @@ void GUI(GLFWwindow* window) {
 
     ImGui::End();
 
-    ImGui::Begin("Controls");
-    ImGui::TextColored(ImVec4(1.0f,0.5f,0.5f,1.0f), "Noclip camera");
-    ImGui::Text("  W : move forward");
-    ImGui::Text("  S : move back");
-    ImGui::Text("  A : rotate left");
-    ImGui::Text("  D : rotate right");
-    ImGui::TextColored(ImVec4(1.0f,0.5f,0.5f,1.0f), "Bezier camera");
-    ImGui::Text("  G (hold) : move");
+    ImGui::Begin("Keys");
+    ImGui::TextColored(ImVec4(1.0f,0.5f,0.5f,1.0f), "1 : Bird-eye camera");
+    ImGui::TextColored(ImVec4(0.5f,1.0f,0.5f,1.0f), "2 : FPS camera");
+    ImGui::TextColored(ImVec4(0.5f,0.5f,1.0f,1.0f), "3 : Bezier camera");
+    ImGui::Text("-----------------");
+    if (currentCamMode == 3) {
+        ImGui::TextColored(ImVec4(0.5f,0.5f,1.0f,1.0f), "Bezier camera");
+        ImGui::Text("  moves automatically,");
+        ImGui::Text("  no controls");
+    } else if (currentCamMode == 2) {
+        ImGui::TextColored(ImVec4(0.5f,1.0f,0.5f,1.0f), "FPS camera");
+        ImGui::Text("  W : move forward");
+        ImGui::Text("  S : move back");
+        ImGui::Text("  A : move left");
+        ImGui::Text("  D : move right");
+    } else {
+        ImGui::TextColored(ImVec4(1.0f,0.5f,0.5f,1.0f), "Noclip camera");
+        ImGui::Text("  W : move forward");
+        ImGui::Text("  S : move back");
+        ImGui::Text("  A : rotate left");
+        ImGui::Text("  D : rotate right");
+        ImGui::Text("  Q : rotate up");
+        ImGui::Text("  E : rotate down");
+    }
+
     ImGui::End();
 
     ImGui::Render();

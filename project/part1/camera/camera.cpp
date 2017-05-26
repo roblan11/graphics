@@ -238,7 +238,6 @@ void Camera::InitBezier(float time) {
     float random[18];
     for (size_t i = 0; i < 18; i++) {
         random[i] = 2*(rand()/(float)RAND_MAX)-1;
-        std::cout << random[i] << '\n';
     }
     vec3 posPoints[] = {position_,
                         position_ + vec3(random[0], random[1], random[2]),
@@ -248,7 +247,7 @@ void Camera::InitBezier(float time) {
                            lookingAt_ + vec3(random[ 9], random[10], random[11]),
                            lookingAt_ + vec3(random[12], random[13], random[14]),
                            lookingAt_ + vec3(random[15], random[16], random[17])};
-    Bezier::Init(posPoints, lookAtPoints, 4, 10, time);
+    Bezier::Init(posPoints, lookAtPoints, 4, rand() % 20, time);
     bezierInitialized = true;
 }
 
