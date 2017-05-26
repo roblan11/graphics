@@ -169,7 +169,7 @@ void Camera::MoveUpDown(float currentTime, float direction)
     UpdateOrigin(currentTime);
 }
 
-void Camera::MovingUpDown(float currentTime, float direction)
+void Camera::MovingUpDown(float currentTime)
 {
     if (currentTime - timeOriginPosition_ > 0.1) {
         UpdateOrigin(currentTime);

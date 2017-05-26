@@ -56,7 +56,7 @@ class Camera : public Bezier {
         void MovingBackward(float currentTime);
 
         void MoveUpDown(float currentTime, float direction);
-        void MovingUpDown(float currentTime, float direction);
+        void MovingUpDown(float currentTime);
 
         void LookOnTheLeft(float currentTime);
         void LookingOnTheLeft(float currentTime);

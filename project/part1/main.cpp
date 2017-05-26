@@ -188,9 +188,9 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         } else if (key == GLFW_KEY_E) {
             camera.LookingBelow(currentTime);
         } else if (key == GLFW_KEY_R) {
-            camera.MoveUpDown(currentTime, 1.0);
+            camera.MovingUpDown(currentTime);
         } else if (key == GLFW_KEY_F) {
-            camera.MoveUpDown(currentTime, -1.0);
+            camera.MovingUpDown(currentTime);
         }
     }
 
