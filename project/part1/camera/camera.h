@@ -8,19 +8,22 @@
 using namespace glm;
 
 struct Bezier {
-    vec3* points;
-    int numPoints;
-    float runFor;
-    float runFrom;
-    bool restart;
+  vec3* BposPoints;
+  vec3* BlookPoints;
+  int BnumPoints;
+  float BrunFor;
+  float BrunFrom;
+  bool Brestart;
+  vec3 Bposition;
+  vec3 BlookAt;
 
-    void Init(vec3* pts, size_t N, float runTime, float startTime);
+  void Init(vec3* posPts, vec3* lookPts, size_t N, float runTime, float startTime);
 
-    float Ease(float t);
+  float Ease(float t);
 
-    vec3 GetPosition(float time);
+  void UpdatePosition(float time);
 
-    void Cleanup();
+  void Cleanup();
 };
 
 enum class CameraMode {BIRD, FPS, BEZIER};

@@ -13,41 +13,54 @@ const float Camera::MOVE_STRAIGHT_FACTOR = 0.05f;
 const float Camera::INITIAL_VELOCITY= 0.3f;
 const float Camera::ACCELERATION = 0.2f;
 
-void Bezier::Init(vec3* pts, size_t N, float runTime, float startTime) {
-    numPoints = N;
-    points = new vec3[numPoints];
-    memcpy(points, pts, numPoints * sizeof(vec3));
-    restart = false;
-    runFor = runTime;
-    runFrom = startTime;
+void Bezier::Init(vec3* posPts, vec3* lookPts, size_t N, float runTime, float startTime) {
+    BnumPoints = N;
+    BposPoints = new vec3[BnumPoints];
+    memcpy(BposPoints, posPts, BnumPoints * sizeof(vec3));
+    BlookPoints = new vec3[BnumPoints];
+    memcpy(BlookPoints, lookPts, BnumPoints * sizeof(vec3));
+    Brestart = false;
+    BrunFor = runTime;
+    BrunFrom = startTime;
+    if (N > 0) {
+        Bposition = BposPoints[0];
+        BlookAt = BlookPoints[0];
+    }
 }
 
 float Bezier::Ease(float t) {
   return t * t * t * (t * (t * 6 - 15) + 10);
 }
 
-vec3 Bezier::GetPosition(float time) {
+void Bezier::UpdatePosition(float time) {
     float t;
-    if(time >= runFrom+runFor) {
-        restart = true;
+    if(time >= BrunFrom+BrunFor) {
+        Brestart = true;
         t = 1.0;
-    } else {
-        t = Ease((time-runFrom)/runFor);
+    } else if (time >= BrunFrom) {
+        t = Ease((time-BrunFrom)/BrunFor);
     }
-    vec3* temp = new vec3[numPoints];
-    memcpy(temp, points, numPoints * sizeof(vec3));
-    for (int i = numPoints-1; i > 0; i--) {
+
+    vec3* posTmp = new vec3[BnumPoints];
+    memcpy(posTmp, BposPoints, BnumPoints * sizeof(vec3));
+    vec3* lookTmp = new vec3[BnumPoints];
+    memcpy(lookTmp, BlookPoints, BnumPoints * sizeof(vec3));
+
+    for (int i = BnumPoints-1; i > 0; i--) {
         for (size_t j = 0; j < i; j++) {
-            temp[j] = temp[j] + t * (temp[j+1] - temp[j]);
+            posTmp[j] = posTmp[j] + t * (posTmp[j+1] - posTmp[j]);
+            lookTmp[j] = lookTmp[j] + t * (lookTmp[j+1] - lookTmp[j]);
         }
     }
-    vec3 ret = temp[0];
-    delete[] temp;
-    return ret;
+    Bposition = posTmp[0];
+    delete[] posTmp;
+    BlookAt = lookTmp[0];
+    delete[] lookTmp;
 }
 
 void Bezier::Cleanup() {
-    delete[] points;
+  delete[] BposPoints;
+  delete[] BlookPoints;
 }
 
 void Camera::Init(vec3 position, vec3 lookingAt, vec3 up)
@@ -222,14 +235,28 @@ void Camera::SetHeight(float height)
 }
 
 void Camera::InitBezier(float time) {
-    vec3 points[] = {position_, position_+vec3(2.0, 2.0, 0.0), position_+vec3(1.0, 2.0, -1.0), position_+vec3(1.0, 1.0, 0.0)};
-    Bezier::Init(points, 4, 10, time);
+    float random[18];
+    for (size_t i = 0; i < 18; i++) {
+        random[i] = 2*(rand()/(float)RAND_MAX)-1;
+        std::cout << random[i] << '\n';
+    }
+    vec3 posPoints[] = {position_,
+                        position_ + vec3(random[0], random[1], random[2]),
+                        position_ + vec3(random[3], random[4], random[5]),
+                        position_ + vec3(random[6], random[7], random[8])};
+    vec3 lookAtPoints[] = {lookingAt_,
+                           lookingAt_ + vec3(random[ 9], random[10], random[11]),
+                           lookingAt_ + vec3(random[12], random[13], random[14]),
+                           lookingAt_ + vec3(random[15], random[16], random[17])};
+    Bezier::Init(posPoints, lookAtPoints, 4, 10, time);
     bezierInitialized = true;
 }
 
 void Camera::MoveBezier(float time) {
-    position_ = vec3(Bezier::GetPosition(time));
-    if(Bezier::restart) {
+    Bezier::UpdatePosition(time);
+    position_ = Bezier::Bposition;
+    lookingAt_ = Bezier::BlookAt;
+    if(Bezier::Brestart) {
         InitBezier(time);
     }
 }
