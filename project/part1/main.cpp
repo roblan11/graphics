@@ -169,6 +169,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             camera.LookAbove(currentTime);
         } else if (key == GLFW_KEY_E) {
             camera.LookBelow(currentTime);
+        } else if (key == GLFW_KEY_R) {
+            camera.MoveUpDown(currentTime, 1.0);
+        } else if (key == GLFW_KEY_F) {
+            camera.MoveUpDown(currentTime, -1.0);
         }
     } else if (action == GLFW_REPEAT) {
         if (key == GLFW_KEY_W) {
@@ -183,6 +187,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             camera.LookingAbove(currentTime);
         } else if (key == GLFW_KEY_E) {
             camera.LookingBelow(currentTime);
+        } else if (key == GLFW_KEY_R) {
+            camera.MoveUpDown(currentTime, 1.0);
+        } else if (key == GLFW_KEY_F) {
+            camera.MoveUpDown(currentTime, -1.0);
         }
     }
 
@@ -303,6 +311,8 @@ void GUI(GLFWwindow* window) {
         ImGui::Text("  D : rotate right");
         ImGui::Text("  Q : rotate up");
         ImGui::Text("  E : rotate down");
+        ImGui::Text("  R : move up");
+        ImGui::Text("  F : move down");
     }
 
     ImGui::End();

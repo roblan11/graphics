@@ -2,14 +2,14 @@
 #include "icg_helper.h"
 
 struct Heightmap_Parameters {
-    int octaves;
-    float lacunarity;
-    float gain;
-    float amplitude;
-    float exponent;
-    float heightscale;
-    float offset;
-    float scale;
+    int octaves = 5;
+    float lacunarity = 2.0f;
+    float gain = 0.35;
+    float amplitude = 0.7;
+    float exponent = 0.8;
+    float heightscale = 1.3;
+    float offset = 0.9;
+    float scale = 2.f;
 
     GLuint octaves_id;
     GLuint lacunarity_id;

@@ -4,19 +4,19 @@
 
 struct Terrain_Parameters {
 
-    float mix_uw_sand;
-    float mix_sand_grass;
-    float lvl_grass;
-    float mix_grass_rock;
-    float lvl_rock;
-    float mix_rock_snow;
-    float lvl_snow;
+    float mix_uw_sand = 0.005;
+    float mix_sand_grass = 0.015;
+    float lvl_grass = 0.12;
+    float mix_grass_rock = 0.18;
+    float lvl_rock = 0.3;
+    float mix_rock_snow = 0.35;
+    float lvl_snow = 0.4;
 
-    float scale_uw;
-    float scale_sand;
-    float scale_grass;
-    float scale_rock;
-    float scale_snow;
+    float scale_uw = 2.f;
+    float scale_sand = 10.f;
+    float scale_grass = 10.f;
+    float scale_rock = 5.f;
+    float scale_snow = 5.f;
 
     GLuint mix_uw_sand_id;
     GLuint mix_sand_grass_id;

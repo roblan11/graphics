@@ -2,7 +2,7 @@
 #include "icg_helper.h"
 #include "glm/gtc/type_ptr.hpp"
 
-float WAVE_SPEED;
+float WAVE_SPEED = 0.0005;
 
 class Water {
 
@@ -18,8 +18,7 @@ class Water {
     public:
         void Init(GLuint tex_mirror) {
             // compile the shaders
-            program_id_ = icg_helper::LoadShaders("water_vshader.glsl",
-                                                  "water_fshader.glsl");
+            program_id_ = icg_helper::LoadShaders("water_vshader.glsl", "water_fshader.glsl");
             if(!program_id_) {
                 exit(EXIT_FAILURE);
             }

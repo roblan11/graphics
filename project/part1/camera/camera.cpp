@@ -161,6 +161,21 @@ void Camera::MovingBackward(float currentTime)
     }
 }
 
+void Camera::MoveUpDown(float currentTime, float direction)
+{
+    vec3 dmove = vec3(0, 0, 2*direction);
+    velocityPositionOrigin_ = dmove;
+    velocityLookingAtOrigin_ = dmove;
+    UpdateOrigin(currentTime);
+}
+
+void Camera::MovingUpDown(float currentTime, float direction)
+{
+    if (currentTime - timeOriginPosition_ > 0.1) {
+        UpdateOrigin(currentTime);
+    }
+}
+
 void Camera::LookOnTheLeft(float currentTime)
 {
     vec3 cameraPositionToLookingAt = lookingAt_ - position_;
@@ -240,9 +255,9 @@ void Camera::InitBezier(float time) {
         random[i] = 2*(rand()/(float)RAND_MAX)-1;
     }
     vec3 posPoints[] = {position_,
-                        position_ + vec3(random[0], random[1], random[2]),
-                        position_ + vec3(random[3], random[4], random[5]),
-                        position_ + vec3(random[6], random[7], random[8])};
+                        position_ + vec3(random[0], random[1], random[2]*2),
+                        position_ + vec3(random[3], random[4], random[5]*2),
+                        position_ + vec3(random[6], random[7], random[8]*2)};
     vec3 lookAtPoints[] = {lookingAt_,
                            lookingAt_ + vec3(random[ 9], random[10], random[11]),
                            lookingAt_ + vec3(random[12], random[13], random[14]),
@@ -255,6 +270,7 @@ void Camera::MoveBezier(float time) {
     Bezier::UpdatePosition(time);
     position_ = Bezier::Bposition;
     lookingAt_ = Bezier::BlookAt;
+    SetHeight(position_.z);
     if(Bezier::Brestart) {
         InitBezier(time);
     }
@@ -285,4 +301,5 @@ void Camera::UpdateOrigin(float currentTime)
     timeOriginLookingAt_ = currentTime;
     positionOrigin_ = position_;
     lookingAtOrigin_ = lookingAt_;
+    SetHeight(position_.z);
 }
