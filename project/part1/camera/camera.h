@@ -47,7 +47,13 @@ class Camera : public Bezier {
             return position_.y;
         }
 
+        glm::vec2 getSphericalCoordinates() {
+            return glm::vec2(phi_, theta_);
+        }
+
         glm::vec2 getWorldCenterPosition();
+
+        glm::mat4 ComputeSkyView();
 
         void MoveForward(float currentTime);
         void MovingForward(float currentTime);
@@ -87,6 +93,10 @@ class Camera : public Bezier {
     private:
         void UpdateOrigin(float currentTime);
 
+        void CorrectSphericalCoordinates();
+
+        void CorrectLookingAt();
+
         vec3 ComputeUpVector(vec3 pos, vec3 lookAt);
 
         glm::vec3 position_;
@@ -97,6 +107,8 @@ class Camera : public Bezier {
         glm::vec3 velocityPositionOrigin_;
         glm::vec3 velocityLookingAtOrigin_;
         bool bezierInitialized;
+        float phi_;
+        float theta_;
         float velocity_;
         float timeOriginPosition_;
         float timeOriginLookingAt_;

@@ -12,6 +12,7 @@
 #include "heightmap/heightmap.h"
 
 #include "skybox/skybox.h"
+#include "skyplane/skyplane.h"
 #include "terrain/terrain.h"
 #include "water/water.h"
 
@@ -25,10 +26,12 @@ int window_width = 800;
 int window_height = 600;
 
 Camera camera;
+FrameBuffer cloudsBuffer;
 FrameBuffer framebuffer;
 FrameBuffer reflectionBuffer;
 HeightMap heightmap;
 Skybox skybox;
+Skyplane skyplane;
 Water water;
 
 using namespace glm;
@@ -36,26 +39,33 @@ using namespace glm;
 mat4 projection_matrix;
 mat4 terrain_model_matrix;
 mat4 skybox_model_matrix;
+mat4 skyplane_model_matrix;
 mat4 water_model_matrix;
 
 void Init(GLFWwindow* window) {
     glClearColor(1.0, 1.0, 1.0 /*white*/, 1.0 /*solid*/);
     glEnable(GL_DEPTH_TEST);
 
+    camera.Init(vec3(-3.0f, 0.0f, 2.0f), vec3(0.0f, 0.0f, 2.0f), vec3(0.0f, 0.0f, 1.0f));
+
     // setup view and projection matrices
     float ratio = window_width / (float) window_height;
     projection_matrix = perspective(45.0f, ratio, 0.1f, 10.0f);
 
-    terrain_model_matrix = scale(IDENTITY_MATRIX, vec3(9.0f));
-    water_model_matrix = scale(IDENTITY_MATRIX, vec3(9.0f));
-    skybox_model_matrix = rotate(scale(IDENTITY_MATRIX, vec3(13.0f)), 1.57f, vec3(1,0,0));
+    terrain_model_matrix = scale(IDENTITY_MATRIX, vec3(5.5f));
+    water_model_matrix = scale(IDENTITY_MATRIX, vec3(5.5f));
+    skybox_model_matrix = rotate(scale(IDENTITY_MATRIX, vec3(8.0f)), 1.57f, vec3(1.0f,0.0f,0.0f));
+    skybox_model_matrix[3][2] = 0.0f;
+    skybox_model_matrix[3][3] = 1.0f;
+    skyplane_model_matrix = camera.ComputeSkyView();
 
     glfwGetFramebufferSize(window, &window_width, &window_height);
     GLuint framebuffer_texture_id = framebuffer.Init(window_width, window_height);
+    GLuint cloudsBuffer_texture_id = cloudsBuffer.Init(window_width, window_height);
     GLuint reflection_texture_id = reflectionBuffer.Init(window_width, window_height);
-    camera.Init(vec3(-4, -1.0f, 4), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 0.0f, 1.0f));
     heightmap.Init(window_width, window_height, framebuffer_texture_id);
     skybox.Init();
+    skyplane.Init(cloudsBuffer_texture_id);
     terrain.Init(framebuffer_texture_id);
     water.Init(reflection_texture_id);
 }
@@ -75,11 +85,10 @@ void Display() {
     float currentTime = glfwGetTime();
     camera.Update(currentTime);
     mat4 view_matrix = camera.ViewMatrix(false);
+    skyplane_model_matrix = camera.ComputeSkyView();
 
     float height;
     vec4 a = vec4(camera.getWorldCenterPosition().x,camera.getWorldCenterPosition().y,0,1);
-    vec4 b = view_matrix*vec4(camera.getWorldCenterPosition().x,camera.getWorldCenterPosition().y,0,1);
-    vec4 c = view_matrix*vec4(camera.getPositionX(),camera.getPositionY(),0,1);
 
     // render to framebuffer
     framebuffer.Bind();
@@ -90,18 +99,23 @@ void Display() {
     }
     framebuffer.Unbind();
 
-    //if(camera.mode == CameraMode.FPS){
-        //camera.SetHeight(height*4);
-        //std::cout << height << std::endl;
-    //}
+    cloudsBuffer.Bind();
+    {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        vec2 phiTheta = camera.getSphericalCoordinates();
+        heightmap.Draw(phiTheta.x/100.0f + currentTime/100.0f, phiTheta.y/100.0f);
+    }
+    cloudsBuffer.Unbind();
 
     reflectionBuffer.Bind();
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mat4 view_mirrored = camera.ViewMatrix(true);
         vec4 clippingPlaneAbove = vec4(0.0, 0.0, 1.0, 0.0);
-        terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix, camera.getPositionX(), camera.getPositionY());
+        // terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix, camera.getPositionX(), camera.getPositionY());
+        // NOTE: do note draw both at the same time!
         skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix);
+        // skyplane.Draw(skyplane_model_matrix, view_mirrored, projection_matrix);
     }
     reflectionBuffer.Unbind();
 
@@ -109,14 +123,16 @@ void Display() {
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec4 clippingPlane = vec4(0.0, 0.0, 0.0, 0.0);
-    terrain.Draw(clippingPlane, terrain_model_matrix, view_matrix, projection_matrix, camera.getPositionX(), camera.getPositionY());
+    // terrain.Draw(clippingPlane, terrain_model_matrix, view_matrix, projection_matrix, camera.getPositionX(), camera.getPositionY());
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     {
         water.Draw(water_model_matrix, view_matrix, projection_matrix);
     }
     glDisable(GL_BLEND);
+    // Note: do not draw both at the same time!!!
     skybox.Draw(skybox_model_matrix, view_matrix, projection_matrix);
+    // skyplane.Draw(skyplane_model_matrix, view_matrix, projection_matrix);
 }
 
 // gets called when the windows/framebuffer is resized.
@@ -131,8 +147,12 @@ void ResizeCallback(GLFWwindow* window, int width, int height) {
 
     // when the window is resized, the framebuffer and the screenquad
     // should also be resized
+    cloudsBuffer.Cleanup();
+    cloudsBuffer.Init(window_width, window_height);
     framebuffer.Cleanup();
     framebuffer.Init(window_width, window_height);
+    reflectionBuffer.Cleanup();
+    reflectionBuffer.Init(window_width, window_height);
 }
 
 void ErrorCallback(int error, const char* description) {
@@ -382,6 +402,9 @@ int main(int argc, char *argv[]) {
 
     // cleanup
     terrain.Cleanup();
+    skybox.Cleanup();
+    skyplane.Cleanup();
+    cloudsBuffer.Cleanup();
     framebuffer.Cleanup();
     reflectionBuffer.Cleanup();
     heightmap.Cleanup();

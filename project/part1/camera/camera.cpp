@@ -97,7 +97,7 @@ void Camera::Update(float currentTime)
     //if (mode == CameraMode::FPS) {
         // FPS
     //} else
-        if (mode == CameraMode::BIRD || mode == CameraMode::FPS) {
+    if (mode == CameraMode::BIRD || mode == CameraMode::FPS) {
         float position_dt = currentTime - timeOriginPosition_;
         float position_dt_dt = position_dt * position_dt;
         position_ = positionOrigin_ + mat3(INITIAL_VELOCITY * position_dt -
@@ -116,6 +116,8 @@ void Camera::Update(float currentTime)
             velocityLookingAtOrigin_ = vec3(0.0f);
             timeOriginLookingAt_ = currentTime;
         }
+        CorrectSphericalCoordinates();
+        CorrectLookingAt();
     } else {
         MoveBezier(currentTime);
     }
@@ -123,7 +125,7 @@ void Camera::Update(float currentTime)
 
 vec2 Camera::getWorldCenterPosition()
 {
-    const float offset = 8.0f;
+    const float offset = 5.5f;
     vec3 op = lookingAt_ - position_;
     op.z = position_.z;
     vec3 tmp = position_ + mat3(offset) * normalize(op);
@@ -276,6 +278,20 @@ void Camera::MoveBezier(float time) {
     }
 }
 
+mat4 Camera::ComputeSkyView()
+{
+    mat4 skyplane_model_matrix = scale(mat4(4.0f), vec3(50.0f));
+    vec3 eyeToPoint = normalize(lookingAt_ - position_);
+    skyplane_model_matrix[3][0] = lookingAt_.x;
+    skyplane_model_matrix[3][1] = lookingAt_.y;
+    skyplane_model_matrix[3][2] = position_.z + 6.4f;
+    skyplane_model_matrix[3][3] = 1.0f;
+    vec3 drot = normalize(cross(vec3(0.0f, 0.0f, 1.0f), eyeToPoint));
+    skyplane_model_matrix = rotate(skyplane_model_matrix, 0.83f, drot);
+    skyplane_model_matrix = rotate(skyplane_model_matrix, phi_, vec3(0.0f, 0.0f, 1.0f));
+    return skyplane_model_matrix;
+}
+
 vec3 Camera::ComputeUpVector(vec3 pos, vec3 lookAt)
 {
     vec3 axeZ = vec3(0.0f, 0.0f, 1.0f);
@@ -293,6 +309,26 @@ void Camera::Cleanup() {
     if (bezierInitialized) {
         Bezier::Cleanup();
     }
+}
+
+void Camera::CorrectSphericalCoordinates()
+{
+    vec3 op = lookingAt_ - position_;
+    op.z = 0.0f;
+    vec3 opN = normalize(op);
+    float costheta = dot(vec3(0.0, 0.0, 1.0), opN);
+    float cosphi = dot(vec3(-1.0, 0.0, 0.0), opN);
+    if (op.y < 0) {
+        cosphi *= -1;
+    }
+    theta_ = acos(costheta);
+    phi_ = acos(cosphi);
+}
+
+void Camera::CorrectLookingAt()
+{
+    vec3 eyeToPoint = lookingAt_ - position_;
+    lookingAt_ = position_ + mat3(2.0f) * normalize(eyeToPoint);
 }
 
 void Camera::UpdateOrigin(float currentTime)
