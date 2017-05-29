@@ -103,7 +103,7 @@ void Display() {
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         vec2 phiTheta = camera.getSphericalCoordinates();
-        heightmap.Draw(phiTheta.x/100.0f + currentTime/100.0f, phiTheta.y/100.0f);
+        heightmap.Draw(phiTheta.x/100.0f + currentTime/200.0f, phiTheta.y/100.0f);
     }
     cloudsBuffer.Unbind();
 
@@ -112,7 +112,7 @@ void Display() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mat4 view_mirrored = camera.ViewMatrix(true);
         vec4 clippingPlaneAbove = vec4(0.0, 0.0, 1.0, 0.0);
-        // terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix, camera.getPositionX(), camera.getPositionY());
+        terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix, camera.getPositionX(), camera.getPositionY());
         // NOTE: do note draw both at the same time!
         skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix);
         // skyplane.Draw(skyplane_model_matrix, view_mirrored, projection_matrix);
@@ -123,7 +123,7 @@ void Display() {
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec4 clippingPlane = vec4(0.0, 0.0, 0.0, 0.0);
-    // terrain.Draw(clippingPlane, terrain_model_matrix, view_matrix, projection_matrix, camera.getPositionX(), camera.getPositionY());
+    terrain.Draw(clippingPlane, terrain_model_matrix, view_matrix, projection_matrix, camera.getPositionX(), camera.getPositionY());
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     {
