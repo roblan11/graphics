@@ -18,6 +18,9 @@ struct Terrain_Parameters {
     float scale_rock = 5.f;
     float scale_snow = 5.f;
 
+    float normal_contribution = 0.5f;
+    float normal_contribution_mix = 0.025f;
+
     GLuint mix_uw_sand_id;
     GLuint mix_sand_grass_id;
     GLuint lvl_grass_id;
@@ -31,6 +34,9 @@ struct Terrain_Parameters {
     GLuint scale_grass_id;
     GLuint scale_rock_id;
     GLuint scale_snow_id;
+
+    GLuint normal_contribution_id;
+    GLuint normal_contribution_mix_id;
 
     void Init(GLuint pid) {
         mix_uw_sand_id = glGetUniformLocation(pid, "mix_uw_sand");
@@ -46,9 +52,12 @@ struct Terrain_Parameters {
         scale_grass_id = glGetUniformLocation(pid, "scale_grass");
         scale_rock_id = glGetUniformLocation(pid, "scale_rock");
         scale_snow_id = glGetUniformLocation(pid, "scale_snow");
+
+        normal_contribution_id = glGetUniformLocation(pid, "normal_contribution");
+        normal_contribution_mix_id = glGetUniformLocation(pid, "normal_contribution_mix");
     }
 
-    void Pass(float mix_uw_sand, float mix_sand_grass, float lvl_grass, float mix_grass_rock, float lvl_rock, float mix_rock_snow, float lvl_snow, float scale_uw, float scale_sand, float scale_grass, float scale_rock, float scale_snow) {
+    void Pass(float mix_uw_sand, float mix_sand_grass, float lvl_grass, float mix_grass_rock, float lvl_rock, float mix_rock_snow, float lvl_snow, float scale_uw, float scale_sand, float scale_grass, float scale_rock, float scale_snow, float normal_contribution, float normal_contribution_mix) {
         this->mix_uw_sand = mix_uw_sand;
         this->mix_sand_grass = mix_sand_grass;
         this->lvl_grass = lvl_grass;
@@ -62,6 +71,9 @@ struct Terrain_Parameters {
         this->scale_grass = scale_grass;
         this->scale_rock = scale_rock;
         this->scale_snow = scale_snow;
+
+        this->normal_contribution = normal_contribution;
+        this->normal_contribution_mix = normal_contribution_mix;
     }
 
     void Update() {
@@ -78,6 +90,9 @@ struct Terrain_Parameters {
         glUniform1f(scale_grass_id, scale_grass);
         glUniform1f(scale_rock_id, scale_rock);
         glUniform1f(scale_snow_id, scale_snow);
+
+        glUniform1f(normal_contribution_id, normal_contribution);
+        glUniform1f(normal_contribution_mix_id, normal_contribution_mix);
     }
 };
 
@@ -353,8 +368,8 @@ class Terrain : public Material, public Light, public Terrain_Parameters {
             glUseProgram(0);
         }
 
-        void Update(float mix_uw_sand, float mix_sand_grass, float lvl_grass, float mix_grass_rock, float lvl_rock, float mix_rock_snow, float lvl_snow, float scale_uw, float scale_sand, float scale_grass, float scale_rock, float scale_snow) {
-            Terrain_Parameters::Pass(mix_uw_sand, mix_sand_grass, lvl_grass, mix_grass_rock, lvl_rock, mix_rock_snow, lvl_snow, scale_uw, scale_sand, scale_grass, scale_rock, scale_snow);
+        void Update(float mix_uw_sand, float mix_sand_grass, float lvl_grass, float mix_grass_rock, float lvl_rock, float mix_rock_snow, float lvl_snow, float scale_uw, float scale_sand, float scale_grass, float scale_rock, float scale_snow, float normal_contribution, float normal_contribution_mix) {
+            Terrain_Parameters::Pass(mix_uw_sand, mix_sand_grass, lvl_grass, mix_grass_rock, lvl_rock, mix_rock_snow, lvl_snow, scale_uw, scale_sand, scale_grass, scale_rock, scale_snow, normal_contribution, normal_contribution_mix);
         }
 
         void Cleanup() {

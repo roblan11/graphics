@@ -34,34 +34,42 @@ uniform float scale_grass;
 uniform float scale_rock;
 uniform float scale_snow;
 
+uniform float normal_contribution;
+uniform float normal_contribution_mix;
+
 void main() {
     vec2 xy = uv;
     xy.x += position_looking_at_x;
     xy.y += position_looking_at_y;
-    vec3 tex_color = vec3(0.0);
-    if(height < -mix_uw_sand){
-            tex_color = texture(uw_texture, xy*scale_uw).xyz;
-    } else if(height < mix_uw_sand) {
-            tex_color = mix(texture(uw_texture, xy*scale_uw).xyz, texture(sand_texture, xy*scale_sand).xyz, (height+mix_uw_sand)/(2*mix_uw_sand));
-    } else if (height < mix_sand_grass){
-            tex_color = texture(sand_texture, xy*scale_sand).xyz;
-    } else if (height < lvl_grass){
-            tex_color = mix(texture(sand_texture, xy*scale_sand).xyz, texture(grass_texture, xy*scale_grass).xyz, (height-mix_sand_grass)/(lvl_grass-mix_sand_grass));
-    } else if (height < mix_grass_rock){
-            tex_color = texture(grass_texture, xy*scale_grass).xyz;
-    } else if (height < lvl_rock){
-            tex_color = mix(texture(grass_texture, xy*scale_grass).xyz, texture(rock_texture, xy*scale_rock).xyz, (height-mix_grass_rock)/(lvl_rock-mix_grass_rock));
-    } else if (height < mix_rock_snow){
-            tex_color = texture(rock_texture, xy*scale_rock).xyz;
-    } else if (height < lvl_snow) {
-            tex_color = mix(texture(rock_texture, xy*scale_rock).xyz, texture(snow_texture, xy*scale_snow).xyz, (height-mix_rock_snow)/(lvl_snow-mix_rock_snow));
-    } else {
-            tex_color = texture(snow_texture, xy*scale_snow).xyz;
-    }
 
     vec3 x = dFdx(vpoint_mv.xyz);
     vec3 y = dFdy(vpoint_mv.xyz);
     vec3 n = normalize(cross(x, y) * mat3(MV));
+
+    float z = (1-n.z);
+
+    vec3 tex_color = vec3(0.0);
+    if(height < -mix_uw_sand) {
+        tex_color = texture(uw_texture, xy*scale_uw).xyz;
+    } else if(height < mix_uw_sand) {
+        tex_color = mix(texture(uw_texture, xy*scale_uw).xyz, texture(sand_texture, xy*scale_sand).xyz, (height+mix_uw_sand)/(2*mix_uw_sand));
+    } else if (height < mix_sand_grass) {
+        tex_color = texture(sand_texture, xy*scale_sand).xyz;
+    } else if (height < lvl_grass) {
+        tex_color = mix(texture(sand_texture, xy*scale_sand).xyz, texture(grass_texture, xy*scale_grass).xyz, (height-mix_sand_grass)/(lvl_grass-mix_sand_grass));
+    } else if (height < mix_grass_rock) {
+        tex_color = texture(grass_texture, xy*scale_grass).xyz;
+    } else if (height < lvl_rock) {
+        tex_color = mix(texture(grass_texture, xy*scale_grass).xyz, texture(rock_texture, xy*scale_rock).xyz, (height-mix_grass_rock)/(lvl_rock-mix_grass_rock));
+    } else if ((height < mix_rock_snow) || (z>normal_contribution+normal_contribution_mix)) {
+        tex_color = texture(rock_texture, xy*scale_rock).xyz;
+    } else if(z>normal_contribution) {
+        tex_color = mix(texture(rock_texture, xy*scale_rock).xyz, texture(snow_texture, xy*scale_snow).xyz, (height-mix_rock_snow)/(lvl_snow-mix_rock_snow)*(1-(z-normal_contribution)/normal_contribution_mix));
+    } else if (height < lvl_snow) {
+        tex_color = mix(texture(rock_texture, xy*scale_rock).xyz, texture(snow_texture, xy*scale_snow).xyz, (height-mix_rock_snow)/(lvl_snow-mix_rock_snow));
+    } else {
+        tex_color = texture(snow_texture, xy*scale_snow).xyz;
+    }
 
     vec3 gray = vec3(0.f);
     // ambient
