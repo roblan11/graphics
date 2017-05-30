@@ -32,6 +32,7 @@ FrameBuffer reflectionBuffer;
 HeightMap heightmap;
 Skybox skybox;
 Skyplane skyplane;
+bool isSkyDynamic;
 Water water;
 
 using namespace glm;
@@ -47,6 +48,7 @@ void Init(GLFWwindow* window) {
     glEnable(GL_DEPTH_TEST);
 
     camera.Init(vec3(-3.0f, 0.0f, 2.0f), vec3(0.0f, 0.0f, 2.0f), vec3(0.0f, 0.0f, 1.0f));
+    isSkyDynamic = false;
 
     // setup view and projection matrices
     float ratio = window_width / (float) window_height;
@@ -99,23 +101,27 @@ void Display() {
     }
     framebuffer.Unbind();
 
-    cloudsBuffer.Bind();
-    {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        vec2 phiTheta = camera.getSphericalCoordinates();
-        heightmap.Draw(phiTheta.x/100.0f + currentTime/200.0f, phiTheta.y/100.0f);
+    if (isSkyDynamic) {
+        cloudsBuffer.Bind();
+        {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            vec2 phiTheta = camera.getSphericalCoordinates();
+            heightmap.Draw(phiTheta.x/100.0f + currentTime/200.0f, phiTheta.y/100.0f);
+        }
+        cloudsBuffer.Unbind();
     }
-    cloudsBuffer.Unbind();
 
     reflectionBuffer.Bind();
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mat4 view_mirrored = camera.ViewMatrix(true);
         vec4 clippingPlaneAbove = vec4(0.0, 0.0, 1.0, 0.0);
-        terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix, camera.getPositionX(), camera.getPositionY());
-        // NOTE: do note draw both at the same time!
-        skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix);
-        // skyplane.Draw(skyplane_model_matrix, view_mirrored, projection_matrix);
+        // terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix, camera.getPositionX(), camera.getPositionY());
+        if (isSkyDynamic) {
+            skyplane.Draw(skyplane_model_matrix, view_mirrored, projection_matrix);
+        } else {
+            skybox.Draw(skybox_model_matrix, view_mirrored, projection_matrix);
+        }
     }
     reflectionBuffer.Unbind();
 
@@ -123,16 +129,18 @@ void Display() {
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec4 clippingPlane = vec4(0.0, 0.0, 0.0, 0.0);
-    terrain.Draw(clippingPlane, terrain_model_matrix, view_matrix, projection_matrix, camera.getPositionX(), camera.getPositionY());
+    // terrain.Draw(clippingPlane, terrain_model_matrix, view_matrix, projection_matrix, camera.getPositionX(), camera.getPositionY());
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     {
         water.Draw(water_model_matrix, view_matrix, projection_matrix);
     }
     glDisable(GL_BLEND);
-    // Note: do not draw both at the same time!!!
-    skybox.Draw(skybox_model_matrix, view_matrix, projection_matrix);
-    // skyplane.Draw(skyplane_model_matrix, view_matrix, projection_matrix);
+    if (isSkyDynamic) {
+        skyplane.Draw(skyplane_model_matrix, view_matrix, projection_matrix);
+    } else {
+        skybox.Draw(skybox_model_matrix, view_matrix, projection_matrix);
+    }
 }
 
 // gets called when the windows/framebuffer is resized.
@@ -195,7 +203,9 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             camera.MoveUpDown(currentTime, -1.0);
         }
     } else if (action == GLFW_REPEAT) {
-        if (key == GLFW_KEY_W) {
+        if (key == GLFW_KEY_G) {
+            camera.MoveBezier(currentTime);
+        } else if (key == GLFW_KEY_W) {
             camera.MovingForward(currentTime);
         } else if (key == GLFW_KEY_S) {
             camera.MovingBackward(currentTime);
