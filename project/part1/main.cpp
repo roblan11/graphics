@@ -81,21 +81,44 @@ vec2 TransformScreenCoords(GLFWwindow* window, int x, int y) {
                 1.0f - 2.0f * (float)y / height);
 }
 
+// 1: bird, 2: fps, 3: bezier
+int currentCamMode = 1;
+
 void Display() {
     float currentTime = glfwGetTime();
     camera.Update(currentTime);
     mat4 view_matrix = camera.ViewMatrix(false);
     skyplane_model_matrix = camera.ComputeSkyView();
 
-    float height;
-    vec4 a = vec4(camera.getWorldCenterPosition().x,camera.getWorldCenterPosition().y,0,1);
+    const int nb_pixels = 16;
 
-    // render to framebuffer
+    //render to framebuffer
     framebuffer.Bind();
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         heightmap.Draw(camera.getPositionX(), camera.getPositionY());
-        glReadPixels(a.x,a.y,1,1,GL_RED,GL_FLOAT,&height);
+        if(currentCamMode == 2){
+                int width = sqrt(nb_pixels);
+                GLfloat height[nb_pixels];
+                glReadPixels(window_width/2 - width/2, window_height/2 - width/2, width, width, GL_RED, GL_FLOAT, &height);
+
+                float sum = 0;
+                for(int i = 0;i < nb_pixels; i++){
+                    sum += height[i];
+                }
+                float average = sum/(float)nb_pixels;
+
+                if(average < 0){
+                    average = 0;
+                 }
+
+                float diff = 0.05f;
+
+                float final_height = average + diff; // a bit higher than the terrain
+                camera.SetHeight(final_height*9);
+
+                cout << final_height << endl;
+            }
     }
     framebuffer.Unbind();
 
@@ -158,9 +181,6 @@ void ResizeCallback(GLFWwindow* window, int width, int height) {
 void ErrorCallback(int error, const char* description) {
     fputs(description, stderr);
 }
-
-// 1: bird, 2: fps, 3: bezier
-int currentCamMode = 1;
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     float currentTime = glfwGetTime();
