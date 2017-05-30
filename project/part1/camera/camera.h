@@ -39,6 +39,10 @@ class Camera : public Bezier {
             mode = newMode;
         }
 
+        glm::vec3 getPosition() {
+            return position_;
+        }
+
         float getPositionX() {
             return position_.x;
         }

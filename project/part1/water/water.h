@@ -135,7 +135,7 @@ class Water {
             glDeleteTextures(1, &texture_mirror_id_);
         }
 
-        void Draw(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection) {
+        void Draw(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection, const glm::vec3 cameraPosition) {
             glUseProgram(program_id_);
             glBindVertexArray(vertex_array_id_);
 
@@ -156,8 +156,18 @@ class Water {
             }
 
             // setup MVP
-            GLuint MVP_id = glGetUniformLocation(program_id_, "MVP");
-            glUniformMatrix4fv(MVP_id, 1, GL_FALSE, value_ptr(MVP));
+            GLuint projectionMatrix_id = glGetUniformLocation(program_id_, "projectionMatrix");
+            glUniformMatrix4fv(projectionMatrix_id, 1, GL_FALSE, value_ptr(projection));
+
+            GLuint viewMatrix_id = glGetUniformLocation(program_id_, "viewMatrix");
+            glUniformMatrix4fv(viewMatrix_id, 1, GL_FALSE, value_ptr(view));
+
+            GLuint modelMatrix_id = glGetUniformLocation(program_id_, "modelMatrix");
+            glUniformMatrix4fv(modelMatrix_id, 1, GL_FALSE, value_ptr(model));
+
+            // setup toCameraVector
+            GLuint cameraPosition_id = glGetUniformLocation(program_id_, "cameraPosition");
+            glUniformMatrix3fv(cameraPosition_id, 1, GL_FALSE, value_ptr(cameraPosition));
 
             // draw
             glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

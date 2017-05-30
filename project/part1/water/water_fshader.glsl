@@ -1,6 +1,7 @@
 #version 330 core
 out vec4 color;
 in vec2 uv;
+in vec3 toCameraVector;
 uniform sampler2D tex_dudv;
 uniform sampler2D tex_mirror;
 
@@ -21,6 +22,16 @@ void main() {
     vec2 distortionY = (texture(tex_dudv, vec2(uv.x, uv.y + moveFactor)).rg * 2.0 - 1.0) * waveStrength;
     vec2 distortion = distortionX + distortionY;
     reflectionCoords += distortion;
+
+    /*
+    vec3 viewVector = normalize(toCameraVector);
+    float refractiveFactor = dot(viewVector, vec3(0.0, 0.0, 1.0));
+    if (refractiveFactor > 0.01) {
+        refractiveFactor = 0.0;
+    } else {
+        refractiveFactor = 1.0;
+    }
+    */
 
     vec3 color_from_mirror = texture(tex_mirror, reflectionCoords).rrr;
     vec3 mix_color = mix(vec3(0.0, 0.3, 0.5), color_from_mirror, 0.2);
