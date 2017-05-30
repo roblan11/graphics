@@ -119,7 +119,8 @@ void Camera::Update(float currentTime)
         CorrectSphericalCoordinates();
         CorrectLookingAt();
     } else {
-        MoveBezier(currentTime);
+        CorrectSphericalCoordinates();
+        CorrectLookingAt();
     }
 }
 
