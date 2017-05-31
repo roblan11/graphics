@@ -57,6 +57,8 @@ class Camera : public Bezier {
 
         glm::vec2 getWorldCenterPosition();
 
+        glm::vec2 getPositionInFrameBuffer();
+
         glm::mat4 ComputeSkyView();
 
         void MoveForward(float currentTime);

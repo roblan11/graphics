@@ -115,6 +115,8 @@ void Camera::Update(float currentTime)
             positionOrigin_ = position_;
             velocityPositionOrigin_ = vec3(0.0f);
             timeOriginPosition_ = currentTime;
+            CorrectSphericalCoordinates();
+            CorrectLookingAt();
         }
         float lookingAt_dt = currentTime - timeOriginLookingAt_;
         float lookingAt_dt_dt = lookingAt_dt *  lookingAt_dt;
@@ -125,8 +127,6 @@ void Camera::Update(float currentTime)
             velocityLookingAtOrigin_ = vec3(0.0f);
             timeOriginLookingAt_ = currentTime;
         }
-        CorrectSphericalCoordinates();
-        CorrectLookingAt();
     } else {
         CorrectSphericalCoordinates();
         CorrectLookingAt();

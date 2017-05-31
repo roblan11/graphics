@@ -47,7 +47,7 @@ void Init(GLFWwindow* window) {
     glClearColor(1.0, 1.0, 1.0 /*white*/, 1.0 /*solid*/);
     glEnable(GL_DEPTH_TEST);
 
-    camera.Init(vec3(-3.0f, 0.0f, 2.0f), vec3(0.0f, 0.0f, 2.0f), vec3(0.0f, 0.0f, 1.0f));
+    camera.Init(vec3(-4, -1.0f, 4), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 0.0f, 1.0f));
     isSkyDynamic = false;
 
     // setup view and projection matrices
@@ -139,7 +139,7 @@ void Display() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mat4 view_mirrored = camera.ViewMatrix(true);
         vec4 clippingPlaneAbove = vec4(0.0, 0.0, 1.0, 0.0);
-        // terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix, camera.getPositionX(), camera.getPositionY());
+        terrain.Draw(clippingPlaneAbove, terrain_model_matrix, view_mirrored, projection_matrix, camera.getPositionX(), camera.getPositionY());
         if (isSkyDynamic) {
             skyplane.Draw(skyplane_model_matrix, view_mirrored, projection_matrix);
         } else {
@@ -152,7 +152,7 @@ void Display() {
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vec4 clippingPlane = vec4(0.0, 0.0, 0.0, 0.0);
-    // terrain.Draw(clippingPlane, terrain_model_matrix, view_matrix, projection_matrix, camera.getPositionX(), camera.getPositionY());
+    terrain.Draw(clippingPlane, terrain_model_matrix, view_matrix, projection_matrix, camera.getPositionX(), camera.getPositionY());
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     {
