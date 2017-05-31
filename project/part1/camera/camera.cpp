@@ -144,6 +144,20 @@ vec2 Camera::getWorldCenterPosition()
     return vec2(position_.x, position_.y);
 }
 
+vec2 Camera::getPositionInFrameBuffer()
+{
+    //return vec2(k*getWorldCenterPosition().x + 0.5, k*getWorldCenterPosition().y + 0.5);
+/*
+    vec3 op = position_ - lookingAt_;
+    vec2 op2 = vec2(op.x, op.y);
+    vec2 opN = normalize(op2);
+    const float k = 0.4f;
+    vec2 ret = vec2(0.5, 0.5) + mat2(k) * opN;
+    return ret;
+    */
+   return vec2(0.5, 0.5);
+}
+
 void Camera::MoveForward(float currentTime)
 {
     vec3 dmove = normalize(lookingAt_ - position_);
