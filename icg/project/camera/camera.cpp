@@ -12,7 +12,7 @@ const float Camera::MOVE_YAW_FACTOR = 3.1f; // arount z
 const float Camera::MOVE_STRAIGHT_FACTOR = 0.05f;
 const float Camera::INITIAL_VELOCITY= 0.3f;
 const float Camera::ACCELERATION = 0.2f;
-const float Camera::MAXIMUM_HEIGHT = 4.0f;
+const float Camera::MAXIMUM_HEIGHT = 5.0f;
 
 void Bezier::Init(vec3* posPts, vec3* lookPts, size_t N, float runTime, float startTime) {
     BnumPoints = N;
