@@ -5,5 +5,4 @@ project(icg17)
 include(common/icg_settings.cmake)
 
 # week 5
-add_subdirectory(part1)
-
+add_subdirectory(project)

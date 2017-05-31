@@ -354,24 +354,26 @@ void GUI(GLFWwindow* window) {
     ImGui::Text("-----------------");
     if (currentCamMode == 3) {
         ImGui::TextColored(ImVec4(0.5f,0.5f,1.0f,1.0f), "Bezier camera");
-        ImGui::Text("  moves automatically,");
-        ImGui::Text("  no controls");
+        ImGui::Text(" G (hold) : move");
+        ImGui::Text("  camera and");
+        ImGui::Text("  looked-at positions");
+        ImGui::Text("  along bezier curves");
     } else if (currentCamMode == 2) {
         ImGui::TextColored(ImVec4(0.5f,1.0f,0.5f,1.0f), "FPS camera");
-        ImGui::Text("  W : move forward");
-        ImGui::Text("  S : move back");
-        ImGui::Text("  A : move left");
-        ImGui::Text("  D : move right");
+        ImGui::Text(" W : move forward");
+        ImGui::Text(" S : move back");
+        ImGui::Text(" A : move left");
+        ImGui::Text(" D : move right");
     } else {
         ImGui::TextColored(ImVec4(1.0f,0.5f,0.5f,1.0f), "Noclip camera");
-        ImGui::Text("  W : move forward");
-        ImGui::Text("  S : move back");
-        ImGui::Text("  A : rotate left");
-        ImGui::Text("  D : rotate right");
-        ImGui::Text("  Q : rotate up");
-        ImGui::Text("  E : rotate down");
-        ImGui::Text("  R : move up");
-        ImGui::Text("  F : move down");
+        ImGui::Text(" W : move forward");
+        ImGui::Text(" S : move back");
+        ImGui::Text(" A : rotate left");
+        ImGui::Text(" D : rotate right");
+        ImGui::Text(" Q : rotate up");
+        ImGui::Text(" E : rotate down");
+        ImGui::Text(" R : move up");
+        ImGui::Text(" F : move down");
     }
 
     ImGui::End();
