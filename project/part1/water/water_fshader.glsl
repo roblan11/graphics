@@ -23,17 +23,14 @@ void main() {
     vec2 distortion = distortionX + distortionY;
     reflectionCoords += distortion;
 
-    /*
-    vec3 viewVector = normalize(toCameraVector);
-    float refractiveFactor = dot(viewVector, vec3(0.0, 0.0, 1.0));
-    if (refractiveFactor > 0.01) {
-        refractiveFactor = 0.0;
+    float reflect = normalize(toCameraVector).z;
+    if(reflect < 0) {
+        reflect = 0;
+        color = vec4(0.0, 0.2, 0.7, 0.2);
     } else {
-        refractiveFactor = 1.0;
+        reflect = (1-reflect)*0.8 + 0.2;
+        vec3 color_from_mirror = texture(tex_mirror, reflectionCoords).rrr;
+        vec3 mix_color = mix(vec3(0.0, 0.0, 1.0), color_from_mirror, 0.5);
+        color = vec4(mix_color, reflect);
     }
-    */
-
-    vec3 color_from_mirror = texture(tex_mirror, reflectionCoords).rrr;
-    vec3 mix_color = mix(vec3(0.0, 0.3, 0.5), color_from_mirror, 0.2);
-    color = vec4(mix(vec3(0.0, 0.0, 1.0), mix_color, 0.5), 0.7);
 }
