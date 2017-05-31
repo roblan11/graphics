@@ -12,8 +12,7 @@ const float Camera::MOVE_YAW_FACTOR = 3.1f; // arount z
 const float Camera::MOVE_STRAIGHT_FACTOR = 0.05f;
 const float Camera::INITIAL_VELOCITY= 0.3f;
 const float Camera::ACCELERATION = 0.2f;
-const float Camera::MAXIMUM_HEIGHT = 4.2f;
-const float Camera::MINIMUM_HEIGHT = 0.1f;
+const float Camera::MAXIMUM_HEIGHT = 4.0f;
 
 void Bezier::Init(vec3* posPts, vec3* lookPts, size_t N, float runTime, float startTime) {
     BnumPoints = N;
@@ -73,6 +72,7 @@ void Camera::Init(vec3 position, vec3 lookingAt, vec3 up)
     lookingAtOrigin_ = lookingAt;
     up_ = up;
     mode = CameraMode::BIRD;
+    terrainHeight_ = 0.0f;
     velocity_ = 0.0f;
     velocityPositionOrigin_ = vec3(0.0f);
     velocityLookingAtOrigin_ = vec3(0.0f);
@@ -163,9 +163,11 @@ vec2 Camera::getPositionInFrameBuffer()
 
 void Camera::MoveForward(float currentTime)
 {
-    vec3 dmove = normalize(lookingAt_ - position_);
-    velocityPositionOrigin_ = dmove;
-    velocityLookingAtOrigin_ = dmove;
+    vec3 dmove = (lookingAt_ - position_);
+    dmove.z = 0.0f;
+    vec3 vectorTmp = normalize(dmove);
+    velocityPositionOrigin_ = vectorTmp;
+    velocityLookingAtOrigin_ = vectorTmp;
     UpdateOrigin(currentTime);
 }
 
@@ -276,13 +278,12 @@ void Camera::LookingBelow(float currentTime)
 
 void Camera::SetHeight(float height)
 {
-    // position_.z = fmin(fmax(height, MINIMUM_HEIGHT), MAXIMUM_HEIGHT);
-    if (height < MINIMUM_HEIGHT) {
-        position_.z = MINIMUM_HEIGHT;
-    } else if (height > MAXIMUM_HEIGHT) {
-        position_.z = MAXIMUM_HEIGHT;
+    const float diff = 0.05f;
+    float minimumHeight = fmax(20 * (terrainHeight_ + diff), -0.5);
+    if (mode == CameraMode::FPS) {
+        position_.z = fmin(minimumHeight, MAXIMUM_HEIGHT);
     } else {
-        position_.z = height;
+        position_.z = fmin(fmax(height, minimumHeight), MAXIMUM_HEIGHT);
     }
 }
 
@@ -372,5 +373,4 @@ void Camera::UpdateOrigin(float currentTime)
     timeOriginLookingAt_ = currentTime;
     positionOrigin_ = position_;
     lookingAtOrigin_ = lookingAt_;
-    SetHeight(position_.z);
 }

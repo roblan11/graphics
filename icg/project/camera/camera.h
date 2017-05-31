@@ -82,6 +82,9 @@ class Camera : public Bezier {
         void LookingBelow(float currentTime);
 
         void SetHeight(float height);
+        void SetTerrainHeight(float height) {
+            terrainHeight_ = height;
+        }
 
         void InitBezier(float time);
 
@@ -117,13 +120,13 @@ class Camera : public Bezier {
         float velocity_;
         float timeOriginPosition_;
         float timeOriginLookingAt_;
+        float terrainHeight_;
         static const float MOVE_PITCH_FACTOR;
         static const float MOVE_YAW_FACTOR;
         static const float MOVE_STRAIGHT_FACTOR;
         static const float INITIAL_VELOCITY;
         static const float ACCELERATION;
         static const float MAXIMUM_HEIGHT;
-        static const float MINIMUM_HEIGHT;
 };
 
 #endif
