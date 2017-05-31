@@ -99,28 +99,24 @@ void Display() {
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         heightmap.Draw(camera.getPositionX(), camera.getPositionY());
-        if(currentCamMode == 2){
-                int width = sqrt(nb_pixels);
-                GLfloat height[nb_pixels];
-                glReadPixels(window_width/2 - width/2, window_height/2 - width/2, width, width, GL_RED, GL_FLOAT, &height);
+        if (currentCamMode == 2) {
+            int width = sqrt(nb_pixels);
+            GLfloat height[nb_pixels];
+            glReadPixels(window_width/2 - width/2, window_height/2 - width/2, width, width, GL_RED, GL_FLOAT, &height);
 
-                float sum = 0;
-                for(int i = 0;i < nb_pixels; i++){
-                    sum += height[i];
-                }
-                float average = sum/(float)nb_pixels;
-
-                if(average < 0){
-                    average = 0;
-                 }
-
-                float diff = 0.05f;
-
-                float final_height = average + diff; // a bit higher than the terrain
-                camera.SetHeight(final_height*9);
-
-                // cout << final_height << endl;
+            float sum = 0;
+            for (int i = 0; i < nb_pixels; i++) {
+                sum += height[i];
             }
+
+            float average = (sum < 0) ? 0 : sum / (float)nb_pixels;
+
+            float diff = 0.05f;
+
+            float final_height = average + diff; // a bit higher than the terrain
+            camera.SetHeight(final_height * 20);
+
+        }
     }
     framebuffer.Unbind();
 

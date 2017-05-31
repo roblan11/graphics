@@ -12,7 +12,7 @@ const float Camera::MOVE_YAW_FACTOR = 3.1f; // arount z
 const float Camera::MOVE_STRAIGHT_FACTOR = 0.05f;
 const float Camera::INITIAL_VELOCITY= 0.3f;
 const float Camera::ACCELERATION = 0.2f;
-const float Camera::MAXIMUM_HEIGHT = 0.2f;
+const float Camera::MAXIMUM_HEIGHT = 4.2f;
 const float Camera::MINIMUM_HEIGHT = 0.1f;
 
 void Bezier::Init(vec3* posPts, vec3* lookPts, size_t N, float runTime, float startTime) {
@@ -133,6 +133,7 @@ void Camera::Update(float currentTime)
         CorrectSphericalCoordinates();
         CorrectLookingAt();
     }
+    SetHeight(position_.z);
 }
 
 vec2 Camera::getWorldCenterPosition()
