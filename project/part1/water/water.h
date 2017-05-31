@@ -167,7 +167,7 @@ class Water {
 
             // setup toCameraVector
             GLuint cameraPosition_id = glGetUniformLocation(program_id_, "cameraPosition");
-            glUniformMatrix3fv(cameraPosition_id, 1, GL_FALSE, value_ptr(cameraPosition));
+            glUniform3fv(cameraPosition_id, ONE, glm::value_ptr(cameraPosition));
 
             // draw
             glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
