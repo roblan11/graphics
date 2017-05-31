@@ -12,6 +12,8 @@ const float Camera::MOVE_YAW_FACTOR = 3.1f; // arount z
 const float Camera::MOVE_STRAIGHT_FACTOR = 0.05f;
 const float Camera::INITIAL_VELOCITY= 0.3f;
 const float Camera::ACCELERATION = 0.2f;
+const float Camera::MAXIMUM_HEIGHT = 0.2f;
+const float Camera::MINIMUM_HEIGHT = 0.1f;
 
 void Bezier::Init(vec3* posPts, vec3* lookPts, size_t N, float runTime, float startTime) {
     BnumPoints = N;
@@ -273,7 +275,14 @@ void Camera::LookingBelow(float currentTime)
 
 void Camera::SetHeight(float height)
 {
-    position_.z = height;
+    // position_.z = fmin(fmax(height, MINIMUM_HEIGHT), MAXIMUM_HEIGHT);
+    if (height < MINIMUM_HEIGHT) {
+        position_.z = MINIMUM_HEIGHT;
+    } else if (height > MAXIMUM_HEIGHT) {
+        position_.z = MAXIMUM_HEIGHT;
+    } else {
+        position_.z = height;
+    }
 }
 
 void Camera::InitBezier(float time) {
@@ -309,10 +318,10 @@ mat4 Camera::ComputeSkyView()
     vec3 eyeToPoint = normalize(lookingAt_ - position_);
     skyplane_model_matrix[3][0] = lookingAt_.x;
     skyplane_model_matrix[3][1] = lookingAt_.y;
-    skyplane_model_matrix[3][2] = position_.z + 6.4f;
+    skyplane_model_matrix[3][2] = 5.6f;
     skyplane_model_matrix[3][3] = 1.0f;
     vec3 drot = normalize(cross(vec3(0.0f, 0.0f, 1.0f), eyeToPoint));
-    skyplane_model_matrix = rotate(skyplane_model_matrix, 0.83f, drot);
+    skyplane_model_matrix = rotate(skyplane_model_matrix, 0.93f, drot);
     skyplane_model_matrix = rotate(skyplane_model_matrix, phi_, vec3(0.0f, 0.0f, 1.0f));
     return skyplane_model_matrix;
 }

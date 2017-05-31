@@ -54,9 +54,9 @@ void Init(GLFWwindow* window) {
     float ratio = window_width / (float) window_height;
     projection_matrix = perspective(45.0f, ratio, 0.1f, 10.0f);
 
-    terrain_model_matrix = scale(IDENTITY_MATRIX, vec3(5.5f));
-    water_model_matrix = scale(IDENTITY_MATRIX, vec3(5.5f));
-    skybox_model_matrix = rotate(scale(IDENTITY_MATRIX, vec3(8.0f)), 1.57f, vec3(1.0f,0.0f,0.0f));
+    terrain_model_matrix = scale(IDENTITY_MATRIX, vec3(10.5f));
+    water_model_matrix = scale(IDENTITY_MATRIX, vec3(10.5f));
+    skybox_model_matrix = rotate(scale(IDENTITY_MATRIX, vec3(11.0f)), 1.57f, vec3(1.0f,0.0f,0.0f));
     skybox_model_matrix[3][2] = 0.0f;
     skybox_model_matrix[3][3] = 1.0f;
     skyplane_model_matrix = camera.ComputeSkyView();
@@ -119,7 +119,7 @@ void Display() {
                 float final_height = average + diff; // a bit higher than the terrain
                 camera.SetHeight(final_height*9);
 
-                cout << final_height << endl;
+                // cout << final_height << endl;
             }
     }
     framebuffer.Unbind();

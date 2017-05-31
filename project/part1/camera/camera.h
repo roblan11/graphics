@@ -122,6 +122,8 @@ class Camera : public Bezier {
         static const float MOVE_STRAIGHT_FACTOR;
         static const float INITIAL_VELOCITY;
         static const float ACCELERATION;
+        static const float MAXIMUM_HEIGHT;
+        static const float MINIMUM_HEIGHT;
 };
 
 #endif
