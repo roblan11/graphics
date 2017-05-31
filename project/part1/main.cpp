@@ -54,9 +54,9 @@ void Init(GLFWwindow* window) {
     float ratio = window_width / (float) window_height;
     projection_matrix = perspective(45.0f, ratio, 0.1f, 10.0f);
 
-    terrain_model_matrix = scale(IDENTITY_MATRIX, vec3(5.5f));
-    water_model_matrix = scale(IDENTITY_MATRIX, vec3(5.5f));
-    skybox_model_matrix = rotate(scale(IDENTITY_MATRIX, vec3(8.0f)), 1.57f, vec3(1.0f,0.0f,0.0f));
+    terrain_model_matrix = scale(IDENTITY_MATRIX, vec3(10.5f));
+    water_model_matrix = scale(IDENTITY_MATRIX, vec3(10.5f));
+    skybox_model_matrix = rotate(scale(IDENTITY_MATRIX, vec3(11.0f)), 1.57f, vec3(1.0f,0.0f,0.0f));
     skybox_model_matrix[3][2] = 0.0f;
     skybox_model_matrix[3][3] = 1.0f;
     skyplane_model_matrix = camera.ComputeSkyView();
@@ -99,28 +99,24 @@ void Display() {
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         heightmap.Draw(camera.getPositionX(), camera.getPositionY());
-        if(currentCamMode == 2){
-                int width = sqrt(nb_pixels);
-                GLfloat height[nb_pixels];
-                glReadPixels(window_width/2 - width/2, window_height/2 - width/2, width, width, GL_RED, GL_FLOAT, &height);
+        if (currentCamMode == 2) {
+            int width = sqrt(nb_pixels);
+            GLfloat height[nb_pixels];
+            glReadPixels(window_width/2 - width/2, window_height/2 - width/2, width, width, GL_RED, GL_FLOAT, &height);
 
-                float sum = 0;
-                for(int i = 0;i < nb_pixels; i++){
-                    sum += height[i];
-                }
-                float average = sum/(float)nb_pixels;
-
-                if(average < 0){
-                    average = 0;
-                 }
-
-                float diff = 0.05f;
-
-                float final_height = average + diff; // a bit higher than the terrain
-                camera.SetHeight(final_height*9);
-
-                cout << final_height << endl;
+            float sum = 0;
+            for (int i = 0; i < nb_pixels; i++) {
+                sum += height[i];
             }
+
+            float average = (sum < 0) ? 0 : sum / (float)nb_pixels;
+
+            float diff = 0.05f;
+
+            float final_height = average + diff; // a bit higher than the terrain
+            camera.SetHeight(final_height * 20);
+
+        }
     }
     framebuffer.Unbind();
 
